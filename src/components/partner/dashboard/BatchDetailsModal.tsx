@@ -14,7 +14,8 @@ import {
   Eye,
   User,
   Phone,
-  Mail
+  Mail,
+  ArrowLeft
 } from "lucide-react";
 
 interface Student {
@@ -38,6 +39,7 @@ interface Session {
   completionPercentage: number;
   status: "Completed" | "Upcoming" | "In Progress";
   description: string;
+  enrolledStudents: Student[];
 }
 
 interface BatchDetailsModalProps {
@@ -62,51 +64,12 @@ interface BatchDetailsModalProps {
 
 export function BatchDetailsModal({ isOpen, onClose, batch }: BatchDetailsModalProps) {
   const [activeTab, setActiveTab] = useState<"sessions" | "students">("sessions");
+  const [selectedSession, setSelectedSession] = useState<Session | null>(null);
 
   if (!batch) return null;
 
-  // Mock sessions data
-  const sessions: Session[] = [
-    {
-      id: 1,
-      title: "Introduction to Yoga Basics",
-      date: "Jan 10, 2024",
-      time: "2:00 PM",
-      duration: "1.5 hours",
-      venue: `${batch.venue} - ${batch.spot}`,
-      studentsEnrolled: batch.students,
-      completionPercentage: 100,
-      status: "Completed",
-      description: "Basic poses and breathing techniques"
-    },
-    {
-      id: 2,
-      title: "Advanced Poses & Flow",
-      date: "Jan 12, 2024",
-      time: "2:00 PM",
-      duration: "1.5 hours",
-      venue: `${batch.venue} - ${batch.spot}`,
-      studentsEnrolled: batch.students,
-      completionPercentage: 100,
-      status: "Completed",
-      description: "Building strength and flexibility"
-    },
-    {
-      id: 3,
-      title: "Meditation & Mindfulness",
-      date: "Jan 16, 2024",
-      time: "2:00 PM",
-      duration: "1.5 hours",
-      venue: `${batch.venue} - ${batch.spot}`,
-      studentsEnrolled: batch.students,
-      completionPercentage: 0,
-      status: "Upcoming",
-      description: "Focus on mental wellness and relaxation"
-    }
-  ];
-
   // Mock students data
-  const students: Student[] = [
+  const allStudents: Student[] = [
     {
       id: 1,
       name: "Emma Johnson",
@@ -136,27 +99,120 @@ export function BatchDetailsModal({ isOpen, onClose, batch }: BatchDetailsModalP
     }
   ];
 
+  // Mock sessions data with enrolled students
+  const sessions: Session[] = [
+    {
+      id: 1,
+      title: "Introduction to Yoga Basics",
+      date: "Jan 10, 2024",
+      time: "2:00 PM",
+      duration: "1.5 hours",
+      venue: `${batch.venue} - ${batch.spot}`,
+      studentsEnrolled: 18,
+      completionPercentage: 100,
+      status: "Completed",
+      description: "Basic poses and breathing techniques",
+      enrolledStudents: allStudents
+    },
+    {
+      id: 2,
+      title: "Advanced Poses & Flow",
+      date: "Jan 12, 2024",
+      time: "2:00 PM",
+      duration: "1.5 hours",
+      venue: `${batch.venue} - ${batch.spot}`,
+      studentsEnrolled: 15,
+      completionPercentage: 100,
+      status: "Completed",
+      description: "Building strength and flexibility",
+      enrolledStudents: allStudents.slice(0, 2)
+    },
+    {
+      id: 3,
+      title: "Meditation & Mindfulness",
+      date: "Jan 16, 2024",
+      time: "2:00 PM",
+      duration: "1.5 hours",
+      venue: `${batch.venue} - ${batch.spot}`,
+      studentsEnrolled: 12,
+      completionPercentage: 0,
+      status: "Upcoming",
+      description: "Focus on mental wellness and relaxation",
+      enrolledStudents: allStudents.slice(0, 1)
+    }
+  ];
+
+  const handleSessionDetails = (session: Session) => {
+    console.log("Viewing session details:", session);
+    setSelectedSession(session);
+  };
+
+  const handleBackToSessions = () => {
+    setSelectedSession(null);
+  };
+
+  // Get current display data based on selected session
+  const getCurrentStats = () => {
+    if (selectedSession) {
+      return {
+        students: selectedSession.studentsEnrolled,
+        maxStudents: batch.maxStudents,
+        sessions: `${selectedSession.id}/1`,
+        progress: selectedSession.completionPercentage,
+        schedule: batch.schedule
+      };
+    }
+    return {
+      students: batch.students,
+      maxStudents: batch.maxStudents,
+      sessions: `${batch.completedSessions}/${batch.totalSessions}`,
+      progress: Math.round((batch.completedSessions / batch.totalSessions) * 100),
+      schedule: batch.schedule
+    };
+  };
+
+  const currentStats = getCurrentStats();
+  const displayStudents = selectedSession ? selectedSession.enrolledStudents : allStudents;
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-3">
+            {selectedSession && (
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={handleBackToSessions}
+                className="mr-2"
+              >
+                <ArrowLeft className="w-4 h-4" />
+              </Button>
+            )}
             <span className="text-2xl">{batch.icon}</span>
             <div>
-              <h2 className="text-xl font-bold">{batch.name}</h2>
-              <p className="text-sm text-gray-600">Instructor: {batch.teacher}</p>
+              <h2 className="text-xl font-bold">
+                {selectedSession ? selectedSession.title : batch.name}
+              </h2>
+              <p className="text-sm text-gray-600">
+                {selectedSession ? `${selectedSession.date} at ${selectedSession.time}` : `Instructor: ${batch.teacher}`}
+              </p>
             </div>
           </DialogTitle>
         </DialogHeader>
 
-        {/* Batch Overview Stats */}
+        {/* Batch/Session Overview Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
           <Card className="bg-blue-50">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-blue-600">Total Students</p>
-                  <p className="text-2xl font-bold text-blue-900">{batch.students}/{batch.maxStudents}</p>
+                  <p className="text-sm text-blue-600">
+                    {selectedSession ? "Session Students" : "Total Students"}
+                  </p>
+                  <p className="text-2xl font-bold text-blue-900">
+                    {currentStats.students}/{currentStats.maxStudents}
+                  </p>
                 </div>
                 <Users className="w-8 h-8 text-blue-500" />
               </div>
@@ -167,8 +223,10 @@ export function BatchDetailsModal({ isOpen, onClose, batch }: BatchDetailsModalP
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-green-600">Sessions</p>
-                  <p className="text-2xl font-bold text-green-900">{batch.completedSessions}/{batch.totalSessions}</p>
+                  <p className="text-sm text-green-600">
+                    {selectedSession ? "Session" : "Sessions"}
+                  </p>
+                  <p className="text-2xl font-bold text-green-900">{currentStats.sessions}</p>
                 </div>
                 <Calendar className="w-8 h-8 text-green-500" />
               </div>
@@ -180,7 +238,7 @@ export function BatchDetailsModal({ isOpen, onClose, batch }: BatchDetailsModalP
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-purple-600">Progress</p>
-                  <p className="text-2xl font-bold text-purple-900">{Math.round((batch.completedSessions / batch.totalSessions) * 100)}%</p>
+                  <p className="text-2xl font-bold text-purple-900">{currentStats.progress}%</p>
                 </div>
                 <CheckCircle className="w-8 h-8 text-purple-500" />
               </div>
@@ -192,7 +250,7 @@ export function BatchDetailsModal({ isOpen, onClose, batch }: BatchDetailsModalP
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-orange-600">Schedule</p>
-                  <p className="text-sm font-bold text-orange-900">{batch.schedule}</p>
+                  <p className="text-sm font-bold text-orange-900">{currentStats.schedule}</p>
                 </div>
                 <Clock className="w-8 h-8 text-orange-500" />
               </div>
@@ -200,32 +258,81 @@ export function BatchDetailsModal({ isOpen, onClose, batch }: BatchDetailsModalP
           </Card>
         </div>
 
-        {/* Tab Navigation */}
-        <div className="flex gap-4 mb-6 border-b">
-          <button
-            onClick={() => setActiveTab("sessions")}
-            className={`pb-2 px-4 font-medium ${
-              activeTab === "sessions"
-                ? "border-b-2 border-blue-500 text-blue-600"
-                : "text-gray-600 hover:text-gray-900"
-            }`}
-          >
-            Sessions ({sessions.length})
-          </button>
-          <button
-            onClick={() => setActiveTab("students")}
-            className={`pb-2 px-4 font-medium ${
-              activeTab === "students"
-                ? "border-b-2 border-blue-500 text-blue-600"
-                : "text-gray-600 hover:text-gray-900"
-            }`}
-          >
-            Students ({students.length})
-          </button>
-        </div>
+        {/* Show session details if selected */}
+        {selectedSession && (
+          <Card className="mb-6 border-l-4 border-l-blue-500">
+            <CardContent className="p-6">
+              <div className="space-y-4">
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900">{selectedSession.title}</h3>
+                  <p className="text-gray-600">{selectedSession.description}</p>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="flex items-center gap-2">
+                    <Calendar className="w-4 h-4 text-gray-400" />
+                    <span className="text-sm">{selectedSession.date} at {selectedSession.time}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Clock className="w-4 h-4 text-gray-400" />
+                    <span className="text-sm">{selectedSession.duration}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <MapPin className="w-4 h-4 text-gray-400" />
+                    <span className="text-sm">{selectedSession.venue}</span>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-4">
+                  <Badge 
+                    variant={selectedSession.status === "Completed" ? "default" : selectedSession.status === "Upcoming" ? "secondary" : "outline"}
+                    className={
+                      selectedSession.status === "Completed" ? "bg-green-100 text-green-800" :
+                      selectedSession.status === "Upcoming" ? "bg-blue-100 text-blue-800" :
+                      "bg-yellow-100 text-yellow-800"
+                    }
+                  >
+                    {selectedSession.status}
+                  </Badge>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-gray-600">Completion:</span>
+                    <Progress value={selectedSession.completionPercentage} className="w-20 h-2" />
+                    <span className="text-sm font-medium">{selectedSession.completionPercentage}%</span>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Tab Navigation - Hide when viewing session details */}
+        {!selectedSession && (
+          <div className="flex gap-4 mb-6 border-b">
+            <button
+              onClick={() => setActiveTab("sessions")}
+              className={`pb-2 px-4 font-medium ${
+                activeTab === "sessions"
+                  ? "border-b-2 border-blue-500 text-blue-600"
+                  : "text-gray-600 hover:text-gray-900"
+              }`}
+            >
+              Sessions ({sessions.length})
+            </button>
+            <button
+              onClick={() => setActiveTab("students")}
+              className={`pb-2 px-4 font-medium ${
+                activeTab === "students"
+                  ? "border-b-2 border-blue-500 text-blue-600"
+                  : "text-gray-600 hover:text-gray-900"
+              }`}
+            >
+              Students ({displayStudents.length})
+            </button>
+          </div>
+        )}
 
         {/* Content */}
-        {activeTab === "sessions" && (
+        {(!selectedSession && activeTab === "sessions") && (
           <div className="space-y-4">
             {sessions.map((session) => (
               <Card key={session.id} className="border hover:shadow-md transition-shadow">
@@ -276,7 +383,11 @@ export function BatchDetailsModal({ isOpen, onClose, batch }: BatchDetailsModalP
                         </div>
                       </div>
                     </div>
-                    <Button size="sm" variant="outline">
+                    <Button 
+                      size="sm" 
+                      variant="outline"
+                      onClick={() => handleSessionDetails(session)}
+                    >
                       <Eye className="w-4 h-4 mr-1" />
                       View Details
                     </Button>
@@ -287,9 +398,9 @@ export function BatchDetailsModal({ isOpen, onClose, batch }: BatchDetailsModalP
           </div>
         )}
 
-        {activeTab === "students" && (
+        {((!selectedSession && activeTab === "students") || selectedSession) && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {students.map((student) => (
+            {displayStudents.map((student) => (
               <Card key={student.id} className="border hover:shadow-md transition-shadow">
                 <CardContent className="p-6">
                   <div className="flex items-start gap-4">
