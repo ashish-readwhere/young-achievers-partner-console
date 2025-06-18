@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -181,8 +180,8 @@ export function BatchManagement() {
     setIsFeedbackModalOpen(true);
   };
 
-  const handleRescheduleConfirm = (newDate: string, newTime: string, reason: string) => {
-    console.log("Rescheduling to:", newDate, newTime, "Reason:", reason);
+  const handleRescheduleConfirm = (batchId: string, newDate: Date, newTime: string, reason: string) => {
+    console.log("Rescheduling batch:", batchId, "to:", newDate, newTime, "Reason:", reason);
     // Here you would typically send the reschedule request to the admin
     // For now, we'll just log it
   };
@@ -494,7 +493,7 @@ export function BatchManagement() {
       <RescheduleModal
         isOpen={isRescheduleModalOpen}
         onClose={() => setIsRescheduleModalOpen(false)}
-        onConfirm={handleRescheduleConfirm}
+        onReschedule={handleRescheduleConfirm}
         batch={selectedBatch}
       />
 
