@@ -23,8 +23,8 @@ export function PartnerProfile() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   
   const partnerInfo = {
-    name: "TechEd Solutions",
-    contactPerson: "John Smith",
+    name: "John Smith",
+    contactPerson: "John Smith", // Same as name since teacher is the partner
     email: "john.smith@teched.com",
     phone: "+1 (555) 123-4567",
     address: "123 Education Lane, Tech City, TC 12345",
@@ -132,12 +132,8 @@ export function PartnerProfile() {
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="partnerName" className="text-sm font-medium">Partner Name</Label>
+                  <Label htmlFor="partnerName" className="text-sm font-medium">Full Name</Label>
                   <Input id="partnerName" value={partnerInfo.name} readOnly className="text-sm" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="contactPerson" className="text-sm font-medium">Contact Person</Label>
-                  <Input id="contactPerson" value={partnerInfo.contactPerson} readOnly className="text-sm" />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="email" className="text-sm font-medium">Email</Label>

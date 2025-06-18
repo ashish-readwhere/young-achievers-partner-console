@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -26,7 +25,7 @@ export function EditProfileModal({ isOpen, onClose, partnerInfo }: EditProfileMo
   const { toast } = useToast();
   const [formData, setFormData] = useState({
     name: partnerInfo.name,
-    contactPerson: partnerInfo.contactPerson,
+    contactPerson: partnerInfo.name, // Same as name since teacher is the partner
     email: partnerInfo.email,
     phone: partnerInfo.phone,
     address: partnerInfo.address,
@@ -38,7 +37,9 @@ export function EditProfileModal({ isOpen, onClose, partnerInfo }: EditProfileMo
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({
       ...prev,
-      [field]: value
+      [field]: value,
+      // If name changes, also update contactPerson since they're the same
+      ...(field === "name" && { contactPerson: value })
     }));
   };
 
@@ -74,11 +75,9 @@ export function EditProfileModal({ isOpen, onClose, partnerInfo }: EditProfileMo
         Partner Profile Update Request:
         
         Partner: ${formData.name}
-        Contact Person: ${formData.contactPerson}
         
         Requested Changes:
-        - Partner Name: ${formData.name}
-        - Contact Person: ${formData.contactPerson}
+        - Full Name: ${formData.name}
         - Email: ${formData.email}
         - Phone: ${formData.phone}
         - Address: ${formData.address}
@@ -122,20 +121,11 @@ export function EditProfileModal({ isOpen, onClose, partnerInfo }: EditProfileMo
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="partnerName">Partner Name *</Label>
+              <Label htmlFor="partnerName">Full Name *</Label>
               <Input
                 id="partnerName"
                 value={formData.name}
                 onChange={(e) => handleInputChange("name", e.target.value)}
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="contactPerson">Contact Person *</Label>
-              <Input
-                id="contactPerson"
-                value={formData.contactPerson}
-                onChange={(e) => handleInputChange("contactPerson", e.target.value)}
                 required
               />
             </div>
@@ -149,7 +139,7 @@ export function EditProfileModal({ isOpen, onClose, partnerInfo }: EditProfileMo
                 required
               />
             </div>
-            <div className="space-y-2">
+            <div className="space-y-2 md:col-span-1">
               <Label htmlFor="phone">Phone *</Label>
               <Input
                 id="phone"
