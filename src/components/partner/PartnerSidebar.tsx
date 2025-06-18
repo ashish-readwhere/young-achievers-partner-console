@@ -70,7 +70,7 @@ export function PartnerSidebar({ onMenuSelect, activeMenu = "overview" }: Partne
 
   return (
     <Sidebar className="border-r bg-gradient-to-b from-blue-50 to-white" collapsible="icon">
-      <SidebarHeader className={`p-4 border-b bg-white/50 backdrop-blur-sm ${!open ? 'px-2' : ''}`}>
+      <SidebarHeader className={`border-b bg-white/50 backdrop-blur-sm ${!open ? 'p-2' : 'p-4'}`}>
         <div className="flex items-center justify-between">
           <div className={`flex items-center gap-3 ${!open ? 'justify-center' : ''}`}>
             <div className="relative flex-shrink-0">
@@ -92,7 +92,7 @@ export function PartnerSidebar({ onMenuSelect, activeMenu = "overview" }: Partne
             variant="ghost"
             size="sm"
             onClick={toggleSidebar}
-            className="h-6 w-6 p-0 hover:bg-blue-100 flex-shrink-0"
+            className={`h-6 w-6 p-0 hover:bg-blue-100 flex-shrink-0 ${!open ? 'ml-2' : ''}`}
           >
             {!open ? (
               <ChevronRight className="h-4 w-4" />
@@ -109,7 +109,7 @@ export function PartnerSidebar({ onMenuSelect, activeMenu = "overview" }: Partne
         )}
       </SidebarHeader>
       
-      <SidebarContent className="px-2 py-4 flex flex-col h-full overflow-y-auto">
+      <SidebarContent className={`flex flex-col h-full overflow-y-auto ${!open ? 'px-2 py-2' : 'px-2 py-4'}`}>
         <SidebarGroup className="flex-1">
           {open && (
             <SidebarGroupLabel className="text-xs uppercase tracking-wide text-gray-500 font-semibold mb-3 px-2">
