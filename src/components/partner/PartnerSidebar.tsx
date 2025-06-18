@@ -56,34 +56,34 @@ export function PartnerSidebar({ onMenuSelect }: PartnerSidebarProps) {
   };
 
   return (
-    <Sidebar className="border-r bg-white">
-      <SidebarHeader className="p-6">
+    <Sidebar className="border-r bg-white w-64">
+      <SidebarHeader className="p-6 border-b">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold text-lg">YA</span>
+          <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+            <span className="text-white font-bold text-sm">YA</span>
           </div>
           <div>
-            <h2 className="font-semibold text-lg">Young Achievers</h2>
-            <p className="text-sm text-gray-500">PARTNER CONSOLE</p>
+            <h2 className="font-semibold text-base text-gray-900">Young Achievers</h2>
+            <p className="text-xs text-gray-500 uppercase tracking-wide">PARTNER CONSOLE</p>
           </div>
         </div>
       </SidebarHeader>
       
-      <SidebarContent>
+      <SidebarContent className="px-4 py-6">
         <SidebarGroup>
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="space-y-1">
               {menuItems.map((item) => (
                 <SidebarMenuItem key={item.id}>
                   <SidebarMenuButton 
                     asChild
                     isActive={activeMenu === item.id}
-                    className="w-full justify-start gap-3 px-6 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 data-[active=true]:bg-blue-50 data-[active=true]:text-blue-600"
+                    className="w-full justify-start gap-3 px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-700 data-[active=true]:bg-blue-50 data-[active=true]:text-blue-700 data-[active=true]:border-r-2 data-[active=true]:border-blue-500 rounded-none"
                     onClick={() => handleMenuClick(item.id)}
                   >
-                    <button>
+                    <button className="flex items-center gap-3 w-full">
                       <item.icon className="w-5 h-5" />
-                      <span>{item.title}</span>
+                      <span className="text-sm font-medium">{item.title}</span>
                     </button>
                   </SidebarMenuButton>
                 </SidebarMenuItem>

@@ -6,9 +6,9 @@ import { PartnerDashboard } from "@/components/partner/PartnerDashboard";
 const PartnerConsole = () => {
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full">
+      <div className="min-h-screen flex w-full bg-gray-50">
         <PartnerSidebar />
-        <main className="flex-1 bg-gray-50">
+        <main className="flex-1">
           <PartnerDashboard />
         </main>
       </div>

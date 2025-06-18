@@ -4,7 +4,6 @@ import { PartnerOverview } from "./dashboard/PartnerOverview";
 import { BatchManagement } from "./dashboard/BatchManagement";
 import { MemberManagement } from "./dashboard/MemberManagement";
 import { PartnerProfile } from "./dashboard/PartnerProfile";
-import { PartnerSidebar } from "./PartnerSidebar";
 
 export function PartnerDashboard() {
   const [activeSection, setActiveSection] = useState("overview");
@@ -25,11 +24,8 @@ export function PartnerDashboard() {
   };
 
   return (
-    <div className="flex min-h-screen">
-      <PartnerSidebar onMenuSelect={setActiveSection} />
-      <div className="flex-1 p-6">
-        {renderContent()}
-      </div>
+    <div className="w-full">
+      {renderContent()}
     </div>
   );
 }
