@@ -41,7 +41,6 @@ export function MemberManagement() {
       canEdit: true,
       teacher: "Instructor Sarah Wilson",
       achievements: ["Flexibility Master", "Best Student"],
-      lastAssessment: "A+",
       nextSession: "Today 4:00 PM",
       avatar: "/lovable-uploads/1ba055c7-e9a3-4a04-b0e8-31a2367343ed.png"
     },
@@ -62,7 +61,6 @@ export function MemberManagement() {
       canEdit: true,
       teacher: "Instructor Sarah Wilson",
       achievements: ["Regular Attendee"],
-      lastAssessment: "A",
       nextSession: "Tomorrow 6:00 PM",
       avatar: "/lovable-uploads/1ba055c7-e9a3-4a04-b0e8-31a2367343ed.png"
     },
@@ -84,7 +82,6 @@ export function MemberManagement() {
       canEdit: false,
       teacher: "Master John Smith",
       achievements: ["Tournament Winner"],
-      lastAssessment: "B+",
       nextSession: "Tomorrow 3:00 PM",
       avatar: "/lovable-uploads/1ba055c7-e9a3-4a04-b0e8-31a2367343ed.png"
     },
@@ -105,7 +102,6 @@ export function MemberManagement() {
       canEdit: false,
       teacher: "Prof. Tech Guru",
       achievements: ["Code Master"],
-      lastAssessment: "A+",
       nextSession: "Today 5:00 PM",
       avatar: "/lovable-uploads/1ba055c7-e9a3-4a04-b0e8-31a2367343ed.png"
     }
@@ -274,15 +270,9 @@ export function MemberManagement() {
                 )}
 
                 {/* Session Info */}
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                  <div>
-                    <p className="text-sm font-medium text-gray-700">Last Assessment</p>
-                    <p className="text-lg font-bold text-gray-900">{member.lastAssessment}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-700">Next Session</p>
-                    <p className="text-sm text-gray-900">{member.nextSession}</p>
-                  </div>
+                <div className="mb-4">
+                  <p className="text-sm font-medium text-gray-700">Next Session</p>
+                  <p className="text-sm text-gray-900">{member.nextSession}</p>
                 </div>
 
                 {/* Parent/Guardian Contact */}
