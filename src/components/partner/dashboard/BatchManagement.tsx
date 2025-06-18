@@ -1,9 +1,8 @@
-
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { 
   MapPin, 
@@ -13,7 +12,9 @@ import {
   Clock,
   Eye,
   Edit,
-  MessageSquare
+  MessageSquare,
+  Search,
+  Grid3X3
 } from "lucide-react";
 import { BatchDetailsModal } from "./BatchDetailsModal";
 import { RescheduleModal } from "./RescheduleModal";
@@ -24,6 +25,8 @@ export function BatchManagement() {
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [isRescheduleModalOpen, setIsRescheduleModalOpen] = useState(false);
   const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [showAllBatches, setShowAllBatches] = useState(false);
 
   // Mock data for current partner (Yoga instructor)
   const partnerName = "Instructor Sarah Wilson";
@@ -69,8 +72,58 @@ export function BatchManagement() {
       completedSessions: 8,
       totalSessions: 12,
       icon: "🧘‍♀️"
+    },
+    {
+      id: 3,
+      name: "Yoga Intermediate - Batch C",
+      teacher: "Instructor Sarah Wilson",
+      level: "Intermediate",
+      students: 22,
+      maxStudents: 30,
+      schedule: "Wed, Fri - 4:00 PM",
+      venue: "Sports Complex",
+      spot: "Hall A",
+      status: "Active",
+      nextSession: "1/17/2024",
+      nextSessionTime: "04:00 PM",
+      lastSession: "1/12/2024",
+      lastSessionTime: "04:00 PM",
+      capacity: 73,
+      completedSessions: 5,
+      totalSessions: 8,
+      icon: "🧘‍♀️"
+    },
+    {
+      id: 4,
+      name: "Morning Yoga - Batch D",
+      teacher: "Instructor Sarah Wilson",
+      level: "Beginner",
+      students: 12,
+      maxStudents: 20,
+      schedule: "Mon, Tue - 7:00 AM",
+      venue: "City Park",
+      spot: "Open Ground",
+      status: "Active",
+      nextSession: "1/15/2024",
+      nextSessionTime: "07:00 AM",
+      lastSession: "1/09/2024",
+      lastSessionTime: "07:00 AM",
+      capacity: 60,
+      completedSessions: 4,
+      totalSessions: 12,
+      icon: "🧘‍♀️"
     }
   ];
+
+  // Filter batches based on search term
+  const filteredBatches = partnerBatches.filter(batch =>
+    batch.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    batch.level.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    batch.venue.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  // Show only first 2 batches unless "View All" is clicked
+  const displayedBatches = showAllBatches ? filteredBatches : filteredBatches.slice(0, 2);
 
   const upcomingSessions = [
     {
@@ -210,128 +263,164 @@ export function BatchManagement() {
           </Card>
         </div>
 
+        {/* Search and View All Section */}
+        <div className="mb-6">
+          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+            <div className="relative flex-1 max-w-md">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <Input
+                placeholder="Search batches by name, level, or venue..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+            {filteredBatches.length > 2 && (
+              <Button
+                variant="outline"
+                onClick={() => setShowAllBatches(!showAllBatches)}
+                className="flex items-center gap-2"
+              >
+                <Grid3X3 className="w-4 h-4" />
+                {showAllBatches ? "Show Less" : `View All (${filteredBatches.length})`}
+              </Button>
+            )}
+          </div>
+          {searchTerm && (
+            <p className="text-sm text-gray-600 mt-2">
+              {filteredBatches.length} batch{filteredBatches.length !== 1 ? 'es' : ''} found
+            </p>
+          )}
+        </div>
+
         {/* Batch Cards Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          {partnerBatches.map((batch) => (
-            <Card key={batch.id} className="border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
-              <CardHeader className="pb-4">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="text-2xl">{batch.icon}</div>
+          {displayedBatches.length === 0 ? (
+            <div className="col-span-full text-center py-8">
+              <p className="text-gray-500">No batches found matching your search.</p>
+            </div>
+          ) : (
+            displayedBatches.map((batch) => (
+              <Card key={batch.id} className="border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+                <CardHeader className="pb-4">
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="text-2xl">{batch.icon}</div>
+                      <div>
+                        <CardTitle className="text-lg font-semibold text-gray-900">
+                          {batch.name}
+                        </CardTitle>
+                        <p className="text-sm text-gray-600 mt-1">
+                          Teacher: {batch.teacher}
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          Level: {batch.level}
+                        </p>
+                      </div>
+                    </div>
+                    <Badge 
+                      variant={batch.status === "Active" ? "default" : "secondary"}
+                      className={batch.status === "Active" ? "bg-green-100 text-green-800" : ""}
+                    >
+                      {batch.status}
+                    </Badge>
+                  </div>
+                </CardHeader>
+                
+                <CardContent className="pt-0">
+                  <div className="space-y-4">
+                    {/* Student Count and Schedule */}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-1 text-blue-600">
+                          <Users className="w-4 h-4" />
+                          <span className="font-semibold">{batch.students}/{batch.maxStudents}</span>
+                          <span className="text-sm text-gray-600">students</span>
+                        </div>
+                        <div className="flex items-center gap-1 text-green-600">
+                          <Clock className="w-4 h-4" />
+                          <span className="text-sm">{batch.schedule}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Capacity Progress */}
                     <div>
-                      <CardTitle className="text-lg font-semibold text-gray-900">
-                        {batch.name}
-                      </CardTitle>
-                      <p className="text-sm text-gray-600 mt-1">
-                        Teacher: {batch.teacher}
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        Level: {batch.level}
-                      </p>
-                    </div>
-                  </div>
-                  <Badge 
-                    variant={batch.status === "Active" ? "default" : "secondary"}
-                    className={batch.status === "Active" ? "bg-green-100 text-green-800" : ""}
-                  >
-                    {batch.status}
-                  </Badge>
-                </div>
-              </CardHeader>
-              
-              <CardContent className="pt-0">
-                <div className="space-y-4">
-                  {/* Student Count and Schedule */}
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                      <div className="flex items-center gap-1 text-blue-600">
-                        <Users className="w-4 h-4" />
-                        <span className="font-semibold">{batch.students}/{batch.maxStudents}</span>
-                        <span className="text-sm text-gray-600">students</span>
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="text-sm text-gray-600">Capacity</span>
+                        <span className="text-sm font-medium">{batch.capacity}%</span>
                       </div>
-                      <div className="flex items-center gap-1 text-green-600">
-                        <Clock className="w-4 h-4" />
-                        <span className="text-sm">{batch.schedule}</span>
+                      <Progress 
+                        value={batch.capacity} 
+                        className={`h-2 ${
+                          batch.capacity >= 90 ? '[&>div]:bg-red-500' : 
+                          batch.capacity >= 75 ? '[&>div]:bg-yellow-500' : 
+                          '[&>div]:bg-green-500'
+                        }`}
+                      />
+                    </div>
+
+                    {/* Sessions Info */}
+                    <div className="grid grid-cols-2 gap-4">
+                      {/* Next Session */}
+                      <div className="bg-blue-50 p-3 rounded-lg">
+                        <p className="text-sm text-blue-600 mb-1 font-medium">Next Session</p>
+                        <div>
+                          <p className="font-medium text-blue-900">{batch.nextSession}</p>
+                          <p className="text-sm text-blue-700">
+                            {batch.nextSessionTime}
+                          </p>
+                          <p className="text-xs text-blue-600 mt-1">{batch.venue} - {batch.spot}</p>
+                        </div>
                       </div>
-                    </div>
-                  </div>
 
-                  {/* Capacity Progress */}
-                  <div>
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="text-sm text-gray-600">Capacity</span>
-                      <span className="text-sm font-medium">{batch.capacity}%</span>
-                    </div>
-                    <Progress 
-                      value={batch.capacity} 
-                      className={`h-2 ${
-                        batch.capacity >= 90 ? '[&>div]:bg-red-500' : 
-                        batch.capacity >= 75 ? '[&>div]:bg-yellow-500' : 
-                        '[&>div]:bg-green-500'
-                      }`}
-                    />
-                  </div>
-
-                  {/* Sessions Info */}
-                  <div className="grid grid-cols-2 gap-4">
-                    {/* Next Session */}
-                    <div className="bg-blue-50 p-3 rounded-lg">
-                      <p className="text-sm text-blue-600 mb-1 font-medium">Next Session</p>
-                      <div>
-                        <p className="font-medium text-blue-900">{batch.nextSession}</p>
-                        <p className="text-sm text-blue-700">
-                          {batch.nextSessionTime}
-                        </p>
-                        <p className="text-xs text-blue-600 mt-1">{batch.venue} - {batch.spot}</p>
+                      {/* Last Session */}
+                      <div className="bg-gray-50 p-3 rounded-lg">
+                        <p className="text-sm text-gray-600 mb-1 font-medium">Last Session</p>
+                        <div>
+                          <p className="font-medium text-gray-900">{batch.lastSession}</p>
+                          <p className="text-sm text-gray-700">
+                            {batch.lastSessionTime}
+                          </p>
+                          <p className="text-xs text-gray-600 mt-1">{batch.venue} - {batch.spot}</p>
+                        </div>
                       </div>
                     </div>
 
-                    {/* Last Session */}
-                    <div className="bg-gray-50 p-3 rounded-lg">
-                      <p className="text-sm text-gray-600 mb-1 font-medium">Last Session</p>
-                      <div>
-                        <p className="font-medium text-gray-900">{batch.lastSession}</p>
-                        <p className="text-sm text-gray-700">
-                          {batch.lastSessionTime}
-                        </p>
-                        <p className="text-xs text-gray-600 mt-1">{batch.venue} - {batch.spot}</p>
-                      </div>
+                    {/* Action Buttons */}
+                    <div className="flex gap-2">
+                      <Button 
+                        size="sm" 
+                        className="flex-1 bg-blue-600 hover:bg-blue-700"
+                        onClick={() => handleViewDetails(batch)}
+                      >
+                        <Eye className="w-4 h-4 mr-1" />
+                        View Details
+                      </Button>
+                      <Button 
+                        size="sm" 
+                        variant="outline" 
+                        className="flex-1"
+                        onClick={() => handleReschedule(batch)}
+                      >
+                        <Edit className="w-4 h-4 mr-1" />
+                        Reschedule
+                      </Button>
+                      <Button 
+                        size="sm" 
+                        variant="outline" 
+                        className="flex-1"
+                        onClick={() => handleFeedback(batch)}
+                      >
+                        <MessageSquare className="w-4 h-4 mr-1" />
+                        Feedback
+                      </Button>
                     </div>
                   </div>
-
-                  {/* Action Buttons */}
-                  <div className="flex gap-2">
-                    <Button 
-                      size="sm" 
-                      className="flex-1 bg-blue-600 hover:bg-blue-700"
-                      onClick={() => handleViewDetails(batch)}
-                    >
-                      <Eye className="w-4 h-4 mr-1" />
-                      View Details
-                    </Button>
-                    <Button 
-                      size="sm" 
-                      variant="outline" 
-                      className="flex-1"
-                      onClick={() => handleReschedule(batch)}
-                    >
-                      <Edit className="w-4 h-4 mr-1" />
-                      Reschedule
-                    </Button>
-                    <Button 
-                      size="sm" 
-                      variant="outline" 
-                      className="flex-1"
-                      onClick={() => handleFeedback(batch)}
-                    >
-                      <MessageSquare className="w-4 h-4 mr-1" />
-                      Feedback
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                </CardContent>
+              </Card>
+            ))
+          )}
         </div>
 
         {/* Upcoming Sessions Table */}
@@ -416,4 +505,3 @@ export function BatchManagement() {
     </div>
   );
 }
-
