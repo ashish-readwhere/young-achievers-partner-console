@@ -45,6 +45,7 @@ interface Session {
 interface BatchDetailsModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onNavigateToMemberManagement?: (studentId?: number) => void;
   batch: {
     id: number;
     name: string;
@@ -62,7 +63,7 @@ interface BatchDetailsModalProps {
   } | null;
 }
 
-export function BatchDetailsModal({ isOpen, onClose, batch }: BatchDetailsModalProps) {
+export function BatchDetailsModal({ isOpen, onClose, onNavigateToMemberManagement, batch }: BatchDetailsModalProps) {
   const [activeTab, setActiveTab] = useState<"sessions" | "students">("sessions");
   const [selectedSession, setSelectedSession] = useState<Session | null>(null);
 
@@ -151,15 +152,24 @@ export function BatchDetailsModal({ isOpen, onClose, batch }: BatchDetailsModalP
     setSelectedSession(null);
   };
 
+  const handleViewProfile = (studentId: number) => {
+    console.log("Navigating to member management for student:", studentId);
+    onClose(); // Close the modal first
+    if (onNavigateToMemberManagement) {
+      onNavigateToMemberManagement(studentId);
+    }
+  };
+
   // Get current display data based on selected session
   const getCurrentStats = () => {
     if (selectedSession) {
       return {
         students: selectedSession.studentsEnrolled,
         maxStudents: batch.maxStudents,
-        sessions: `${selectedSession.id}/1`,
+        sessions: `Session ${selectedSession.id}`,
         progress: selectedSession.completionPercentage,
-        schedule: batch.schedule
+        schedule: `${selectedSession.date} at ${selectedSession.time}`,
+        context: `Session: ${selectedSession.title}`
       };
     }
     return {
@@ -167,7 +177,8 @@ export function BatchDetailsModal({ isOpen, onClose, batch }: BatchDetailsModalP
       maxStudents: batch.maxStudents,
       sessions: `${batch.completedSessions}/${batch.totalSessions}`,
       progress: Math.round((batch.completedSessions / batch.totalSessions) * 100),
-      schedule: batch.schedule
+      schedule: batch.schedule,
+      context: `Batch: ${batch.name}`
     };
   };
 
@@ -200,6 +211,13 @@ export function BatchDetailsModal({ isOpen, onClose, batch }: BatchDetailsModalP
             </div>
           </DialogTitle>
         </DialogHeader>
+
+        {/* Context Banner - Shows which batch/session data is being displayed */}
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+          <p className="text-sm font-medium text-blue-800">
+            📊 Showing data for: <span className="font-bold">{currentStats.context}</span>
+          </p>
+        </div>
 
         {/* Batch/Session Overview Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
@@ -448,7 +466,11 @@ export function BatchDetailsModal({ isOpen, onClose, batch }: BatchDetailsModalP
                         />
                       </div>
 
-                      <Button size="sm" className="w-full">
+                      <Button 
+                        size="sm" 
+                        className="w-full"
+                        onClick={() => handleViewProfile(student.id)}
+                      >
                         <User className="w-4 h-4 mr-1" />
                         View Profile
                       </Button>
