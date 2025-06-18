@@ -71,9 +71,10 @@ export function PartnerSidebar({ onMenuSelect, activeMenu = "overview" }: Partne
   return (
     <Sidebar className="border-r bg-gradient-to-b from-blue-50 to-white" collapsible="icon">
       <SidebarHeader className={`border-b bg-white/50 backdrop-blur-sm ${!open ? 'p-2' : 'p-4'}`}>
-        <div className="flex items-center justify-between">
-          <div className={`flex items-center gap-3 ${!open ? 'justify-center' : ''}`}>
-            <div className="relative flex-shrink-0">
+        {!open ? (
+          // Collapsed header layout
+          <div className="flex flex-col items-center space-y-2">
+            <div className="relative">
               <img 
                 src="/lovable-uploads/95eca461-e78f-43e5-9b21-9ac173f03cdc.png" 
                 alt="Young Achievers Logo" 
@@ -81,26 +82,42 @@ export function PartnerSidebar({ onMenuSelect, activeMenu = "overview" }: Partne
               />
               <div className="absolute -bottom-1 -right-1 w-2 h-2 bg-green-500 rounded-full border border-white"></div>
             </div>
-            {open && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={toggleSidebar}
+              className="h-6 w-6 p-0 hover:bg-blue-100 flex-shrink-0"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
+        ) : (
+          // Expanded header layout
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="relative flex-shrink-0">
+                <img 
+                  src="/lovable-uploads/95eca461-e78f-43e5-9b21-9ac173f03cdc.png" 
+                  alt="Young Achievers Logo" 
+                  className="w-8 h-8 rounded-lg shadow-md"
+                />
+                <div className="absolute -bottom-1 -right-1 w-2 h-2 bg-green-500 rounded-full border border-white"></div>
+              </div>
               <div className="flex-1 min-w-0">
                 <h2 className="font-bold text-sm text-gray-900 truncate">Young Achievers</h2>
                 <p className="text-xs text-blue-600 uppercase tracking-wide font-medium">PARTNER CONSOLE</p>
               </div>
-            )}
-          </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={toggleSidebar}
-            className={`h-6 w-6 p-0 hover:bg-blue-100 flex-shrink-0 ${!open ? 'ml-2' : ''}`}
-          >
-            {!open ? (
-              <ChevronRight className="h-4 w-4" />
-            ) : (
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={toggleSidebar}
+              className="h-6 w-6 p-0 hover:bg-blue-100 flex-shrink-0"
+            >
               <ChevronLeft className="h-4 w-4" />
-            )}
-          </Button>
-        </div>
+            </Button>
+          </div>
+        )}
         {open && (
           <div className="mt-3 p-2 bg-blue-100 rounded-lg border border-blue-200">
             <p className="text-xs text-blue-700 font-medium">Welcome back!</p>
@@ -109,7 +126,7 @@ export function PartnerSidebar({ onMenuSelect, activeMenu = "overview" }: Partne
         )}
       </SidebarHeader>
       
-      <SidebarContent className={`flex flex-col h-full overflow-y-auto ${!open ? 'px-2 py-2' : 'px-2 py-4'}`}>
+      <SidebarContent className={`flex flex-col h-full overflow-y-auto ${!open ? 'px-1 py-2' : 'px-2 py-4'}`}>
         <SidebarGroup className="flex-1">
           {open && (
             <SidebarGroupLabel className="text-xs uppercase tracking-wide text-gray-500 font-semibold mb-3 px-2">
@@ -124,7 +141,7 @@ export function PartnerSidebar({ onMenuSelect, activeMenu = "overview" }: Partne
                     asChild
                     isActive={activeMenu === item.id}
                     tooltip={!open ? item.title : undefined}
-                    className="w-full justify-start gap-3 px-3 py-2 text-gray-700 hover:bg-blue-100 hover:text-blue-700 data-[active=true]:bg-blue-100 data-[active=true]:text-blue-700 data-[active=true]:border-r-2 data-[active=true]:border-blue-500 rounded-lg transition-all duration-200 group"
+                    className={`w-full justify-start gap-3 text-gray-700 hover:bg-blue-100 hover:text-blue-700 data-[active=true]:bg-blue-100 data-[active=true]:text-blue-700 data-[active=true]:border-r-2 data-[active=true]:border-blue-500 rounded-lg transition-all duration-200 group ${!open ? 'px-2 py-2 justify-center' : 'px-3 py-2'}`}
                   >
                     <button 
                       className={`flex items-center gap-3 w-full text-left ${!open ? 'justify-center' : ''}`}
