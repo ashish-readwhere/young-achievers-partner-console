@@ -24,32 +24,27 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
 
 const menuItems = [
   {
-    title: "Dashboard",
+    title: "Overview",
     icon: BarChart3,
     id: "overview",
-    description: "Overview & Analytics"
   },
   {
     title: "Batch Management",
     icon: BookOpen,
     id: "batches",
-    description: "Manage batches"
   },
   {
     title: "Member Management",
     icon: Users,
     id: "members",
-    description: "Student enrollment"
   },
   {
     title: "Profile",
     icon: User,
     id: "profile",
-    description: "Account settings"
   }
 ];
 
@@ -98,7 +93,7 @@ export function PartnerSidebar({ onMenuSelect, activeMenu = "overview" }: Partne
             variant="ghost"
             size="sm"
             onClick={toggleSidebar}
-            className="h-6 w-6 p-0 hover:bg-blue-100"
+            className="h-6 w-6 p-0 hover:bg-blue-100 flex-shrink-0"
           >
             {isCollapsed ? (
               <ChevronRight className="h-4 w-4" />
@@ -140,10 +135,7 @@ export function PartnerSidebar({ onMenuSelect, activeMenu = "overview" }: Partne
                         <item.icon className="w-5 h-5 group-hover:scale-110 transition-transform duration-200" />
                       </div>
                       {!isCollapsed && (
-                        <div className="flex-1 min-w-0">
-                          <span className="text-sm font-medium block leading-tight truncate">{item.title}</span>
-                          <span className="text-xs text-gray-500 block mt-0.5 leading-tight truncate">{item.description}</span>
-                        </div>
+                        <span className="text-sm font-medium block leading-tight truncate">{item.title}</span>
                       )}
                     </button>
                   </SidebarMenuButton>
