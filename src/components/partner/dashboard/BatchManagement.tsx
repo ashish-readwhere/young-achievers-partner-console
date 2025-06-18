@@ -180,9 +180,10 @@ export function BatchManagement() {
     setIsFeedbackModalOpen(true);
   };
 
-  const handleRescheduleConfirm = (newDate: string, newTime: string) => {
-    console.log("Rescheduling to:", newDate, newTime);
-    // Here you would typically update the batch data
+  const handleRescheduleConfirm = (newDate: string, newTime: string, reason: string) => {
+    console.log("Rescheduling to:", newDate, newTime, "Reason:", reason);
+    // Here you would typically send the reschedule request to the admin
+    // For now, we'll just log it
   };
 
   const handleFeedbackSubmit = (feedback: string, rating: number) => {
