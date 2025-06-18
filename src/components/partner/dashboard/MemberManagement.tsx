@@ -147,11 +147,13 @@ export function MemberManagement() {
   ];
 
   const handleViewProfile = (member: any) => {
+    console.log("View Profile clicked for:", member.name);
     setSelectedStudent(member);
     setShowProfileModal(true);
   };
 
   const handleRateStudent = (studentId: number) => {
+    console.log("Rate Student clicked for ID:", studentId);
     const student = members.find(m => m.id === studentId);
     if (student) {
       setStudentToRate({
@@ -164,11 +166,13 @@ export function MemberManagement() {
   };
 
   const closeProfileModal = () => {
+    console.log("Closing profile modal");
     setShowProfileModal(false);
     setSelectedStudent(null);
   };
 
   const closeRatingModal = () => {
+    console.log("Closing rating modal");
     setShowRatingModal(false);
     setStudentToRate(null);
   };
