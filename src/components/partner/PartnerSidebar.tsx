@@ -5,7 +5,9 @@ import {
   BookOpen, 
   User,
   BarChart3,
-  Settings
+  Settings,
+  Phone,
+  Mail
 } from "lucide-react";
 import {
   Sidebar,
@@ -18,6 +20,7 @@ import {
   SidebarMenuItem,
   SidebarHeader,
 } from "@/components/ui/sidebar";
+import { Button } from "@/components/ui/button";
 import { useState } from "react";
 
 const menuItems = [
@@ -57,6 +60,14 @@ export function PartnerSidebar({ onMenuSelect, activeMenu = "overview" }: Partne
     onMenuSelect?.(menuId);
   };
 
+  const handlePhoneSupport = () => {
+    window.open('tel:+1234567890', '_self');
+  };
+
+  const handleEmailSupport = () => {
+    window.open('mailto:support@youngachievers.com?subject=Partner Support Query&body=Hi, I need assistance with...', '_self');
+  };
+
   return (
     <Sidebar className="border-r bg-gradient-to-b from-blue-50 to-white w-64">
       <SidebarHeader className="p-6 border-b bg-white/50 backdrop-blur-sm">
@@ -80,30 +91,30 @@ export function PartnerSidebar({ onMenuSelect, activeMenu = "overview" }: Partne
         </div>
       </SidebarHeader>
       
-      <SidebarContent className="px-4 py-6">
-        <SidebarGroup>
+      <SidebarContent className="px-4 py-6 flex flex-col h-full">
+        <SidebarGroup className="flex-1">
           <SidebarGroupLabel className="text-xs uppercase tracking-wide text-gray-500 font-semibold mb-3">
             Navigation
           </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu className="space-y-2">
+            <SidebarMenu className="space-y-1">
               {menuItems.map((item) => (
                 <SidebarMenuItem key={item.id}>
                   <SidebarMenuButton 
                     asChild
                     isActive={activeMenu === item.id}
-                    className="w-full justify-start gap-4 px-4 py-4 text-gray-700 hover:bg-blue-100 hover:text-blue-700 data-[active=true]:bg-blue-100 data-[active=true]:text-blue-700 data-[active=true]:border-r-4 data-[active=true]:border-blue-500 rounded-xl transition-all duration-200 group"
+                    className="w-full justify-start gap-3 px-3 py-3 text-gray-700 hover:bg-blue-100 hover:text-blue-700 data-[active=true]:bg-blue-100 data-[active=true]:text-blue-700 data-[active=true]:border-r-4 data-[active=true]:border-blue-500 rounded-xl transition-all duration-200 group mb-1"
                   >
                     <button 
-                      className="flex items-start gap-4 w-full text-left"
+                      className="flex items-start gap-3 w-full text-left"
                       onClick={() => handleMenuClick(item.id)}
                     >
                       <div className="flex-shrink-0 mt-0.5">
-                        <item.icon className="w-5 h-5 group-hover:scale-110 transition-transform duration-200" />
+                        <item.icon className="w-4 h-4 group-hover:scale-110 transition-transform duration-200" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <span className="text-sm font-medium block">{item.title}</span>
-                        <span className="text-xs text-gray-500 block mt-0.5">{item.description}</span>
+                        <span className="text-sm font-medium block leading-tight">{item.title}</span>
+                        <span className="text-xs text-gray-500 block mt-0.5 leading-tight">{item.description}</span>
                       </div>
                     </button>
                   </SidebarMenuButton>
@@ -114,7 +125,7 @@ export function PartnerSidebar({ onMenuSelect, activeMenu = "overview" }: Partne
         </SidebarGroup>
 
         {/* Quick Stats Section */}
-        <div className="mt-8 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-100">
+        <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-100">
           <h3 className="text-sm font-semibold text-gray-800 mb-3">Quick Stats</h3>
           <div className="space-y-2">
             <div className="flex justify-between items-center">
@@ -133,15 +144,35 @@ export function PartnerSidebar({ onMenuSelect, activeMenu = "overview" }: Partne
         </div>
 
         {/* Support Section */}
-        <div className="mt-6 p-4 bg-gray-50 rounded-xl border border-gray-200">
-          <div className="flex items-center gap-3 mb-2">
+        <div className="mt-4 p-4 bg-gray-50 rounded-xl border border-gray-200">
+          <div className="flex items-center gap-3 mb-3">
             <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
               <Settings className="w-4 h-4 text-orange-600" />
             </div>
             <div>
               <h4 className="text-sm font-medium text-gray-800">Need Help?</h4>
-              <p className="text-xs text-gray-600">Contact support</p>
+              <p className="text-xs text-gray-600">Contact our support team</p>
             </div>
+          </div>
+          <div className="space-y-2">
+            <Button
+              variant="outline"
+              size="sm"
+              className="w-full justify-start gap-2 text-xs h-8"
+              onClick={handlePhoneSupport}
+            >
+              <Phone className="w-3 h-3" />
+              Call Support
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="w-full justify-start gap-2 text-xs h-8"
+              onClick={handleEmailSupport}
+            >
+              <Mail className="w-3 h-3" />
+              Email Support
+            </Button>
           </div>
         </div>
       </SidebarContent>
