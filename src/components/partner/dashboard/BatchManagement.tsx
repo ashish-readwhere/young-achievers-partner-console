@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -17,7 +18,7 @@ import {
   Grid3X3
 } from "lucide-react";
 import { BatchDetailsModal } from "./BatchDetailsModal";
-import { RescheduleModal } from "./RescheduleModal";
+import RescheduleModal from "./RescheduleModal";
 import { FeedbackModal } from "./FeedbackModal";
 
 export function BatchManagement() {
