@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -55,8 +54,8 @@ export function BatchManagement() {
       students: 15,
       maxStudents: 20,
       schedule: "Mon, Wed, Fri - 10:00 AM",
-      venue: "Greenfield Center",
-      spot: "Yoga Hall",
+      venue: "Talkatora Stadium",
+      spot: "Yoga Area",
       status: "Active",
       nextSession: "1/15/2024",
       nextSessionTime: "10:00 AM",
@@ -83,7 +82,7 @@ export function BatchManagement() {
       title: "Yoga Advanced - Session 9",
       date: "Jan 15, 2024",
       time: "10:00 AM",
-      venue: "Greenfield Center - Yoga Hall",
+      venue: "Talkatora Stadium - Yoga Area",
       batchName: "Yoga Advanced - Batch A",
       students: 15,
       status: "Upcoming"
@@ -260,7 +259,7 @@ export function BatchManagement() {
                       <div>
                         <p className="font-medium">{batch.nextSession}</p>
                         <p className="text-sm text-gray-600">
-                          {batch.nextSessionTime} • {batch.venue} - {batch.spot}
+                          {batch.nextSessionTime} • {batch.venue}
                         </p>
                       </div>
                       <Calendar className="w-4 h-4 text-gray-400" />
