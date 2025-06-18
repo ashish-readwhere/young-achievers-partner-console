@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -41,6 +42,8 @@ export function BatchManagement() {
       status: "Active",
       nextSession: "1/16/2024",
       nextSessionTime: "02:00 PM",
+      lastSession: "1/11/2024",
+      lastSessionTime: "02:00 PM",
       capacity: 72,
       completedSessions: 7,
       totalSessions: 10,
@@ -59,6 +62,8 @@ export function BatchManagement() {
       status: "Active",
       nextSession: "1/15/2024",
       nextSessionTime: "10:00 AM",
+      lastSession: "1/12/2024",
+      lastSessionTime: "10:00 AM",
       capacity: 75,
       completedSessions: 8,
       totalSessions: 12,
@@ -75,7 +80,8 @@ export function BatchManagement() {
       venue: "Noida Stadium - Practice Area",
       batchName: "Yoga Fundamentals - Batch B",
       students: 18,
-      status: "Upcoming"
+      status: "Upcoming",
+      batchId: 1
     },
     {
       id: 2,
@@ -85,7 +91,8 @@ export function BatchManagement() {
       venue: "Talkatora Stadium - Yoga Area",
       batchName: "Yoga Advanced - Batch A",
       students: 15,
-      status: "Upcoming"
+      status: "Upcoming",
+      batchId: 2
     }
   ];
 
@@ -93,6 +100,18 @@ export function BatchManagement() {
     console.log("Opening details for batch:", batch);
     setSelectedBatch(batch);
     setIsDetailsModalOpen(true);
+  };
+
+  const handleViewSessionDetails = (sessionId: number) => {
+    console.log("Opening session details for session ID:", sessionId);
+    const session = upcomingSessions.find(s => s.id === sessionId);
+    if (session) {
+      const relatedBatch = partnerBatches.find(b => b.id === session.batchId);
+      if (relatedBatch) {
+        setSelectedBatch(relatedBatch);
+        setIsDetailsModalOpen(true);
+      }
+    }
   };
 
   const handleReschedule = (batch: any) => {
@@ -252,17 +271,30 @@ export function BatchManagement() {
                     />
                   </div>
 
-                  {/* Next Session */}
-                  <div className="bg-gray-50 p-3 rounded-lg">
-                    <p className="text-sm text-gray-600 mb-1">Next Session</p>
-                    <div className="flex items-center justify-between">
+                  {/* Sessions Info */}
+                  <div className="grid grid-cols-2 gap-4">
+                    {/* Next Session */}
+                    <div className="bg-blue-50 p-3 rounded-lg">
+                      <p className="text-sm text-blue-600 mb-1 font-medium">Next Session</p>
                       <div>
-                        <p className="font-medium">{batch.nextSession}</p>
-                        <p className="text-sm text-gray-600">
-                          {batch.nextSessionTime} • {batch.venue}
+                        <p className="font-medium text-blue-900">{batch.nextSession}</p>
+                        <p className="text-sm text-blue-700">
+                          {batch.nextSessionTime}
                         </p>
+                        <p className="text-xs text-blue-600 mt-1">{batch.venue}</p>
                       </div>
-                      <Calendar className="w-4 h-4 text-gray-400" />
+                    </div>
+
+                    {/* Last Session */}
+                    <div className="bg-gray-50 p-3 rounded-lg">
+                      <p className="text-sm text-gray-600 mb-1 font-medium">Last Session</p>
+                      <div>
+                        <p className="font-medium text-gray-900">{batch.lastSession}</p>
+                        <p className="text-sm text-gray-700">
+                          {batch.lastSessionTime}
+                        </p>
+                        <p className="text-xs text-gray-600 mt-1">{batch.venue}</p>
+                      </div>
                     </div>
                   </div>
 
@@ -343,7 +375,11 @@ export function BatchManagement() {
                         <span className="font-medium">{session.students}</span>
                       </td>
                       <td className="py-3 px-4">
-                        <Button size="sm" variant="outline">
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={() => handleViewSessionDetails(session.id)}
+                        >
                           <Eye className="w-4 h-4" />
                         </Button>
                       </td>
