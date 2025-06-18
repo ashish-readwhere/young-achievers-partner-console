@@ -1,10 +1,11 @@
-
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { EditProfileModal } from "./EditProfileModal";
 import { 
   User,
   Mail,
@@ -19,6 +20,8 @@ import {
 } from "lucide-react";
 
 export function PartnerProfile() {
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  
   const partnerInfo = {
     name: "TechEd Solutions",
     contactPerson: "John Smith",
@@ -58,7 +61,7 @@ export function PartnerProfile() {
 
   const handleEditProfile = () => {
     console.log("Edit profile clicked");
-    window.open('/partner?section=edit-profile', '_self');
+    setIsEditModalOpen(true);
   };
 
   const handleContactSupport = () => {
@@ -256,6 +259,12 @@ export function PartnerProfile() {
           </Card>
         </div>
       </div>
+
+      <EditProfileModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        partnerInfo={partnerInfo}
+      />
     </div>
   );
 }
