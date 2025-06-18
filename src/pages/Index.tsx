@@ -1,33 +1,96 @@
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "react-router-dom";
+import { Users, BookOpen, Star, Calendar } from "lucide-react";
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="text-center space-y-6">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Young Achievers</h1>
-        <p className="text-xl text-muted-foreground mb-8">Choose your console to get started</p>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl">
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardContent className="p-6 text-center">
-              <h3 className="text-xl font-semibold mb-2">Admin Console</h3>
-              <p className="text-muted-foreground mb-4">Full administrative access and management</p>
-              <Button className="w-full" asChild>
-                <Link to="/admin">Access Admin Console</Link>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      {/* Header */}
+      <div className="bg-white shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-6">
+            <div className="flex items-center">
+              <h1 className="text-2xl font-bold text-gray-900">EduConnect</h1>
+            </div>
+            <nav className="flex space-x-4">
+              <Link to="/partner">
+                <Button className="bg-blue-600 hover:bg-blue-700">
+                  Partner Console
+                </Button>
+              </Link>
+            </nav>
+          </div>
+        </div>
+      </div>
+
+      {/* Hero Section */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="text-center">
+          <h2 className="text-4xl font-bold text-gray-900 mb-4">
+            Welcome to EduConnect
+          </h2>
+          <p className="text-xl text-gray-600 mb-8">
+            Connecting students with expert instructors across various subjects
+          </p>
+          
+          <div className="flex justify-center gap-4">
+            <Link to="/partner">
+              <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
+                Access Partner Console
               </Button>
+            </Link>
+          </div>
+        </div>
+
+        {/* Features Section */}
+        <div className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <Card className="text-center">
+            <CardHeader>
+              <Users className="w-12 h-12 mx-auto text-blue-600 mb-4" />
+              <CardTitle>Expert Instructors</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-600">
+                Learn from certified professionals in various subjects
+              </p>
             </CardContent>
           </Card>
-          
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardContent className="p-6 text-center">
-              <h3 className="text-xl font-semibold mb-2">Partner Console</h3>
-              <p className="text-muted-foreground mb-4">Manage your batches and training sessions</p>
-              <Button className="w-full" asChild>
-                <Link to="/partner">Access Partner Console</Link>
-              </Button>
+
+          <Card className="text-center">
+            <CardHeader>
+              <BookOpen className="w-12 h-12 mx-auto text-green-600 mb-4" />
+              <CardTitle>Diverse Subjects</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-600">
+                From Yoga to Coding, Chess to Music - find your passion
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="text-center">
+            <CardHeader>
+              <Star className="w-12 h-12 mx-auto text-yellow-600 mb-4" />
+              <CardTitle>Quality Education</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-600">
+                Rated and reviewed courses ensuring high-quality learning
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="text-center">
+            <CardHeader>
+              <Calendar className="w-12 h-12 mx-auto text-purple-600 mb-4" />
+              <CardTitle>Flexible Schedule</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-600">
+                Choose from multiple batches with convenient timings
+              </p>
             </CardContent>
           </Card>
         </div>
