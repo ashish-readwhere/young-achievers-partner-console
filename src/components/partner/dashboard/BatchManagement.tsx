@@ -194,23 +194,23 @@ export function BatchManagement() {
   return (
     <div className="w-full bg-white min-h-screen">
       {/* Header */}
-      <div className="bg-white border-b px-8 py-6">
-        <h1 className="text-2xl font-bold text-gray-900">Batch Management</h1>
-        <p className="text-gray-600 mt-1">Manage your {partnerSubject} batches and sessions</p>
+      <div className="bg-white border-b px-4 sm:px-8 py-4 sm:py-6">
+        <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Batch Management</h1>
+        <p className="text-gray-600 mt-1 text-sm sm:text-base">Manage your {partnerSubject} batches and sessions</p>
       </div>
 
       {/* Main Content */}
-      <div className="p-8">
+      <div className="p-4 sm:p-8">
         {/* Stats Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8">
           <Card className="border-0 shadow-sm bg-blue-50">
-            <CardContent className="p-6">
+            <CardContent className="p-3 sm:p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-blue-600 mb-1">My Active Batches</p>
-                  <p className="text-3xl font-bold text-blue-900">{partnerBatches.length}</p>
+                  <p className="text-xs sm:text-sm font-medium text-blue-600 mb-1">My Active Batches</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-blue-900">{partnerBatches.length}</p>
                 </div>
-                <div className="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center text-xl">
+                <div className="w-8 h-8 sm:w-12 sm:h-12 bg-blue-500 rounded-lg flex items-center justify-center text-lg sm:text-xl">
                   🧘‍♀️
                 </div>
               </div>
@@ -218,46 +218,46 @@ export function BatchManagement() {
           </Card>
 
           <Card className="border-0 shadow-sm bg-green-50">
-            <CardContent className="p-6">
+            <CardContent className="p-3 sm:p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-green-600 mb-1">Total Students</p>
-                  <p className="text-3xl font-bold text-green-900">
+                  <p className="text-xs sm:text-sm font-medium text-green-600 mb-1">Total Students</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-green-900">
                     {partnerBatches.reduce((sum, batch) => sum + batch.students, 0)}
                   </p>
                 </div>
-                <div className="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center">
-                  <Users className="w-6 h-6 text-white" />
+                <div className="w-8 h-8 sm:w-12 sm:h-12 bg-green-500 rounded-lg flex items-center justify-center">
+                  <Users className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
                 </div>
               </div>
             </CardContent>
           </Card>
 
           <Card className="border-0 shadow-sm bg-purple-50">
-            <CardContent className="p-6">
+            <CardContent className="p-3 sm:p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-purple-600 mb-1">Upcoming Sessions</p>
-                  <p className="text-3xl font-bold text-purple-900">{upcomingSessions.length}</p>
+                  <p className="text-xs sm:text-sm font-medium text-purple-600 mb-1">Upcoming Sessions</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-purple-900">{upcomingSessions.length}</p>
                 </div>
-                <div className="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center">
-                  <Calendar className="w-6 h-6 text-white" />
+                <div className="w-8 h-8 sm:w-12 sm:h-12 bg-purple-500 rounded-lg flex items-center justify-center">
+                  <Calendar className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
                 </div>
               </div>
             </CardContent>
           </Card>
 
           <Card className="border-0 shadow-sm bg-orange-50">
-            <CardContent className="p-6">
+            <CardContent className="p-3 sm:p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-orange-600 mb-1">Avg Capacity</p>
-                  <p className="text-3xl font-bold text-orange-900">
+                  <p className="text-xs sm:text-sm font-medium text-orange-600 mb-1">Avg Capacity</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-orange-900">
                     {Math.round(partnerBatches.reduce((sum, batch) => sum + batch.capacity, 0) / partnerBatches.length)}%
                   </p>
                 </div>
-                <div className="w-12 h-12 bg-orange-500 rounded-lg flex items-center justify-center">
-                  <CheckCircle className="w-6 h-6 text-white" />
+                <div className="w-8 h-8 sm:w-12 sm:h-12 bg-orange-500 rounded-lg flex items-center justify-center">
+                  <CheckCircle className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
                 </div>
               </div>
             </CardContent>
@@ -266,11 +266,11 @@ export function BatchManagement() {
 
         {/* Search and View All Section */}
         <div className="mb-6">
-          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-            <div className="relative flex-1 max-w-md">
+          <div className="flex flex-col gap-4 items-start justify-between">
+            <div className="relative w-full max-w-md">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
               <Input
-                placeholder="Search batches by name, level, or venue..."
+                placeholder="Search batches..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10"
@@ -280,7 +280,7 @@ export function BatchManagement() {
               <Button
                 variant="outline"
                 onClick={() => setShowAllBatches(!showAllBatches)}
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 w-full sm:w-auto"
               >
                 <Grid3X3 className="w-4 h-4" />
                 {showAllBatches ? "Show Less" : `View All (${filteredBatches.length})`}
@@ -295,7 +295,7 @@ export function BatchManagement() {
         </div>
 
         {/* Batch Cards Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
           {displayedBatches.length === 0 ? (
             <div className="col-span-full text-center py-8">
               <p className="text-gray-500">No batches found matching your search.</p>
@@ -305,23 +305,23 @@ export function BatchManagement() {
               <Card key={batch.id} className="border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
                 <CardHeader className="pb-4">
                   <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="text-2xl">{batch.icon}</div>
-                      <div>
-                        <CardTitle className="text-lg font-semibold text-gray-900">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="text-2xl flex-shrink-0">{batch.icon}</div>
+                      <div className="min-w-0">
+                        <CardTitle className="text-base sm:text-lg font-semibold text-gray-900 truncate">
                           {batch.name}
                         </CardTitle>
-                        <p className="text-sm text-gray-600 mt-1">
+                        <p className="text-xs sm:text-sm text-gray-600 mt-1 truncate">
                           Teacher: {batch.teacher}
                         </p>
-                        <p className="text-sm text-gray-600">
+                        <p className="text-xs sm:text-sm text-gray-600">
                           Level: {batch.level}
                         </p>
                       </div>
                     </div>
                     <Badge 
                       variant={batch.status === "Active" ? "default" : "secondary"}
-                      className={batch.status === "Active" ? "bg-green-100 text-green-800" : ""}
+                      className={`${batch.status === "Active" ? "bg-green-100 text-green-800" : ""} flex-shrink-0`}
                     >
                       {batch.status}
                     </Badge>
@@ -331,17 +331,17 @@ export function BatchManagement() {
                 <CardContent className="pt-0">
                   <div className="space-y-4">
                     {/* Student Count and Schedule */}
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                       <div className="flex items-center gap-4">
                         <div className="flex items-center gap-1 text-blue-600">
                           <Users className="w-4 h-4" />
-                          <span className="font-semibold">{batch.students}/{batch.maxStudents}</span>
-                          <span className="text-sm text-gray-600">students</span>
+                          <span className="font-semibold text-sm">{batch.students}/{batch.maxStudents}</span>
+                          <span className="text-xs text-gray-600">students</span>
                         </div>
-                        <div className="flex items-center gap-1 text-green-600">
-                          <Clock className="w-4 h-4" />
-                          <span className="text-sm">{batch.schedule}</span>
-                        </div>
+                      </div>
+                      <div className="flex items-center gap-1 text-green-600">
+                        <Clock className="w-4 h-4" />
+                        <span className="text-xs sm:text-sm">{batch.schedule}</span>
                       </div>
                     </div>
 
@@ -362,16 +362,16 @@ export function BatchManagement() {
                     </div>
 
                     {/* Sessions Info */}
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       {/* Next Session */}
                       <div className="bg-blue-50 p-3 rounded-lg">
                         <p className="text-sm text-blue-600 mb-1 font-medium">Next Session</p>
                         <div>
-                          <p className="font-medium text-blue-900">{batch.nextSession}</p>
+                          <p className="font-medium text-blue-900 text-sm">{batch.nextSession}</p>
                           <p className="text-sm text-blue-700">
                             {batch.nextSessionTime}
                           </p>
-                          <p className="text-xs text-blue-600 mt-1">{batch.venue} - {batch.spot}</p>
+                          <p className="text-xs text-blue-600 mt-1 truncate">{batch.venue} - {batch.spot}</p>
                         </div>
                       </div>
 
@@ -379,20 +379,20 @@ export function BatchManagement() {
                       <div className="bg-gray-50 p-3 rounded-lg">
                         <p className="text-sm text-gray-600 mb-1 font-medium">Last Session</p>
                         <div>
-                          <p className="font-medium text-gray-900">{batch.lastSession}</p>
+                          <p className="font-medium text-gray-900 text-sm">{batch.lastSession}</p>
                           <p className="text-sm text-gray-700">
                             {batch.lastSessionTime}
                           </p>
-                          <p className="text-xs text-gray-600 mt-1">{batch.venue} - {batch.spot}</p>
+                          <p className="text-xs text-gray-600 mt-1 truncate">{batch.venue} - {batch.spot}</p>
                         </div>
                       </div>
                     </div>
 
                     {/* Action Buttons */}
-                    <div className="flex gap-2">
+                    <div className="flex flex-col sm:flex-row gap-2">
                       <Button 
                         size="sm" 
-                        className="flex-1 bg-blue-600 hover:bg-blue-700"
+                        className="flex-1 bg-blue-600 hover:bg-blue-700 text-xs sm:text-sm"
                         onClick={() => handleViewDetails(batch)}
                       >
                         <Eye className="w-4 h-4 mr-1" />
@@ -401,7 +401,7 @@ export function BatchManagement() {
                       <Button 
                         size="sm" 
                         variant="outline" 
-                        className="flex-1"
+                        className="flex-1 text-xs sm:text-sm"
                         onClick={() => handleReschedule(batch)}
                       >
                         <Edit className="w-4 h-4 mr-1" />
@@ -410,7 +410,7 @@ export function BatchManagement() {
                       <Button 
                         size="sm" 
                         variant="outline" 
-                        className="flex-1"
+                        className="flex-1 text-xs sm:text-sm"
                         onClick={() => handleFeedback(batch)}
                       >
                         <MessageSquare className="w-4 h-4 mr-1" />
@@ -427,57 +427,59 @@ export function BatchManagement() {
         {/* Upcoming Sessions Table */}
         <Card className="border-0 shadow-sm">
           <CardHeader>
-            <CardTitle className="text-lg font-semibold text-gray-900">Upcoming Sessions</CardTitle>
+            <CardTitle className="text-base sm:text-lg font-semibold text-gray-900">Upcoming Sessions</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b text-left">
-                    <th className="py-3 px-4 font-medium text-gray-700">Session</th>
-                    <th className="py-3 px-4 font-medium text-gray-700">Date & Time</th>
-                    <th className="py-3 px-4 font-medium text-gray-700">Venue</th>
-                    <th className="py-3 px-4 font-medium text-gray-700">Students</th>
-                    <th className="py-3 px-4 font-medium text-gray-700">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {upcomingSessions.map((session) => (
-                    <tr key={session.id} className="border-b hover:bg-gray-50">
-                      <td className="py-3 px-4">
-                        <div>
-                          <p className="font-medium text-gray-900">{session.title}</p>
-                          <p className="text-sm text-gray-600">{session.batchName}</p>
-                        </div>
-                      </td>
-                      <td className="py-3 px-4">
-                        <div className="flex items-center gap-1">
-                          <Calendar className="w-4 h-4 text-gray-400" />
-                          <span>{session.date} at {session.time}</span>
-                        </div>
-                      </td>
-                      <td className="py-3 px-4">
-                        <div className="flex items-center gap-1">
-                          <MapPin className="w-4 h-4 text-gray-400" />
-                          <span>{session.venue}</span>
-                        </div>
-                      </td>
-                      <td className="py-3 px-4">
-                        <span className="font-medium">{session.students}</span>
-                      </td>
-                      <td className="py-3 px-4">
-                        <Button 
-                          size="sm" 
-                          variant="outline"
-                          onClick={() => handleViewSessionDetails(session.id)}
-                        >
-                          <Eye className="w-4 h-4" />
-                        </Button>
-                      </td>
+              <div className="min-w-[600px]">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b text-left">
+                      <th className="py-3 px-2 sm:px-4 font-medium text-gray-700 text-sm">Session</th>
+                      <th className="py-3 px-2 sm:px-4 font-medium text-gray-700 text-sm">Date & Time</th>
+                      <th className="py-3 px-2 sm:px-4 font-medium text-gray-700 text-sm">Venue</th>
+                      <th className="py-3 px-2 sm:px-4 font-medium text-gray-700 text-sm">Students</th>
+                      <th className="py-3 px-2 sm:px-4 font-medium text-gray-700 text-sm">Actions</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {upcomingSessions.map((session) => (
+                      <tr key={session.id} className="border-b hover:bg-gray-50">
+                        <td className="py-3 px-2 sm:px-4">
+                          <div>
+                            <p className="font-medium text-gray-900 text-sm">{session.title}</p>
+                            <p className="text-xs text-gray-600">{session.batchName}</p>
+                          </div>
+                        </td>
+                        <td className="py-3 px-2 sm:px-4">
+                          <div className="flex items-center gap-1">
+                            <Calendar className="w-4 h-4 text-gray-400" />
+                            <span className="text-sm">{session.date} at {session.time}</span>
+                          </div>
+                        </td>
+                        <td className="py-3 px-2 sm:px-4">
+                          <div className="flex items-center gap-1">
+                            <MapPin className="w-4 h-4 text-gray-400" />
+                            <span className="text-sm truncate max-w-[150px]">{session.venue}</span>
+                          </div>
+                        </td>
+                        <td className="py-3 px-2 sm:px-4">
+                          <span className="font-medium text-sm">{session.students}</span>
+                        </td>
+                        <td className="py-3 px-2 sm:px-4">
+                          <Button 
+                            size="sm" 
+                            variant="outline"
+                            onClick={() => handleViewSessionDetails(session.id)}
+                          >
+                            <Eye className="w-4 h-4" />
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </CardContent>
         </Card>

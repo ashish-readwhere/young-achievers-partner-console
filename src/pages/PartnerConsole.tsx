@@ -8,10 +8,12 @@ import { MemberManagement } from "@/components/partner/dashboard/MemberManagemen
 import { PartnerProfile } from "@/components/partner/dashboard/PartnerProfile";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { Home } from "lucide-react";
+import { Home, Menu } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const PartnerConsole = () => {
   const [activeSection, setActiveSection] = useState("overview");
+  const isMobile = useIsMobile();
 
   const handleNavigation = (section: string) => {
     console.log("Navigating to section:", section);
@@ -36,30 +38,35 @@ const PartnerConsole = () => {
   };
 
   return (
-    <SidebarProvider defaultOpen={true}>
+    <SidebarProvider defaultOpen={!isMobile}>
       <div className="min-h-screen flex w-full bg-gray-50">
         <PartnerSidebar 
           onMenuSelect={setActiveSection} 
           activeMenu={activeSection}
         />
-        <main className="flex-1 min-w-0">
+        <main className="flex-1 min-w-0 flex flex-col">
           {/* Navigation Header */}
-          <div className="bg-white border-b px-6 py-3">
+          <div className="bg-white border-b px-3 sm:px-6 py-3 flex-shrink-0">
             <div className="flex items-center justify-between">
-              <div className="text-sm text-gray-600">
-                Partner Console • Current Section: <span className="font-medium capitalize">{activeSection}</span>
+              <div className="text-sm text-gray-600 truncate">
+                <span className="hidden sm:inline">Partner Console • Current Section: </span>
+                <span className="font-medium capitalize">{activeSection}</span>
               </div>
-              <Link to="/login">
-                <Button variant="outline" size="sm">
-                  <Home className="w-4 h-4 mr-2" />
-                  Back to Login
+              <Link to="/login" className="flex-shrink-0">
+                <Button variant="outline" size="sm" className="text-xs sm:text-sm">
+                  <Home className="w-4 h-4 mr-1 sm:mr-2" />
+                  <span className="hidden sm:inline">Back to Login</span>
+                  <span className="sm:hidden">Login</span>
                 </Button>
               </Link>
             </div>
           </div>
           
-          <div className="p-6">
-            {renderContent()}
+          {/* Main Content */}
+          <div className="flex-1 overflow-auto">
+            <div className="p-3 sm:p-6">
+              {renderContent()}
+            </div>
           </div>
         </main>
       </div>
