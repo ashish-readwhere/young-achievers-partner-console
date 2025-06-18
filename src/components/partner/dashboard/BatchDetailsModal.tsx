@@ -69,6 +69,8 @@ export function BatchDetailsModal({ isOpen, onClose, onNavigateToMemberManagemen
 
   if (!batch) return null;
 
+  console.log("BatchDetailsModal rendered with batch:", batch?.name);
+
   // Mock students data
   const allStudents: Student[] = [
     {

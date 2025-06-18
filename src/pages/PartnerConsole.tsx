@@ -11,6 +11,7 @@ const PartnerConsole = () => {
   const [activeSection, setActiveSection] = useState("overview");
 
   const renderContent = () => {
+    console.log("Current active section:", activeSection);
     switch (activeSection) {
       case "overview":
         return <PartnerOverview />;
@@ -21,6 +22,7 @@ const PartnerConsole = () => {
       case "profile":
         return <PartnerProfile />;
       default:
+        console.log("Defaulting to overview for section:", activeSection);
         return <PartnerOverview />;
     }
   };

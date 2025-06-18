@@ -21,6 +21,8 @@ export function RatingModal({ isOpen, onClose, student }: RatingModalProps) {
   const [hoveredRating, setHoveredRating] = useState(0);
   const [feedback, setFeedback] = useState("");
 
+  console.log("RatingModal rendered with:", { isOpen, student });
+
   if (!student) return null;
 
   const handleSubmitRating = () => {
@@ -49,7 +51,10 @@ export function RatingModal({ isOpen, onClose, student }: RatingModalProps) {
         <button
           key={index}
           type="button"
-          onClick={() => setRating(starValue)}
+          onClick={() => {
+            console.log("Star clicked:", starValue);
+            setRating(starValue);
+          }}
           onMouseEnter={() => setHoveredRating(starValue)}
           onMouseLeave={() => setHoveredRating(0)}
           className="focus:outline-none transition-transform hover:scale-110"
