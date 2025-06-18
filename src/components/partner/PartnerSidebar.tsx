@@ -45,13 +45,11 @@ const menuItems = [
 
 interface PartnerSidebarProps {
   onMenuSelect?: (menuId: string) => void;
+  activeMenu?: string;
 }
 
-export function PartnerSidebar({ onMenuSelect }: PartnerSidebarProps) {
-  const [activeMenu, setActiveMenu] = useState("overview");
-
+export function PartnerSidebar({ onMenuSelect, activeMenu = "overview" }: PartnerSidebarProps) {
   const handleMenuClick = (menuId: string) => {
-    setActiveMenu(menuId);
     onMenuSelect?.(menuId);
   };
 
@@ -79,9 +77,11 @@ export function PartnerSidebar({ onMenuSelect }: PartnerSidebarProps) {
                     asChild
                     isActive={activeMenu === item.id}
                     className="w-full justify-start gap-3 px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-700 data-[active=true]:bg-blue-50 data-[active=true]:text-blue-700 data-[active=true]:border-r-2 data-[active=true]:border-blue-500 rounded-none"
-                    onClick={() => handleMenuClick(item.id)}
                   >
-                    <button className="flex items-center gap-3 w-full">
+                    <button 
+                      className="flex items-center gap-3 w-full"
+                      onClick={() => handleMenuClick(item.id)}
+                    >
                       <item.icon className="w-5 h-5" />
                       <span className="text-sm font-medium">{item.title}</span>
                     </button>

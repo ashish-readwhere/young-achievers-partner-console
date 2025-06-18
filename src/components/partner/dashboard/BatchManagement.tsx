@@ -8,207 +8,303 @@ import {
   Users, 
   Calendar,
   CheckCircle,
-  Clock
+  Clock,
+  Eye,
+  Edit,
+  MessageSquare
 } from "lucide-react";
 
 export function BatchManagement() {
-  const batches = [
+  // Mock data for current partner (Yoga instructor)
+  const partnerName = "Instructor Sarah Wilson";
+  const partnerSubject = "Yoga";
+  
+  const partnerBatches = [
     {
       id: 1,
-      name: "Yoga - Advanced Level",
-      students: 15,
-      completedSessions: 3,
-      totalSessions: 10,
-      venue: "Greenfield Center",
-      spot: "Yoga Hall",
+      name: "Yoga Fundamentals - Batch B",
+      teacher: "Instructor Sarah Wilson",
+      level: "Beginner",
+      students: 18,
+      maxStudents: 25,
+      schedule: "Tue, Thu - 2:00 PM",
+      venue: "Noida Stadium",
+      spot: "Practice Area",
       status: "Active",
-      nextSession: "Today, 2:00 PM"
+      nextSession: "1/16/2024",
+      nextSessionTime: "02:00 PM",
+      capacity: 72,
+      completedSessions: 7,
+      totalSessions: 10,
+      icon: "🧘‍♀️"
     },
     {
       id: 2,
-      name: "Chess - Intermediate",
-      students: 8,
-      completedSessions: 5,
-      totalSessions: 12,
-      venue: "Downtown Center",
-      spot: "Chess Room",
+      name: "Yoga Advanced - Batch A",
+      teacher: "Instructor Sarah Wilson",
+      level: "Advanced",
+      students: 15,
+      maxStudents: 20,
+      schedule: "Mon, Wed, Fri - 10:00 AM",
+      venue: "Greenfield Center",
+      spot: "Yoga Hall",
       status: "Active",
-      nextSession: "Tomorrow, 4:30 PM"
-    },
-    {
-      id: 3,
-      name: "Coding - Python Basics",
-      students: 12,
+      nextSession: "1/15/2024",
+      nextSessionTime: "10:00 AM",
+      capacity: 75,
       completedSessions: 8,
-      totalSessions: 10,
-      venue: "Tech Hub",
-      spot: "Computer Lab",
-      status: "Active",
-      nextSession: "Dec 20, 10:00 AM"
-    },
-    {
-      id: 4,
-      name: "Art & Craft Workshop",
-      students: 20,
-      completedSessions: 6,
-      totalSessions: 6,
-      venue: "Creative Center",
-      spot: "Art Studio",
-      status: "Completed",
-      nextSession: null
+      totalSessions: 12,
+      icon: "🧘‍♀️"
     }
   ];
 
-  const sessions = [
+  const upcomingSessions = [
     {
       id: 1,
-      title: "Yoga Session 4",
-      date: "Dec 18, 2024",
+      title: "Yoga Fundamentals - Session 8",
+      date: "Jan 16, 2024",
       time: "2:00 PM",
-      venue: "Greenfield Center",
-      spot: "Yoga Hall",
+      venue: "Noida Stadium - Practice Area",
+      batchName: "Yoga Fundamentals - Batch B",
+      students: 18,
       status: "Upcoming"
     },
     {
       id: 2,
-      title: "Chess Strategy Deep Dive",
-      date: "Dec 19, 2024",
-      time: "4:30 PM",
-      venue: "Downtown Center",
-      spot: "Chess Room",
-      status: "Upcoming"
-    },
-    {
-      id: 3,
-      title: "Python Functions & Loops",
-      date: "Dec 17, 2024",
+      title: "Yoga Advanced - Session 9",
+      date: "Jan 15, 2024",
       time: "10:00 AM",
-      venue: "Tech Hub",
-      spot: "Computer Lab",
-      status: "Completed"
+      venue: "Greenfield Center - Yoga Hall",
+      batchName: "Yoga Advanced - Batch A",
+      students: 15,
+      status: "Upcoming"
     }
   ];
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Batch Management</h1>
-          <p className="text-gray-600 mt-2">Manage your training batches and sessions</p>
-        </div>
-        <Button>Create New Batch</Button>
+    <div className="w-full bg-white min-h-screen">
+      {/* Header */}
+      <div className="bg-white border-b px-8 py-6">
+        <h1 className="text-2xl font-bold text-gray-900">Batch Management</h1>
+        <p className="text-gray-600 mt-1">Manage your {partnerSubject} batches and sessions</p>
       </div>
 
-      {/* Batch Cards */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {batches.map((batch) => (
-          <Card key={batch.id} className="hover:shadow-lg transition-shadow">
-            <CardHeader>
-              <div className="flex justify-between items-start">
+      {/* Main Content */}
+      <div className="p-8">
+        {/* Stats Overview */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <Card className="border-0 shadow-sm bg-blue-50">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
                 <div>
-                  <CardTitle className="text-lg">{batch.name}</CardTitle>
-                  <div className="flex items-center gap-4 mt-2 text-sm text-gray-600">
-                    <div className="flex items-center gap-1">
-                      <Users className="h-4 w-4" />
-                      {batch.students} students
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <MapPin className="h-4 w-4" />
-                      {batch.venue} - {batch.spot}
-                    </div>
-                  </div>
+                  <p className="text-sm font-medium text-blue-600 mb-1">My Active Batches</p>
+                  <p className="text-3xl font-bold text-blue-900">{partnerBatches.length}</p>
                 </div>
-                <Badge variant={batch.status === "Active" ? "default" : "secondary"}>
-                  {batch.status}
-                </Badge>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {/* Progress */}
-              <div>
-                <div className="flex justify-between text-sm mb-2">
-                  <span>Progress</span>
-                  <span>{batch.completedSessions}/{batch.totalSessions} Sessions</span>
+                <div className="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center text-xl">
+                  🧘‍♀️
                 </div>
-                <Progress value={(batch.completedSessions / batch.totalSessions) * 100} />
-              </div>
-
-              {/* Next Session */}
-              {batch.nextSession && (
-                <div className="flex items-center gap-2 text-sm">
-                  <Clock className="h-4 w-4 text-blue-600" />
-                  <span className="font-medium">Next Session:</span>
-                  <span>{batch.nextSession}</span>
-                </div>
-              )}
-
-              <div className="flex gap-2">
-                <Button size="sm" className="flex-1">View Details</Button>
-                <Button size="sm" variant="outline" className="flex-1">
-                  Manage Sessions
-                </Button>
               </div>
             </CardContent>
           </Card>
-        ))}
-      </div>
 
-      {/* Sessions Table */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Session Schedule</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b">
-                  <th className="text-left py-3 px-4 font-medium">Session Title</th>
-                  <th className="text-left py-3 px-4 font-medium">Date & Time</th>
-                  <th className="text-left py-3 px-4 font-medium">Venue + Spot</th>
-                  <th className="text-left py-3 px-4 font-medium">Status</th>
-                  <th className="text-left py-3 px-4 font-medium">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {sessions.map((session) => (
-                  <tr key={session.id} className="border-b hover:bg-gray-50">
-                    <td className="py-3 px-4 font-medium">{session.title}</td>
-                    <td className="py-3 px-4">
-                      <div className="flex items-center gap-1">
-                        <Calendar className="h-4 w-4 text-gray-400" />
-                        {session.date} at {session.time}
+          <Card className="border-0 shadow-sm bg-green-50">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-green-600 mb-1">Total Students</p>
+                  <p className="text-3xl font-bold text-green-900">
+                    {partnerBatches.reduce((sum, batch) => sum + batch.students, 0)}
+                  </p>
+                </div>
+                <div className="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center">
+                  <Users className="w-6 h-6 text-white" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-0 shadow-sm bg-purple-50">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-purple-600 mb-1">Upcoming Sessions</p>
+                  <p className="text-3xl font-bold text-purple-900">{upcomingSessions.length}</p>
+                </div>
+                <div className="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center">
+                  <Calendar className="w-6 h-6 text-white" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-0 shadow-sm bg-orange-50">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-orange-600 mb-1">Avg Capacity</p>
+                  <p className="text-3xl font-bold text-orange-900">
+                    {Math.round(partnerBatches.reduce((sum, batch) => sum + batch.capacity, 0) / partnerBatches.length)}%
+                  </p>
+                </div>
+                <div className="w-12 h-12 bg-orange-500 rounded-lg flex items-center justify-center">
+                  <CheckCircle className="w-6 h-6 text-white" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Batch Cards Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          {partnerBatches.map((batch) => (
+            <Card key={batch.id} className="border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+              <CardHeader className="pb-4">
+                <div className="flex items-start justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="text-2xl">{batch.icon}</div>
+                    <div>
+                      <CardTitle className="text-lg font-semibold text-gray-900">
+                        {batch.name}
+                      </CardTitle>
+                      <p className="text-sm text-gray-600 mt-1">
+                        Teacher: {batch.teacher}
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        Level: {batch.level}
+                      </p>
+                    </div>
+                  </div>
+                  <Badge 
+                    variant={batch.status === "Active" ? "default" : "secondary"}
+                    className={batch.status === "Active" ? "bg-green-100 text-green-800" : ""}
+                  >
+                    {batch.status}
+                  </Badge>
+                </div>
+              </CardHeader>
+              
+              <CardContent className="pt-0">
+                <div className="space-y-4">
+                  {/* Student Count and Schedule */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-1 text-blue-600">
+                        <Users className="w-4 h-4" />
+                        <span className="font-semibold">{batch.students}/{batch.maxStudents}</span>
+                        <span className="text-sm text-gray-600">students</span>
                       </div>
-                    </td>
-                    <td className="py-3 px-4">
-                      <div className="flex items-center gap-1">
-                        <MapPin className="h-4 w-4 text-gray-400" />
-                        {session.venue} - {session.spot}
+                      <div className="flex items-center gap-1 text-green-600">
+                        <Clock className="w-4 h-4" />
+                        <span className="text-sm">{batch.schedule}</span>
                       </div>
-                    </td>
-                    <td className="py-3 px-4">
-                      <Badge 
-                        variant={session.status === "Completed" ? "secondary" : "default"}
-                        className={session.status === "Completed" ? "bg-green-100 text-green-800" : ""}
-                      >
-                        {session.status === "Completed" ? (
-                          <CheckCircle className="h-3 w-3 mr-1" />
-                        ) : (
-                          <Clock className="h-3 w-3 mr-1" />
-                        )}
-                        {session.status}
-                      </Badge>
-                    </td>
-                    <td className="py-3 px-4">
-                      <Button size="sm" variant="outline">View</Button>
-                    </td>
+                    </div>
+                  </div>
+
+                  {/* Capacity Progress */}
+                  <div>
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-sm text-gray-600">Capacity</span>
+                      <span className="text-sm font-medium">{batch.capacity}%</span>
+                    </div>
+                    <Progress 
+                      value={batch.capacity} 
+                      className={`h-2 ${
+                        batch.capacity >= 90 ? '[&>div]:bg-red-500' : 
+                        batch.capacity >= 75 ? '[&>div]:bg-yellow-500' : 
+                        '[&>div]:bg-green-500'
+                      }`}
+                    />
+                  </div>
+
+                  {/* Next Session */}
+                  <div className="bg-gray-50 p-3 rounded-lg">
+                    <p className="text-sm text-gray-600 mb-1">Next Session</p>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-medium">{batch.nextSession}</p>
+                        <p className="text-sm text-gray-600">
+                          {batch.nextSessionTime} • {batch.venue} - {batch.spot}
+                        </p>
+                      </div>
+                      <Calendar className="w-4 h-4 text-gray-400" />
+                    </div>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex gap-2">
+                    <Button size="sm" className="flex-1 bg-blue-600 hover:bg-blue-700">
+                      <Eye className="w-4 h-4 mr-1" />
+                      View Details
+                    </Button>
+                    <Button size="sm" variant="outline" className="flex-1">
+                      <Edit className="w-4 h-4 mr-1" />
+                      Reschedule
+                    </Button>
+                    <Button size="sm" variant="outline" className="flex-1">
+                      <MessageSquare className="w-4 h-4 mr-1" />
+                      Feedback
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {/* Upcoming Sessions Table */}
+        <Card className="border-0 shadow-sm">
+          <CardHeader>
+            <CardTitle className="text-lg font-semibold text-gray-900">Upcoming Sessions</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b text-left">
+                    <th className="py-3 px-4 font-medium text-gray-700">Session</th>
+                    <th className="py-3 px-4 font-medium text-gray-700">Date & Time</th>
+                    <th className="py-3 px-4 font-medium text-gray-700">Venue</th>
+                    <th className="py-3 px-4 font-medium text-gray-700">Students</th>
+                    <th className="py-3 px-4 font-medium text-gray-700">Actions</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </CardContent>
-      </Card>
+                </thead>
+                <tbody>
+                  {upcomingSessions.map((session) => (
+                    <tr key={session.id} className="border-b hover:bg-gray-50">
+                      <td className="py-3 px-4">
+                        <div>
+                          <p className="font-medium text-gray-900">{session.title}</p>
+                          <p className="text-sm text-gray-600">{session.batchName}</p>
+                        </div>
+                      </td>
+                      <td className="py-3 px-4">
+                        <div className="flex items-center gap-1">
+                          <Calendar className="w-4 h-4 text-gray-400" />
+                          <span>{session.date} at {session.time}</span>
+                        </div>
+                      </td>
+                      <td className="py-3 px-4">
+                        <div className="flex items-center gap-1">
+                          <MapPin className="w-4 h-4 text-gray-400" />
+                          <span>{session.venue}</span>
+                        </div>
+                      </td>
+                      <td className="py-3 px-4">
+                        <span className="font-medium">{session.students}</span>
+                      </td>
+                      <td className="py-3 px-4">
+                        <Button size="sm" variant="outline">
+                          <Eye className="w-4 h-4" />
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }
