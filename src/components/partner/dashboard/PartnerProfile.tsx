@@ -12,7 +12,10 @@ import {
   MapPin,
   Calendar,
   Award,
-  Edit
+  Edit,
+  CheckCircle,
+  FileText,
+  MessageSquare
 } from "lucide-react";
 
 export function PartnerProfile() {
@@ -24,6 +27,7 @@ export function PartnerProfile() {
     address: "123 Education Lane, Tech City, TC 12345",
     joinDate: "January 15, 2024",
     status: "Active Partner",
+    kycStatus: "verified", // Can be "verified", "pending", or "not_submitted"
     specializations: ["Technology Training", "Coding Bootcamps", "Digital Skills"]
   };
 
@@ -52,6 +56,54 @@ export function PartnerProfile() {
     { label: "Average Rating", value: "4.8/5" }
   ];
 
+  const handleEditProfile = () => {
+    console.log("Edit profile clicked");
+    // This would typically open an edit modal or navigate to edit page
+    alert("Edit profile functionality would be implemented here");
+  };
+
+  const handleContactSupport = () => {
+    window.open('mailto:support@youngachievers.com?subject=Partner Support - Profile Query&body=Hello, I need help with my partner profile...', '_self');
+  };
+
+  const handleViewCertificates = () => {
+    console.log("View certificates clicked");
+    // This would typically open certificates modal or navigate to certificates page
+    alert("Certificates view would be implemented here - showing partner achievements and certifications");
+  };
+
+  const handleScheduleMeeting = () => {
+    console.log("Schedule meeting clicked");
+    // This would typically open a calendar scheduling interface
+    alert("Meeting scheduler would be implemented here - integration with calendar system");
+  };
+
+  const getKycStatusBadge = () => {
+    switch (partnerInfo.kycStatus) {
+      case "verified":
+        return (
+          <Badge className="bg-green-100 text-green-800 border-green-200">
+            <CheckCircle className="w-3 h-3 mr-1" />
+            KYC Verified
+          </Badge>
+        );
+      case "pending":
+        return (
+          <Badge className="bg-yellow-100 text-yellow-800 border-yellow-200">
+            <Calendar className="w-3 h-3 mr-1" />
+            KYC Pending
+          </Badge>
+        );
+      default:
+        return (
+          <Badge className="bg-red-100 text-red-800 border-red-200">
+            <FileText className="w-3 h-3 mr-1" />
+            KYC Required
+          </Badge>
+        );
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -59,7 +111,7 @@ export function PartnerProfile() {
           <h1 className="text-3xl font-bold text-gray-900">Partner Profile</h1>
           <p className="text-gray-600 mt-2">Manage your partner information and track performance</p>
         </div>
-        <Button>
+        <Button onClick={handleEditProfile}>
           <Edit className="h-4 w-4 mr-2" />
           Edit Profile
         </Button>
@@ -139,6 +191,10 @@ export function PartnerProfile() {
                 <Calendar className="h-4 w-4 text-gray-400" />
                 <Badge className="bg-green-100 text-green-800">{partnerInfo.status}</Badge>
               </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle className="h-4 w-4 text-gray-400" />
+                {getKycStatusBadge()}
+              </div>
             </CardContent>
           </Card>
 
@@ -167,15 +223,30 @@ export function PartnerProfile() {
               <CardTitle>Quick Actions</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
-              <Button className="w-full justify-start" variant="outline" size="sm">
+              <Button 
+                className="w-full justify-start" 
+                variant="outline" 
+                size="sm"
+                onClick={handleContactSupport}
+              >
                 <Mail className="mr-2 h-4 w-4" />
                 Contact Support
               </Button>
-              <Button className="w-full justify-start" variant="outline" size="sm">
+              <Button 
+                className="w-full justify-start" 
+                variant="outline" 
+                size="sm"
+                onClick={handleViewCertificates}
+              >
                 <Award className="mr-2 h-4 w-4" />
                 View Certificates
               </Button>
-              <Button className="w-full justify-start" variant="outline" size="sm">
+              <Button 
+                className="w-full justify-start" 
+                variant="outline" 
+                size="sm"
+                onClick={handleScheduleMeeting}
+              >
                 <Calendar className="mr-2 h-4 w-4" />
                 Schedule Meeting
               </Button>
