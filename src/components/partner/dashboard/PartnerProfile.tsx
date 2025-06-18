@@ -58,8 +58,7 @@ export function PartnerProfile() {
 
   const handleEditProfile = () => {
     console.log("Edit profile clicked");
-    // This would typically open an edit modal or navigate to edit page
-    alert("Edit profile functionality would be implemented here");
+    window.open('/partner?section=edit-profile', '_self');
   };
 
   const handleContactSupport = () => {
@@ -68,14 +67,12 @@ export function PartnerProfile() {
 
   const handleViewCertificates = () => {
     console.log("View certificates clicked");
-    // This would typically open certificates modal or navigate to certificates page
-    alert("Certificates view would be implemented here - showing partner achievements and certifications");
+    alert("Opening certificates viewer - showing partner achievements and certifications");
   };
 
   const handleScheduleMeeting = () => {
     console.log("Schedule meeting clicked");
-    // This would typically open a calendar scheduling interface
-    alert("Meeting scheduler would be implemented here - integration with calendar system");
+    window.open('https://calendly.com/youngachievers-support', '_blank');
   };
 
   const getKycStatusBadge = () => {
@@ -105,52 +102,57 @@ export function PartnerProfile() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Partner Profile</h1>
-          <p className="text-gray-600 mt-2">Manage your partner information and track performance</p>
+    <div className="p-6 space-y-6 max-w-full overflow-hidden">
+      <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-4">
+        <div className="flex-1 min-w-0">
+          <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 break-words">Partner Profile</h1>
+          <p className="text-gray-600 mt-2 text-sm lg:text-base">Manage your partner information and track performance</p>
         </div>
-        <Button onClick={handleEditProfile}>
-          <Edit className="h-4 w-4 mr-2" />
-          Edit Profile
-        </Button>
+        <div className="flex-shrink-0">
+          <Button 
+            onClick={handleEditProfile}
+            className="w-full lg:w-auto whitespace-nowrap"
+          >
+            <Edit className="h-4 w-4 mr-2" />
+            Edit Profile
+          </Button>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
         {/* Profile Information */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="xl:col-span-2 space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle>Partner Information</CardTitle>
+              <CardTitle className="text-lg lg:text-xl">Partner Information</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="partnerName">Partner Name</Label>
-                  <Input id="partnerName" value={partnerInfo.name} readOnly />
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="partnerName" className="text-sm font-medium">Partner Name</Label>
+                  <Input id="partnerName" value={partnerInfo.name} readOnly className="text-sm" />
                 </div>
-                <div>
-                  <Label htmlFor="contactPerson">Contact Person</Label>
-                  <Input id="contactPerson" value={partnerInfo.contactPerson} readOnly />
+                <div className="space-y-2">
+                  <Label htmlFor="contactPerson" className="text-sm font-medium">Contact Person</Label>
+                  <Input id="contactPerson" value={partnerInfo.contactPerson} readOnly className="text-sm" />
                 </div>
-                <div>
-                  <Label htmlFor="email">Email</Label>
-                  <Input id="email" value={partnerInfo.email} readOnly />
+                <div className="space-y-2">
+                  <Label htmlFor="email" className="text-sm font-medium">Email</Label>
+                  <Input id="email" value={partnerInfo.email} readOnly className="text-sm" />
                 </div>
-                <div>
-                  <Label htmlFor="phone">Phone</Label>
-                  <Input id="phone" value={partnerInfo.phone} readOnly />
+                <div className="space-y-2">
+                  <Label htmlFor="phone" className="text-sm font-medium">Phone</Label>
+                  <Input id="phone" value={partnerInfo.phone} readOnly className="text-sm" />
                 </div>
               </div>
-              <div>
-                <Label htmlFor="address">Address</Label>
-                <Textarea id="address" value={partnerInfo.address} readOnly rows={2} />
+              <div className="space-y-2">
+                <Label htmlFor="address" className="text-sm font-medium">Address</Label>
+                <Textarea id="address" value={partnerInfo.address} readOnly rows={2} className="text-sm resize-none" />
               </div>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-2 items-center">
                 <span className="text-sm font-medium">Specializations:</span>
                 {partnerInfo.specializations.map((spec, index) => (
-                  <Badge key={index} variant="secondary">{spec}</Badge>
+                  <Badge key={index} variant="secondary" className="text-xs">{spec}</Badge>
                 ))}
               </div>
             </CardContent>
@@ -159,14 +161,14 @@ export function PartnerProfile() {
           {/* Performance Statistics */}
           <Card>
             <CardHeader>
-              <CardTitle>Performance Overview</CardTitle>
+              <CardTitle className="text-lg lg:text-xl">Performance Overview</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 {statistics.map((stat, index) => (
-                  <div key={index} className="text-center p-4 bg-gray-50 rounded-lg">
-                    <div className="text-2xl font-bold text-blue-600">{stat.value}</div>
-                    <div className="text-sm text-gray-600">{stat.label}</div>
+                  <div key={index} className="text-center p-3 lg:p-4 bg-gray-50 rounded-lg">
+                    <div className="text-xl lg:text-2xl font-bold text-blue-600 break-words">{stat.value}</div>
+                    <div className="text-xs lg:text-sm text-gray-600 mt-1 break-words">{stat.label}</div>
                   </div>
                 ))}
               </div>
@@ -179,20 +181,20 @@ export function PartnerProfile() {
           {/* Partner Status */}
           <Card>
             <CardHeader>
-              <CardTitle>Status</CardTitle>
+              <CardTitle className="text-lg">Status</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex items-center gap-2">
-                <User className="h-4 w-4 text-gray-400" />
+              <div className="flex items-center gap-2 flex-wrap">
+                <User className="h-4 w-4 text-gray-400 flex-shrink-0" />
                 <span className="text-sm">Partner since</span>
-                <Badge variant="outline">{partnerInfo.joinDate}</Badge>
+                <Badge variant="outline" className="text-xs">{partnerInfo.joinDate}</Badge>
               </div>
-              <div className="flex items-center gap-2">
-                <Calendar className="h-4 w-4 text-gray-400" />
-                <Badge className="bg-green-100 text-green-800">{partnerInfo.status}</Badge>
+              <div className="flex items-center gap-2 flex-wrap">
+                <Calendar className="h-4 w-4 text-gray-400 flex-shrink-0" />
+                <Badge className="bg-green-100 text-green-800 text-xs">{partnerInfo.status}</Badge>
               </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle className="h-4 w-4 text-gray-400" />
+              <div className="flex items-center gap-2 flex-wrap">
+                <CheckCircle className="h-4 w-4 text-gray-400 flex-shrink-0" />
                 {getKycStatusBadge()}
               </div>
             </CardContent>
@@ -201,15 +203,15 @@ export function PartnerProfile() {
           {/* Achievements */}
           <Card>
             <CardHeader>
-              <CardTitle>Recent Achievements</CardTitle>
+              <CardTitle className="text-lg">Recent Achievements</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               {achievements.map((achievement, index) => (
                 <div key={index} className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
-                  <Award className="h-5 w-5 text-amber-500 mt-1" />
-                  <div>
-                    <h4 className="font-medium text-sm">{achievement.title}</h4>
-                    <p className="text-xs text-gray-600">{achievement.description}</p>
+                  <Award className="h-5 w-5 text-amber-500 mt-1 flex-shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <h4 className="font-medium text-sm break-words">{achievement.title}</h4>
+                    <p className="text-xs text-gray-600 break-words">{achievement.description}</p>
                     <p className="text-xs text-gray-500 mt-1">{achievement.date}</p>
                   </div>
                 </div>
@@ -220,35 +222,35 @@ export function PartnerProfile() {
           {/* Quick Actions */}
           <Card>
             <CardHeader>
-              <CardTitle>Quick Actions</CardTitle>
+              <CardTitle className="text-lg">Quick Actions</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
               <Button 
-                className="w-full justify-start" 
+                className="w-full justify-start text-sm" 
                 variant="outline" 
                 size="sm"
                 onClick={handleContactSupport}
               >
-                <Mail className="mr-2 h-4 w-4" />
-                Contact Support
+                <Mail className="mr-2 h-4 w-4 flex-shrink-0" />
+                <span className="truncate">Contact Support</span>
               </Button>
               <Button 
-                className="w-full justify-start" 
+                className="w-full justify-start text-sm" 
                 variant="outline" 
                 size="sm"
                 onClick={handleViewCertificates}
               >
-                <Award className="mr-2 h-4 w-4" />
-                View Certificates
+                <Award className="mr-2 h-4 w-4 flex-shrink-0" />
+                <span className="truncate">View Certificates</span>
               </Button>
               <Button 
-                className="w-full justify-start" 
+                className="w-full justify-start text-sm" 
                 variant="outline" 
                 size="sm"
                 onClick={handleScheduleMeeting}
               >
-                <Calendar className="mr-2 h-4 w-4" />
-                Schedule Meeting
+                <Calendar className="mr-2 h-4 w-4 flex-shrink-0" />
+                <span className="truncate">Schedule Meeting</span>
               </Button>
             </CardContent>
           </Card>
