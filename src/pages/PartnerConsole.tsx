@@ -10,11 +10,16 @@ import { PartnerProfile } from "@/components/partner/dashboard/PartnerProfile";
 const PartnerConsole = () => {
   const [activeSection, setActiveSection] = useState("overview");
 
+  const handleNavigation = (section: string) => {
+    console.log("Navigating to section:", section);
+    setActiveSection(section);
+  };
+
   const renderContent = () => {
     console.log("Current active section:", activeSection);
     switch (activeSection) {
       case "overview":
-        return <PartnerOverview />;
+        return <PartnerOverview onNavigate={handleNavigation} />;
       case "batches":
         return <BatchManagement />;
       case "members":
@@ -23,7 +28,7 @@ const PartnerConsole = () => {
         return <PartnerProfile />;
       default:
         console.log("Defaulting to overview for section:", activeSection);
-        return <PartnerOverview />;
+        return <PartnerOverview onNavigate={handleNavigation} />;
     }
   };
 

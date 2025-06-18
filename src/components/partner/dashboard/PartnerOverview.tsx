@@ -3,7 +3,18 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Users, BookOpen, Calendar, TrendingUp } from "lucide-react";
 
-export function PartnerOverview() {
+interface PartnerOverviewProps {
+  onNavigate?: (section: string) => void;
+}
+
+export function PartnerOverview({ onNavigate }: PartnerOverviewProps) {
+  const handleViewDetails = () => {
+    console.log("View Details clicked - navigating to batches");
+    if (onNavigate) {
+      onNavigate("batches");
+    }
+  };
+
   return (
     <div className="w-full bg-white min-h-screen">
       {/* Header */}
@@ -96,7 +107,10 @@ export function PartnerOverview() {
                   </div>
                   <div className="text-right">
                     <p className="text-sm text-gray-600">24 Students</p>
-                    <button className="text-xs bg-blue-500 text-white px-3 py-1 rounded mt-1 hover:bg-blue-600">
+                    <button 
+                      onClick={handleViewDetails}
+                      className="text-xs bg-blue-500 text-white px-3 py-1 rounded mt-1 hover:bg-blue-600"
+                    >
                       View Details
                     </button>
                   </div>
@@ -110,7 +124,10 @@ export function PartnerOverview() {
                   </div>
                   <div className="text-right">
                     <p className="text-sm text-gray-600">18 Students</p>
-                    <button className="text-xs bg-blue-500 text-white px-3 py-1 rounded mt-1 hover:bg-blue-600">
+                    <button 
+                      onClick={handleViewDetails}
+                      className="text-xs bg-blue-500 text-white px-3 py-1 rounded mt-1 hover:bg-blue-600"
+                    >
                       View Details
                     </button>
                   </div>
@@ -124,7 +141,10 @@ export function PartnerOverview() {
                   </div>
                   <div className="text-right">
                     <p className="text-sm text-gray-600">15 Students</p>
-                    <button className="text-xs bg-blue-500 text-white px-3 py-1 rounded mt-1 hover:bg-blue-600">
+                    <button 
+                      onClick={handleViewDetails}
+                      className="text-xs bg-blue-500 text-white px-3 py-1 rounded mt-1 hover:bg-blue-600"
+                    >
                       View Details
                     </button>
                   </div>
