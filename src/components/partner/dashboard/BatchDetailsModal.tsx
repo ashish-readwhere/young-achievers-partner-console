@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -15,7 +14,8 @@ import {
   User,
   Phone,
   Mail,
-  ArrowLeft
+  ArrowLeft,
+  Star
 } from "lucide-react";
 
 interface Student {

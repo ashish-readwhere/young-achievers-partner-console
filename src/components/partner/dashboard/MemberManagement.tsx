@@ -1,3 +1,5 @@
+
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -17,8 +19,15 @@ import {
   Trophy,
   Award
 } from "lucide-react";
+import { StudentProfileModal } from "./StudentProfileModal";
+import { RatingModal } from "./RatingModal";
 
 export function MemberManagement() {
+  const [selectedStudent, setSelectedStudent] = useState<any>(null);
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [showRatingModal, setShowRatingModal] = useState(false);
+  const [studentToRate, setStudentToRate] = useState<any>(null);
+
   // Partner can see all members but can only edit those in their batches
   const partnerSubject = "Yoga";
   
@@ -36,7 +45,7 @@ export function MemberManagement() {
       joinDate: "Dec 1, 2024",
       status: "Active",
       attendance: 95,
-      performance: 88,
+      rating: 4.5,
       batchesEnrolled: 2,
       canEdit: true,
       teacher: "Instructor Sarah Wilson",
@@ -56,7 +65,7 @@ export function MemberManagement() {
       joinDate: "Dec 5, 2024",
       status: "Active",
       attendance: 89,
-      performance: 92,
+      rating: 4.2,
       batchesEnrolled: 1,
       canEdit: true,
       teacher: "Instructor Sarah Wilson",
@@ -77,7 +86,7 @@ export function MemberManagement() {
       joinDate: "Nov 15, 2024",
       status: "Active",
       attendance: 87,
-      performance: 85,
+      rating: 4.0,
       batchesEnrolled: 1,
       canEdit: false,
       teacher: "Master John Smith",
@@ -97,7 +106,7 @@ export function MemberManagement() {
       joinDate: "Nov 20, 2024",
       status: "Active",
       attendance: 92,
-      performance: 94,
+      rating: 4.8,
       batchesEnrolled: 2,
       canEdit: false,
       teacher: "Prof. Tech Guru",
@@ -136,6 +145,33 @@ export function MemberManagement() {
       color: "orange"
     }
   ];
+
+  const handleViewProfile = (member: any) => {
+    setSelectedStudent(member);
+    setShowProfileModal(true);
+  };
+
+  const handleRateStudent = (studentId: number) => {
+    const student = members.find(m => m.id === studentId);
+    if (student) {
+      setStudentToRate({
+        id: student.id,
+        name: student.name,
+        avatar: student.avatar
+      });
+      setShowRatingModal(true);
+    }
+  };
+
+  const closeProfileModal = () => {
+    setShowProfileModal(false);
+    setSelectedStudent(null);
+  };
+
+  const closeRatingModal = () => {
+    setShowRatingModal(false);
+    setStudentToRate(null);
+  };
 
   return (
     <div className="w-full bg-white min-h-screen">
@@ -236,14 +272,16 @@ export function MemberManagement() {
                   <p className="text-xs text-gray-500 mt-1">Batches Enrolled: {member.batchesEnrolled}</p>
                 </div>
 
-                {/* Performance and Attendance */}
+                {/* Rating and Attendance */}
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                  <div className="bg-blue-50 rounded-lg p-3">
+                  <div className="bg-yellow-50 rounded-lg p-3">
                     <div className="flex justify-between items-center mb-2">
-                      <span className="text-sm font-medium text-blue-700">Performance</span>
-                      <span className="text-lg font-bold text-blue-900">{member.performance}%</span>
+                      <span className="text-sm font-medium text-yellow-700">Rating</span>
+                      <div className="flex items-center gap-1">
+                        <Star className="w-4 h-4 text-yellow-500 fill-current" />
+                        <span className="text-lg font-bold text-yellow-900">{member.rating}</span>
+                      </div>
                     </div>
-                    <Progress value={member.performance} className="h-2" />
                   </div>
                   <div className="bg-green-50 rounded-lg p-3">
                     <div className="flex justify-between items-center mb-2">
@@ -292,12 +330,21 @@ export function MemberManagement() {
 
                 {/* Action Buttons */}
                 <div className="flex gap-2">
-                  <Button size="sm" variant="outline" className="flex-1">
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    className="flex-1"
+                    onClick={() => handleViewProfile(member)}
+                  >
                     <Eye className="h-4 w-4 mr-2" />
                     View Profile
                   </Button>
                   {member.canEdit ? (
-                    <Button size="sm" className="flex-1 bg-blue-600 hover:bg-blue-700 text-white">
+                    <Button 
+                      size="sm" 
+                      className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
+                      onClick={() => handleRateStudent(member.id)}
+                    >
                       <Star className="h-4 w-4 mr-2" />
                       Rate Student
                     </Button>
@@ -313,6 +360,20 @@ export function MemberManagement() {
           ))}
         </div>
       </div>
+
+      {/* Modals */}
+      <StudentProfileModal
+        isOpen={showProfileModal}
+        onClose={closeProfileModal}
+        onRateStudent={handleRateStudent}
+        student={selectedStudent}
+      />
+
+      <RatingModal
+        isOpen={showRatingModal}
+        onClose={closeRatingModal}
+        student={studentToRate}
+      />
     </div>
   );
 }
