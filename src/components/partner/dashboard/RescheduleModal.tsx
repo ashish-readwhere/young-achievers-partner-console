@@ -1,241 +1,161 @@
-
-import { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Calendar, Clock, MapPin, AlertTriangle, CheckCircle } from "lucide-react";
+import React, { useState, useEffect } from 'react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
+import { Calendar } from "@/components/ui/calendar"
+import { format } from 'date-fns';
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { cn } from "@/lib/utils"
+import { CalendarIcon } from "lucide-react"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { useToast } from "@/components/ui/use-toast"
 
 interface RescheduleModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onConfirm: (newDate: string, newTime: string, reason: string) => void;
-  batch: {
-    name: string;
-    nextSession: string;
-    nextSessionTime: string;
-    venue: string;
-    spot: string;
-  } | null;
+  batch: any; // Replace 'any' with the actual type of 'batch'
+  onReschedule: (batchId: string, newDate: Date, newTime: string, reason: string) => void;
 }
 
-export function RescheduleModal({ isOpen, onClose, onConfirm, batch }: RescheduleModalProps) {
-  const [newDate, setNewDate] = useState("");
-  const [newTime, setNewTime] = useState("");
-  const [reason, setReason] = useState("");
-  const [availabilityStatus, setAvailabilityStatus] = useState<'checking' | 'available' | 'unavailable' | null>(null);
-  const [isSubmitted, setIsSubmitted] = useState(false);
+const RescheduleModal = ({ isOpen, onClose, batch, onReschedule }: RescheduleModalProps) => {
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
+  const [selectedTime, setSelectedTime] = useState('');
+  const [reason, setReason] = useState('');
+  const [availableTimes, setAvailableTimes] = useState<string[]>([]);
+  const [availabilityStatus, setAvailabilityStatus] = useState<'idle' | 'checking' | 'available' | 'unavailable'>('idle');
+  const { toast } = useToast();
 
-  if (!batch) return null;
-
-  // Mock venue availability checker
-  const checkVenueAvailability = (date: string, time: string) => {
-    if (!date || !time) {
-      setAvailabilityStatus(null);
-      return;
-    }
-
-    setAvailabilityStatus('checking');
-    
-    // Simulate API call delay
-    setTimeout(() => {
-      // Mock logic: make some dates/times unavailable for demo
-      const isWeekend = new Date(date).getDay() === 0 || new Date(date).getDay() === 6;
-      const hour = parseInt(time.split(':')[0]);
-      const isEarlyMorning = hour < 8;
-      const isLateEvening = hour > 20;
-      
-      if (isWeekend || isEarlyMorning || isLateEvening) {
-        setAvailabilityStatus('unavailable');
-      } else {
-        setAvailabilityStatus('available');
-      }
-    }, 1000);
-  };
-
-  const handleDateTimeChange = (date: string, time: string) => {
-    checkVenueAvailability(date, time);
-  };
-
-  const handleDateChange = (date: string) => {
-    setNewDate(date);
-    handleDateTimeChange(date, newTime);
-  };
-
-  const handleTimeChange = (time: string) => {
-    setNewTime(time);
-    handleDateTimeChange(newDate, time);
-  };
-
-  const handleConfirm = () => {
-    if (newDate && newTime && reason.trim() && availabilityStatus === 'available') {
-      onConfirm(newDate, newTime, reason);
-      setIsSubmitted(true);
-      
-      // Auto close after showing success message
+  useEffect(() => {
+    if (selectedDate) {
+      setAvailabilityStatus('checking');
+      // Simulate checking availability
       setTimeout(() => {
-        handleClose();
-      }, 2000);
+        const randomAvailability = Math.random() > 0.5;
+        if (randomAvailability) {
+          setAvailableTimes(['9:00 AM', '10:00 AM', '11:00 AM', '2:00 PM', '3:00 PM', '4:00 PM']);
+          setAvailabilityStatus('available');
+        } else {
+          setAvailableTimes([]);
+          setAvailabilityStatus('unavailable');
+          toast({
+            title: "No slots available on this date.",
+            description: "Please select a different date.",
+            variant: "destructive",
+          })
+        }
+      }, 1000);
+    }
+  }, [selectedDate, toast]);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (selectedDate && selectedTime && reason.trim()) {
+      onReschedule(batch.id, selectedDate, selectedTime, reason);
+      onClose();
+    } else {
+      toast({
+        title: "Error",
+        description: "Please fill in all fields.",
+        variant: "destructive",
+      })
     }
   };
 
-  const handleClose = () => {
-    onClose();
-    // Reset form after modal closes
-    setTimeout(() => {
-      setNewDate("");
-      setNewTime("");
-      setReason("");
-      setAvailabilityStatus(null);
-      setIsSubmitted(false);
-    }, 300);
-  };
-
-  const isFormValid = newDate && newTime && reason.trim() && availabilityStatus === 'available';
-
-  if (isSubmitted) {
-    return (
-      <Dialog open={isOpen} onOpenChange={handleClose}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-green-600">
-              <CheckCircle className="w-5 h-5" />
-              Reschedule Request Submitted
-            </DialogTitle>
-          </DialogHeader>
-          
-          <div className="text-center py-4">
-            <p className="text-gray-600 mb-4">
-              Your reschedule request has been sent to the admin for approval.
-            </p>
-            <p className="text-sm text-gray-500">
-              You will be notified once the admin reviews and approves your request.
-            </p>
-          </div>
-        </DialogContent>
-      </Dialog>
-    );
-  }
+  const isFormValid = selectedDate && selectedTime && reason.trim();
 
   return (
-    <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle>Reschedule Session</DialogTitle>
+          <DialogTitle>Reschedule Batch</DialogTitle>
+          <DialogDescription>
+            Select a new date and time for the batch.
+          </DialogDescription>
         </DialogHeader>
-
-        <div className="space-y-4">
-          {/* Current Session Info */}
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <h3 className="font-semibold text-gray-900 mb-2">{batch.name}</h3>
-            <div className="space-y-2 text-sm text-gray-600">
-              <div className="flex items-center gap-2">
-                <Calendar className="w-4 h-4" />
-                <span>Current: {batch.nextSession} at {batch.nextSessionTime}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <MapPin className="w-4 h-4" />
-                <span>{batch.venue} - {batch.spot}</span>
-              </div>
-            </div>
-          </div>
-
-          {/* New Date and Time */}
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                New Date *
-              </label>
-              <input
-                type="date"
-                value={newDate}
-                onChange={(e) => handleDateChange(e.target.value)}
-                min={new Date().toISOString().split('T')[0]}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                New Time *
-              </label>
-              <input
-                type="time"
-                value={newTime}
-                onChange={(e) => handleTimeChange(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-          </div>
-
-          {/* Venue Availability Status */}
-          {availabilityStatus === 'checking' && (
-            <Alert>
-              <Clock className="h-4 w-4" />
-              <AlertDescription>
-                Checking venue availability...
-              </AlertDescription>
-            </Alert>
-          )}
-
-          {availabilityStatus === 'available' && (
-            <Alert className="border-green-200 bg-green-50">
-              <CheckCircle className="h-4 w-4 text-green-600" />
-              <AlertDescription className="text-green-800">
-                Great! {batch.venue} - {batch.spot} is available on {newDate} at {newTime}.
-              </AlertDescription>
-            </Alert>
-          )}
-
-          {availabilityStatus === 'unavailable' && (
-            <Alert className="border-red-200 bg-red-50">
-              <AlertTriangle className="h-4 w-4 text-red-600" />
-              <AlertDescription className="text-red-800">
-                Sorry, {batch.venue} - {batch.spot} is not available on {newDate} at {newTime}. 
-                Please select a different date or time.
-              </AlertDescription>
-            </Alert>
-          )}
-
-          {/* Reason for Reschedule */}
+        <form onSubmit={handleSubmit} className="grid gap-4 py-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Reason for Reschedule *
-            </label>
+            <Label htmlFor="date">New Date</Label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant={"outline"}
+                  className={cn(
+                    "w-full justify-start text-left font-normal",
+                    !selectedDate && "text-muted-foreground"
+                  )}
+                >
+                  {selectedDate ? (
+                    format(selectedDate, "PPP")
+                  ) : (
+                    <span>Pick a date</span>
+                  )}
+                  <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="center" side="bottom">
+                <Calendar
+                  mode="single"
+                  selected={selectedDate}
+                  onSelect={setSelectedDate}
+                  disabled={(date) =>
+                    date < new Date()
+                  }
+                  initialFocus
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
+          <div>
+            <Label htmlFor="time">New Time</Label>
+            <Select onValueChange={setSelectedTime}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select a time" />
+              </SelectTrigger>
+              <SelectContent>
+                {availableTimes.map((time) => (
+                  <SelectItem key={time} value={time}>{time}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <Label htmlFor="reason">Reason for Reschedule</Label>
             <Textarea
-              placeholder="Please provide a reason for rescheduling this session..."
+              id="reason"
               value={reason}
               onChange={(e) => setReason(e.target.value)}
-              className="min-h-[80px] resize-none"
-              maxLength={500}
+              placeholder="Reason for rescheduling the batch"
             />
-            <p className="text-xs text-gray-500 mt-1">
-              {reason.length}/500 characters
-            </p>
           </div>
-
-          {/* Admin Approval Notice */}
-          <Alert className="border-blue-200 bg-blue-50">
-            <AlertTriangle className="h-4 w-4 text-blue-600" />
-            <AlertDescription className="text-blue-800">
-              <strong>Note:</strong> This reschedule request will be sent to the admin for approval. 
-              The session will only be rescheduled after admin approval.
-            </AlertDescription>
-          </Alert>
-        </div>
-
-        <DialogFooter>
-          <Button variant="outline" onClick={handleClose}>
+        </form>
+        <DialogFooter className="gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onClose}
+          >
             Cancel
           </Button>
-          <Button 
-            onClick={handleConfirm} 
+          <Button
+            type="submit"
             disabled={!isFormValid || availabilityStatus === 'checking'}
+            className="bg-blue-600 hover:bg-blue-700"
           >
-            {availabilityStatus === 'checking' ? 'Checking...' : 'Submit Request'}
+            {availabilityStatus === 'checking' ? 'Checking...' : 'Reschedule Batch'}
           </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
   );
-}
+};
+
+export default RescheduleModal;
