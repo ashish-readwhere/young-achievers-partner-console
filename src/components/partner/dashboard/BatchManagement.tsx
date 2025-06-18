@@ -1,4 +1,5 @@
 
+
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -281,7 +282,7 @@ export function BatchManagement() {
                         <p className="text-sm text-blue-700">
                           {batch.nextSessionTime}
                         </p>
-                        <p className="text-xs text-blue-600 mt-1">{batch.venue}</p>
+                        <p className="text-xs text-blue-600 mt-1">{batch.venue} - {batch.spot}</p>
                       </div>
                     </div>
 
@@ -293,7 +294,7 @@ export function BatchManagement() {
                         <p className="text-sm text-gray-700">
                           {batch.lastSessionTime}
                         </p>
-                        <p className="text-xs text-gray-600 mt-1">{batch.venue}</p>
+                        <p className="text-xs text-gray-600 mt-1">{batch.venue} - {batch.spot}</p>
                       </div>
                     </div>
                   </div>
@@ -415,3 +416,4 @@ export function BatchManagement() {
     </div>
   );
 }
+
