@@ -37,13 +37,13 @@ const PartnerConsole = () => {
   };
 
   return (
-    <SidebarProvider>
+    <SidebarProvider defaultOpen={true}>
       <div className="min-h-screen flex w-full bg-gray-50">
         <PartnerSidebar 
           onMenuSelect={setActiveSection} 
           activeMenu={activeSection}
         />
-        <main className="flex-1">
+        <main className="flex-1 min-w-0">
           {/* Navigation Header */}
           <div className="bg-white border-b px-6 py-3">
             <div className="flex items-center justify-between">
@@ -59,7 +59,9 @@ const PartnerConsole = () => {
             </div>
           </div>
           
-          {renderContent()}
+          <div className="p-6">
+            {renderContent()}
+          </div>
         </main>
       </div>
     </SidebarProvider>
