@@ -1,4 +1,5 @@
 
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -13,8 +14,16 @@ import {
   Edit,
   MessageSquare
 } from "lucide-react";
+import { BatchDetailsModal } from "./BatchDetailsModal";
+import { RescheduleModal } from "./RescheduleModal";
+import { FeedbackModal } from "./FeedbackModal";
 
 export function BatchManagement() {
+  const [selectedBatch, setSelectedBatch] = useState<any>(null);
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+  const [isRescheduleModalOpen, setIsRescheduleModalOpen] = useState(false);
+  const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
+
   // Mock data for current partner (Yoga instructor)
   const partnerName = "Instructor Sarah Wilson";
   const partnerSubject = "Yoga";
@@ -80,6 +89,34 @@ export function BatchManagement() {
       status: "Upcoming"
     }
   ];
+
+  const handleViewDetails = (batch: any) => {
+    console.log("Opening details for batch:", batch);
+    setSelectedBatch(batch);
+    setIsDetailsModalOpen(true);
+  };
+
+  const handleReschedule = (batch: any) => {
+    console.log("Opening reschedule for batch:", batch);
+    setSelectedBatch(batch);
+    setIsRescheduleModalOpen(true);
+  };
+
+  const handleFeedback = (batch: any) => {
+    console.log("Opening feedback for batch:", batch);
+    setSelectedBatch(batch);
+    setIsFeedbackModalOpen(true);
+  };
+
+  const handleRescheduleConfirm = (newDate: string, newTime: string) => {
+    console.log("Rescheduling to:", newDate, newTime);
+    // Here you would typically update the batch data
+  };
+
+  const handleFeedbackSubmit = (feedback: string, rating: number) => {
+    console.log("Submitting feedback:", feedback, rating);
+    // Here you would typically save the feedback
+  };
 
   return (
     <div className="w-full bg-white min-h-screen">
@@ -232,15 +269,29 @@ export function BatchManagement() {
 
                   {/* Action Buttons */}
                   <div className="flex gap-2">
-                    <Button size="sm" className="flex-1 bg-blue-600 hover:bg-blue-700">
+                    <Button 
+                      size="sm" 
+                      className="flex-1 bg-blue-600 hover:bg-blue-700"
+                      onClick={() => handleViewDetails(batch)}
+                    >
                       <Eye className="w-4 h-4 mr-1" />
                       View Details
                     </Button>
-                    <Button size="sm" variant="outline" className="flex-1">
+                    <Button 
+                      size="sm" 
+                      variant="outline" 
+                      className="flex-1"
+                      onClick={() => handleReschedule(batch)}
+                    >
                       <Edit className="w-4 h-4 mr-1" />
                       Reschedule
                     </Button>
-                    <Button size="sm" variant="outline" className="flex-1">
+                    <Button 
+                      size="sm" 
+                      variant="outline" 
+                      className="flex-1"
+                      onClick={() => handleFeedback(batch)}
+                    >
                       <MessageSquare className="w-4 h-4 mr-1" />
                       Feedback
                     </Button>
@@ -305,6 +356,27 @@ export function BatchManagement() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Modals */}
+      <BatchDetailsModal
+        isOpen={isDetailsModalOpen}
+        onClose={() => setIsDetailsModalOpen(false)}
+        batch={selectedBatch}
+      />
+
+      <RescheduleModal
+        isOpen={isRescheduleModalOpen}
+        onClose={() => setIsRescheduleModalOpen(false)}
+        onConfirm={handleRescheduleConfirm}
+        batch={selectedBatch}
+      />
+
+      <FeedbackModal
+        isOpen={isFeedbackModalOpen}
+        onClose={() => setIsFeedbackModalOpen(false)}
+        onSubmit={handleFeedbackSubmit}
+        batch={selectedBatch}
+      />
     </div>
   );
 }
