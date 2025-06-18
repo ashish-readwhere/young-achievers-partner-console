@@ -55,7 +55,6 @@ interface PartnerSidebarProps {
 
 export function PartnerSidebar({ onMenuSelect, activeMenu = "overview" }: PartnerSidebarProps) {
   const { open, toggleSidebar } = useSidebar();
-  const isCollapsed = !open;
 
   const handleMenuClick = (menuId: string) => {
     onMenuSelect?.(menuId);
@@ -71,9 +70,9 @@ export function PartnerSidebar({ onMenuSelect, activeMenu = "overview" }: Partne
 
   return (
     <Sidebar className="border-r bg-gradient-to-b from-blue-50 to-white" collapsible="icon">
-      <SidebarHeader className={`p-4 border-b bg-white/50 backdrop-blur-sm ${isCollapsed ? 'px-2' : ''}`}>
+      <SidebarHeader className={`p-4 border-b bg-white/50 backdrop-blur-sm ${!open ? 'px-2' : ''}`}>
         <div className="flex items-center justify-between">
-          <div className={`flex items-center gap-3 ${isCollapsed ? 'justify-center' : ''}`}>
+          <div className={`flex items-center gap-3 ${!open ? 'justify-center' : ''}`}>
             <div className="relative flex-shrink-0">
               <img 
                 src="/lovable-uploads/95eca461-e78f-43e5-9b21-9ac173f03cdc.png" 
@@ -82,7 +81,7 @@ export function PartnerSidebar({ onMenuSelect, activeMenu = "overview" }: Partne
               />
               <div className="absolute -bottom-1 -right-1 w-2 h-2 bg-green-500 rounded-full border border-white"></div>
             </div>
-            {!isCollapsed && (
+            {open && (
               <div className="flex-1 min-w-0">
                 <h2 className="font-bold text-sm text-gray-900 truncate">Young Achievers</h2>
                 <p className="text-xs text-blue-600 uppercase tracking-wide font-medium">PARTNER CONSOLE</p>
@@ -95,14 +94,14 @@ export function PartnerSidebar({ onMenuSelect, activeMenu = "overview" }: Partne
             onClick={toggleSidebar}
             className="h-6 w-6 p-0 hover:bg-blue-100 flex-shrink-0"
           >
-            {isCollapsed ? (
+            {!open ? (
               <ChevronRight className="h-4 w-4" />
             ) : (
               <ChevronLeft className="h-4 w-4" />
             )}
           </Button>
         </div>
-        {!isCollapsed && (
+        {open && (
           <div className="mt-3 p-2 bg-blue-100 rounded-lg border border-blue-200">
             <p className="text-xs text-blue-700 font-medium">Welcome back!</p>
             <p className="text-xs text-blue-600">Manage your programs</p>
@@ -112,7 +111,7 @@ export function PartnerSidebar({ onMenuSelect, activeMenu = "overview" }: Partne
       
       <SidebarContent className="px-2 py-4 flex flex-col h-full overflow-y-auto">
         <SidebarGroup className="flex-1">
-          {!isCollapsed && (
+          {open && (
             <SidebarGroupLabel className="text-xs uppercase tracking-wide text-gray-500 font-semibold mb-3 px-2">
               Navigation
             </SidebarGroupLabel>
@@ -124,17 +123,17 @@ export function PartnerSidebar({ onMenuSelect, activeMenu = "overview" }: Partne
                   <SidebarMenuButton 
                     asChild
                     isActive={activeMenu === item.id}
-                    tooltip={isCollapsed ? item.title : undefined}
+                    tooltip={!open ? item.title : undefined}
                     className="w-full justify-start gap-3 px-3 py-2 text-gray-700 hover:bg-blue-100 hover:text-blue-700 data-[active=true]:bg-blue-100 data-[active=true]:text-blue-700 data-[active=true]:border-r-2 data-[active=true]:border-blue-500 rounded-lg transition-all duration-200 group"
                   >
                     <button 
-                      className={`flex items-center gap-3 w-full text-left ${isCollapsed ? 'justify-center' : ''}`}
+                      className={`flex items-center gap-3 w-full text-left ${!open ? 'justify-center' : ''}`}
                       onClick={() => handleMenuClick(item.id)}
                     >
                       <div className="flex-shrink-0">
                         <item.icon className="w-5 h-5 group-hover:scale-110 transition-transform duration-200" />
                       </div>
-                      {!isCollapsed && (
+                      {open && (
                         <span className="text-sm font-medium block leading-tight truncate">{item.title}</span>
                       )}
                     </button>
@@ -145,7 +144,7 @@ export function PartnerSidebar({ onMenuSelect, activeMenu = "overview" }: Partne
           </SidebarGroupContent>
         </SidebarGroup>
 
-        {!isCollapsed && (
+        {open && (
           <>
             {/* Quick Stats Section */}
             <div className="mt-4 p-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-100">
