@@ -8,10 +8,14 @@ import { PartnerProfile } from "./dashboard/PartnerProfile";
 export function PartnerDashboard() {
   const [activeSection, setActiveSection] = useState("overview");
 
+  const handleNavigation = (section: string) => {
+    setActiveSection(section);
+  };
+
   const renderContent = () => {
     switch (activeSection) {
       case "overview":
-        return <PartnerOverview />;
+        return <PartnerOverview onNavigate={handleNavigation} />;
       case "batches":
         return <BatchManagement />;
       case "members":
@@ -19,7 +23,7 @@ export function PartnerDashboard() {
       case "profile":
         return <PartnerProfile />;
       default:
-        return <PartnerOverview />;
+        return <PartnerOverview onNavigate={handleNavigation} />;
     }
   };
 
