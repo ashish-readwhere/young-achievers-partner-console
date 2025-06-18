@@ -54,8 +54,8 @@ interface PartnerSidebarProps {
 }
 
 export function PartnerSidebar({ onMenuSelect, activeMenu = "overview" }: PartnerSidebarProps) {
-  const { state, toggleSidebar } = useSidebar();
-  const isCollapsed = state === "collapsed";
+  const { open, toggleSidebar } = useSidebar();
+  const isCollapsed = !open;
 
   const handleMenuClick = (menuId: string) => {
     onMenuSelect?.(menuId);

@@ -6,7 +6,6 @@ import { PartnerOverview } from "@/components/partner/dashboard/PartnerOverview"
 import { BatchManagement } from "@/components/partner/dashboard/BatchManagement";
 import { MemberManagement } from "@/components/partner/dashboard/MemberManagement";
 import { PartnerProfile } from "@/components/partner/dashboard/PartnerProfile";
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Home } from "lucide-react";
@@ -50,10 +49,10 @@ const PartnerConsole = () => {
               <div className="text-sm text-gray-600">
                 Partner Console • Current Section: <span className="font-medium capitalize">{activeSection}</span>
               </div>
-              <Link to="/">
+              <Link to="/login">
                 <Button variant="outline" size="sm">
                   <Home className="w-4 h-4 mr-2" />
-                  Back to Home
+                  Back to Login
                 </Button>
               </Link>
             </div>
