@@ -148,26 +148,26 @@ export function PartnerOverview({ onNavigate }: PartnerOverviewProps) {
   return (
     <div className="w-full bg-white min-h-screen">
       {/* Header */}
-      <div className="bg-white border-b px-3 sm:px-6 lg:px-8 py-4 sm:py-6">
-        <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Partner Overview</h1>
-        <p className="text-sm sm:text-base text-gray-600 mt-1">Welcome back, {partnerName}! Here's your {partnerSubject} teaching overview.</p>
+      <div className="bg-white border-b px-4 py-4">
+        <h1 className="text-lg font-bold text-gray-900 leading-tight">Partner Overview</h1>
+        <p className="text-sm text-gray-600 mt-1 leading-tight">Welcome back, {partnerName}! Here's your {partnerSubject} teaching overview.</p>
       </div>
 
       {/* Main Content */}
-      <div className="p-3 sm:p-6 lg:p-8">
+      <div className="p-4 space-y-6">
         {/* Stats Cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-6 sm:mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {stats.map((stat, index) => (
             <Card key={index} className={`border-0 shadow-sm bg-${stat.color}-50`}>
-              <CardContent className="p-3 sm:p-4 lg:p-6">
-                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
-                  <div className="flex-1 min-w-0">
-                    <p className={`text-xs sm:text-sm font-medium text-${stat.color}-600 mb-1`}>{stat.label}</p>
-                    <p className={`text-xl sm:text-2xl lg:text-3xl font-bold text-${stat.color}-900`}>{stat.value}</p>
-                    <p className={`text-xs text-${stat.color}-600 mt-1 truncate`}>{stat.change}</p>
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div className="min-w-0 flex-1">
+                    <p className={`text-xs font-medium text-${stat.color}-600 mb-1 leading-tight`}>{stat.label}</p>
+                    <p className={`text-xl font-bold text-${stat.color}-900 leading-tight`}>{stat.value}</p>
+                    <p className={`text-xs text-${stat.color}-600 mt-1 leading-tight truncate`}>{stat.change}</p>
                   </div>
-                  <div className={`w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-${stat.color}-500 rounded-lg flex items-center justify-center mt-2 lg:mt-0 lg:ml-3 flex-shrink-0`}>
-                    <stat.icon className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-white" />
+                  <div className={`w-10 h-10 bg-${stat.color}-500 rounded-lg flex items-center justify-center flex-shrink-0 ml-2`}>
+                    <stat.icon className="w-5 h-5 text-white" />
                   </div>
                 </div>
               </CardContent>
@@ -175,63 +175,68 @@ export function PartnerOverview({ onNavigate }: PartnerOverviewProps) {
           ))}
         </div>
 
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 sm:gap-8">
+        <div className="space-y-6">
           {/* Recent Students */}
           <Card className="border-0 shadow-sm">
-            <CardHeader className="flex flex-row items-center justify-between px-4 sm:px-6 py-4 sm:py-6">
-              <CardTitle className="text-base sm:text-lg font-semibold text-gray-900">Recent Students</CardTitle>
+            <CardHeader className="flex flex-row items-center justify-between px-4 py-4">
+              <CardTitle className="text-base font-semibold text-gray-900">Recent Students</CardTitle>
               <Button 
                 variant="outline" 
                 size="sm"
                 onClick={() => onNavigate('members')}
-                className="text-xs sm:text-sm"
+                className="text-xs"
               >
                 View All
               </Button>
             </CardHeader>
-            <CardContent className="px-4 sm:px-6">
-              <div className="space-y-3 sm:space-y-4">
+            <CardContent className="px-4 pb-4">
+              <div className="space-y-3">
                 {recentStudents.map((student) => (
-                  <div key={student.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-3 sm:p-4 bg-gray-50 rounded-lg gap-3 sm:gap-4">
-                    <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
-                      <Avatar className="h-10 w-10 sm:h-12 sm:w-12 flex-shrink-0">
+                  <div key={student.id} className="p-3 bg-gray-50 rounded-lg space-y-3">
+                    <div className="flex items-center gap-3">
+                      <Avatar className="h-10 w-10 flex-shrink-0">
                         <AvatarImage src={student.avatar} alt={student.name} />
-                        <AvatarFallback className="bg-blue-100 text-blue-600 text-xs sm:text-sm">
+                        <AvatarFallback className="bg-blue-100 text-blue-600 text-xs">
                           {student.name.split(' ').map(n => n[0]).join('')}
                         </AvatarFallback>
                       </Avatar>
                       <div className="min-w-0 flex-1">
-                        <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 mb-1">
-                          <h4 className="font-medium text-gray-900 text-sm sm:text-base truncate">{student.name}</h4>
-                          <Badge variant="outline" className="bg-green-50 text-green-700 text-xs w-fit">
+                        <div className="flex items-center gap-2 mb-1">
+                          <h4 className="font-medium text-gray-900 text-sm truncate">{student.name}</h4>
+                          <Badge variant="outline" className="bg-green-50 text-green-700 text-xs flex-shrink-0">
                             {student.status}
                           </Badge>
                         </div>
-                        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-600">
-                          <div className="flex items-center gap-1 min-w-0">
-                            <Mail className="w-3 h-3 flex-shrink-0" />
-                            <span className="truncate">{student.email}</span>
-                          </div>
-                          <div className="flex items-center gap-1 min-w-0">
-                            <Phone className="w-3 h-3 flex-shrink-0" />
-                            <span className="truncate">{student.phone}</span>
-                          </div>
-                        </div>
-                        <div className="mt-2">
-                          <div className="flex items-center justify-between text-xs sm:text-sm">
-                            <span className="text-gray-600">Attendance</span>
-                            <span className="font-medium text-gray-900">{student.attendance}%</span>
-                          </div>
-                          <Progress value={student.attendance} className="h-2 mt-1" />
-                        </div>
                       </div>
                     </div>
+                    
+                    <div className="space-y-2">
+                      <div className="grid grid-cols-1 gap-2 text-xs text-gray-600">
+                        <div className="flex items-center gap-1 min-w-0">
+                          <Mail className="w-3 h-3 flex-shrink-0" />
+                          <span className="truncate">{student.email}</span>
+                        </div>
+                        <div className="flex items-center gap-1 min-w-0">
+                          <Phone className="w-3 h-3 flex-shrink-0" />
+                          <span className="truncate">{student.phone}</span>
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <div className="flex items-center justify-between text-xs mb-1">
+                          <span className="text-gray-600">Attendance</span>
+                          <span className="font-medium text-gray-900">{student.attendance}%</span>
+                        </div>
+                        <Progress value={student.attendance} className="h-2" />
+                      </div>
+                    </div>
+                    
                     <Button 
                       size="sm" 
-                      className="bg-gray-800 hover:bg-gray-900 text-white text-xs sm:text-sm w-full sm:w-auto"
+                      className="bg-gray-800 hover:bg-gray-900 text-white text-xs w-full"
                       onClick={() => handleViewProfile(student)}
                     >
-                      <User className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                      <User className="w-3 h-3 mr-2" />
                       View Profile
                     </Button>
                   </div>
@@ -242,35 +247,35 @@ export function PartnerOverview({ onNavigate }: PartnerOverviewProps) {
 
           {/* Upcoming Sessions */}
           <Card className="border-0 shadow-sm">
-            <CardHeader className="flex flex-row items-center justify-between px-4 sm:px-6 py-4 sm:py-6">
-              <CardTitle className="text-base sm:text-lg font-semibold text-gray-900">Upcoming Sessions</CardTitle>
+            <CardHeader className="flex flex-row items-center justify-between px-4 py-4">
+              <CardTitle className="text-base font-semibold text-gray-900">Upcoming Sessions</CardTitle>
               <Button 
                 variant="outline" 
                 size="sm"
                 onClick={() => onNavigate('batches')}
-                className="text-xs sm:text-sm"
+                className="text-xs"
               >
                 View All
               </Button>
             </CardHeader>
-            <CardContent className="px-4 sm:px-6">
-              <div className="space-y-3 sm:space-y-4">
+            <CardContent className="px-4 pb-4">
+              <div className="space-y-3">
                 {upcomingSessions.map((session) => (
-                  <div key={session.id} className="p-3 sm:p-4 bg-blue-50 rounded-lg border-l-4 border-l-blue-500">
-                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
-                      <div className="flex-1 min-w-0">
-                        <h4 className="font-medium text-gray-900 mb-2 text-sm sm:text-base">{session.title}</h4>
+                  <div key={session.id} className="p-3 bg-blue-50 rounded-lg border-l-4 border-l-blue-500">
+                    <div className="space-y-3">
+                      <div>
+                        <h4 className="font-medium text-gray-900 mb-2 text-sm leading-tight">{session.title}</h4>
                         <div className="space-y-1">
-                          <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-600">
-                            <Calendar className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+                          <div className="flex items-center gap-2 text-xs text-gray-600">
+                            <Calendar className="w-3 h-3 flex-shrink-0" />
                             <span className="truncate">{session.date} at {session.time}</span>
                           </div>
-                          <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-600">
-                            <MapPin className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+                          <div className="flex items-center gap-2 text-xs text-gray-600">
+                            <MapPin className="w-3 h-3 flex-shrink-0" />
                             <span className="truncate">{session.venue}</span>
                           </div>
-                          <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-600">
-                            <Users className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+                          <div className="flex items-center gap-2 text-xs text-gray-600">
+                            <Users className="w-3 h-3 flex-shrink-0" />
                             <span>{session.students} students</span>
                           </div>
                         </div>
@@ -279,9 +284,10 @@ export function PartnerOverview({ onNavigate }: PartnerOverviewProps) {
                         size="sm" 
                         variant="outline"
                         onClick={() => onNavigate('batches')}
-                        className="w-full sm:w-auto"
+                        className="w-full text-xs"
                       >
-                        <Eye className="w-3 h-3 sm:w-4 sm:h-4" />
+                        <Eye className="w-3 h-3 mr-2" />
+                        View Details
                       </Button>
                     </div>
                   </div>
