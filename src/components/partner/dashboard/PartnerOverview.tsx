@@ -149,7 +149,7 @@ export function PartnerOverview({ onNavigate }: PartnerOverviewProps) {
     <div className="w-full bg-white min-h-screen">
       {/* Header */}
       <div className="bg-white border-b px-4 py-4">
-        <h1 className="text-lg font-bold text-gray-900 leading-tight">Partner Overview</h1>
+        <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 leading-tight">Partner Overview</h1>
         <p className="text-sm text-gray-600 mt-1 leading-tight">Welcome back, {partnerName}! Here's your {partnerSubject} teaching overview.</p>
       </div>
 
@@ -192,53 +192,109 @@ export function PartnerOverview({ onNavigate }: PartnerOverviewProps) {
             <CardContent className="px-4 pb-4">
               <div className="space-y-3">
                 {recentStudents.map((student) => (
-                  <div key={student.id} className="p-3 bg-gray-50 rounded-lg space-y-3">
-                    <div className="flex items-center gap-3">
-                      <Avatar className="h-10 w-10 flex-shrink-0">
-                        <AvatarImage src={student.avatar} alt={student.name} />
-                        <AvatarFallback className="bg-blue-100 text-blue-600 text-xs">
-                          {student.name.split(' ').map(n => n[0]).join('')}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <h4 className="font-medium text-gray-900 text-sm truncate">{student.name}</h4>
-                          <Badge variant="outline" className="bg-green-50 text-green-700 text-xs flex-shrink-0">
-                            {student.status}
-                          </Badge>
+                  <div key={student.id} className="p-3 bg-gray-50 rounded-lg">
+                    {/* Desktop Layout */}
+                    <div className="hidden md:block">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-4 flex-1 min-w-0">
+                          <Avatar className="h-12 w-12 flex-shrink-0">
+                            <AvatarImage src={student.avatar} alt={student.name} />
+                            <AvatarFallback className="bg-blue-100 text-blue-600 text-sm">
+                              {student.name.split(' ').map(n => n[0]).join('')}
+                            </AvatarFallback>
+                          </Avatar>
+                          
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-3 mb-2">
+                              <h4 className="font-medium text-gray-900 text-sm">{student.name}</h4>
+                              <Badge variant="outline" className="bg-green-50 text-green-700 text-xs">
+                                {student.status}
+                              </Badge>
+                            </div>
+                            
+                            <div className="grid grid-cols-2 gap-4 text-xs text-gray-600">
+                              <div className="flex items-center gap-2">
+                                <Mail className="w-3 h-3 flex-shrink-0" />
+                                <span className="truncate">{student.email}</span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <Phone className="w-3 h-3 flex-shrink-0" />
+                                <span className="truncate">{student.phone}</span>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <div className="flex items-center gap-6">
+                            <div className="text-right">
+                              <div className="text-xs text-gray-600 mb-1">Attendance</div>
+                              <div className="flex items-center gap-2">
+                                <Progress value={student.attendance} className="h-2 w-20" />
+                                <span className="text-sm font-medium text-gray-900 w-10">{student.attendance}%</span>
+                              </div>
+                            </div>
+                            
+                            <Button 
+                              size="sm" 
+                              className="bg-gray-800 hover:bg-gray-900 text-white text-xs"
+                              onClick={() => handleViewProfile(student)}
+                            >
+                              <User className="w-3 h-3 mr-1" />
+                              View Profile
+                            </Button>
+                          </div>
                         </div>
                       </div>
                     </div>
                     
-                    <div className="space-y-2">
-                      <div className="grid grid-cols-1 gap-2 text-xs text-gray-600">
-                        <div className="flex items-center gap-1 min-w-0">
-                          <Mail className="w-3 h-3 flex-shrink-0" />
-                          <span className="truncate">{student.email}</span>
-                        </div>
-                        <div className="flex items-center gap-1 min-w-0">
-                          <Phone className="w-3 h-3 flex-shrink-0" />
-                          <span className="truncate">{student.phone}</span>
+                    {/* Mobile Layout */}
+                    <div className="md:hidden space-y-3">
+                      <div className="flex items-center gap-3">
+                        <Avatar className="h-10 w-10 flex-shrink-0">
+                          <AvatarImage src={student.avatar} alt={student.name} />
+                          <AvatarFallback className="bg-blue-100 text-blue-600 text-xs">
+                            {student.name.split(' ').map(n => n[0]).join('')}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <h4 className="font-medium text-gray-900 text-sm truncate">{student.name}</h4>
+                            <Badge variant="outline" className="bg-green-50 text-green-700 text-xs flex-shrink-0">
+                              {student.status}
+                            </Badge>
+                          </div>
                         </div>
                       </div>
                       
-                      <div>
-                        <div className="flex items-center justify-between text-xs mb-1">
-                          <span className="text-gray-600">Attendance</span>
-                          <span className="font-medium text-gray-900">{student.attendance}%</span>
+                      <div className="space-y-2">
+                        <div className="grid grid-cols-1 gap-2 text-xs text-gray-600">
+                          <div className="flex items-center gap-1 min-w-0">
+                            <Mail className="w-3 h-3 flex-shrink-0" />
+                            <span className="truncate">{student.email}</span>
+                          </div>
+                          <div className="flex items-center gap-1 min-w-0">
+                            <Phone className="w-3 h-3 flex-shrink-0" />
+                            <span className="truncate">{student.phone}</span>
+                          </div>
                         </div>
-                        <Progress value={student.attendance} className="h-2" />
+                        
+                        <div>
+                          <div className="flex items-center justify-between text-xs mb-1">
+                            <span className="text-gray-600">Attendance</span>
+                            <span className="font-medium text-gray-900">{student.attendance}%</span>
+                          </div>
+                          <Progress value={student.attendance} className="h-2" />
+                        </div>
                       </div>
+                      
+                      <Button 
+                        size="sm" 
+                        className="bg-gray-800 hover:bg-gray-900 text-white text-xs w-full"
+                        onClick={() => handleViewProfile(student)}
+                      >
+                        <User className="w-3 h-3 mr-2" />
+                        View Profile
+                      </Button>
                     </div>
-                    
-                    <Button 
-                      size="sm" 
-                      className="bg-gray-800 hover:bg-gray-900 text-white text-xs w-full"
-                      onClick={() => handleViewProfile(student)}
-                    >
-                      <User className="w-3 h-3 mr-2" />
-                      View Profile
-                    </Button>
                   </div>
                 ))}
               </div>
@@ -284,7 +340,7 @@ export function PartnerOverview({ onNavigate }: PartnerOverviewProps) {
                         size="sm" 
                         variant="outline"
                         onClick={() => onNavigate('batches')}
-                        className="w-full text-xs"
+                        className="w-full md:w-auto text-xs"
                       >
                         <Eye className="w-3 h-3 mr-2" />
                         View Details
