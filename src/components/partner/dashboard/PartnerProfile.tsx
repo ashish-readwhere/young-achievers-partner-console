@@ -28,7 +28,7 @@ export function PartnerProfile() {
   const partnerInfo = {
     name: "John Smith",
     contactPerson: "John Smith", // Same as name since teacher is the partner
-    email: "john.smith@teched.com",
+    email: "john.smith@teached.com",
     phone: "+1 (555) 123-4567",
     address: "123 Education Lane, Tech City, TC 12345",
     joinDate: "January 15, 2024",
@@ -38,13 +38,14 @@ export function PartnerProfile() {
     payoutType: "revenue_share", // Can be "fixed" or "revenue_share"
     payoutDetails: {
       fixed: {
-        amount: 500,
+        amount: 5000,
         currency: "USD",
         frequency: "per batch"
       },
       revenueShare: {
         percentage: 70,
-        description: "70% of student fees collected"
+        description: "70% of student fees collected",
+        estimatedAmount: 4200 // Estimated amount based on average batch revenue
       }
     }
   };
@@ -127,8 +128,8 @@ export function PartnerProfile() {
       const result = {
         icon: <DollarSign className="w-4 h-4 text-green-600" />,
         title: "Fixed Payout",
-        amount: `$${partnerInfo.payoutDetails.fixed.amount} ${partnerInfo.payoutDetails.fixed.currency}`,
-        description: partnerInfo.payoutDetails.fixed.frequency,
+        amount: `$${partnerInfo.payoutDetails.fixed.amount}`,
+        description: `${partnerInfo.payoutDetails.fixed.currency} ${partnerInfo.payoutDetails.fixed.frequency}`,
         bgColor: "bg-green-50",
         textColor: "text-green-800",
         borderColor: "border-green-200"
@@ -139,8 +140,8 @@ export function PartnerProfile() {
       const result = {
         icon: <Percent className="w-4 h-4 text-blue-600" />,
         title: "Revenue Share",
-        amount: `${partnerInfo.payoutDetails.revenueShare.percentage}%`,
-        description: partnerInfo.payoutDetails.revenueShare.description,
+        amount: `$${partnerInfo.payoutDetails.revenueShare.estimatedAmount}`,
+        description: `${partnerInfo.payoutDetails.revenueShare.percentage}% of student fees (estimated per batch)`,
         bgColor: "bg-blue-50",
         textColor: "text-blue-800",
         borderColor: "border-blue-200"
