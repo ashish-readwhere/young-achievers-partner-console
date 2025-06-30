@@ -16,7 +16,9 @@ import {
   Edit,
   CheckCircle,
   FileText,
-  MessageSquare
+  MessageSquare,
+  DollarSign,
+  Percent
 } from "lucide-react";
 
 export function PartnerProfile() {
@@ -31,7 +33,19 @@ export function PartnerProfile() {
     joinDate: "January 15, 2024",
     status: "Active Partner",
     kycStatus: "verified", // Can be "verified", "pending", or "not_submitted"
-    specializations: ["Technology Training", "Coding Bootcamps", "Digital Skills"]
+    specializations: ["Technology Training", "Coding Bootcamps", "Digital Skills"],
+    payoutType: "revenue_share", // Can be "fixed" or "revenue_share"
+    payoutDetails: {
+      fixed: {
+        amount: 500,
+        currency: "USD",
+        frequency: "per batch"
+      },
+      revenueShare: {
+        percentage: 70,
+        description: "70% of student fees collected"
+      }
+    }
   };
 
   const achievements = [
@@ -104,6 +118,32 @@ export function PartnerProfile() {
     }
   };
 
+  const getPayoutDisplay = () => {
+    if (partnerInfo.payoutType === "fixed") {
+      return {
+        icon: <DollarSign className="w-4 h-4 text-green-600" />,
+        title: "Fixed Payout",
+        amount: `$${partnerInfo.payoutDetails.fixed.amount} ${partnerInfo.payoutDetails.fixed.currency}`,
+        description: partnerInfo.payoutDetails.fixed.frequency,
+        bgColor: "bg-green-50",
+        textColor: "text-green-800",
+        borderColor: "border-green-200"
+      };
+    } else {
+      return {
+        icon: <Percent className="w-4 h-4 text-blue-600" />,
+        title: "Revenue Share",
+        amount: `${partnerInfo.payoutDetails.revenueShare.percentage}%`,
+        description: partnerInfo.payoutDetails.revenueShare.description,
+        bgColor: "bg-blue-50",
+        textColor: "text-blue-800",
+        borderColor: "border-blue-200"
+      };
+    }
+  };
+
+  const payoutInfo = getPayoutDisplay();
+
   return (
     <div className="p-6 space-y-6 max-w-full overflow-hidden">
       <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-4">
@@ -153,6 +193,35 @@ export function PartnerProfile() {
                 {partnerInfo.specializations.map((spec, index) => (
                   <Badge key={index} variant="secondary" className="text-xs">{spec}</Badge>
                 ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Payout Details */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg lg:text-xl">Payout Details</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className={`p-4 rounded-lg border ${payoutInfo.bgColor} ${payoutInfo.borderColor}`}>
+                <div className="flex items-center gap-3 mb-3">
+                  {payoutInfo.icon}
+                  <h3 className={`font-semibold ${payoutInfo.textColor}`}>{payoutInfo.title}</h3>
+                </div>
+                <div className="space-y-2">
+                  <div className={`text-2xl font-bold ${payoutInfo.textColor}`}>
+                    {payoutInfo.amount}
+                  </div>
+                  <p className={`text-sm ${payoutInfo.textColor} opacity-80`}>
+                    {payoutInfo.description}
+                  </p>
+                </div>
+              </div>
+              <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+                <p className="text-xs text-gray-600">
+                  <strong>Note:</strong> Payouts are processed monthly based on completed batches and student enrollment. 
+                  For questions about payout schedules or amounts, please contact support.
+                </p>
               </div>
             </CardContent>
           </Card>
