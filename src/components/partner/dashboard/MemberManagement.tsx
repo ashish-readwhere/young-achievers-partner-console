@@ -17,16 +17,20 @@ import {
   Users,
   Star,
   Trophy,
-  Award
+  Award,
+  Edit
 } from "lucide-react";
 import { StudentProfileModal } from "./StudentProfileModal";
 import { RatingModal } from "./RatingModal";
+import { EditMemberModal } from "./EditMemberModal";
 
 export function MemberManagement() {
   const [selectedStudent, setSelectedStudent] = useState<any>(null);
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [showRatingModal, setShowRatingModal] = useState(false);
   const [studentToRate, setStudentToRate] = useState<any>(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [memberToEdit, setMemberToEdit] = useState<any>(null);
 
   // Partner can see all members but can only edit those in their batches
   const partnerSubject = "Yoga";
@@ -165,6 +169,12 @@ export function MemberManagement() {
     }
   };
 
+  const handleEditMember = (member: any) => {
+    console.log("Edit Member clicked for:", member.name);
+    setMemberToEdit(member);
+    setShowEditModal(true);
+  };
+
   const closeProfileModal = () => {
     console.log("Closing profile modal");
     setShowProfileModal(false);
@@ -175,6 +185,12 @@ export function MemberManagement() {
     console.log("Closing rating modal");
     setShowRatingModal(false);
     setStudentToRate(null);
+  };
+
+  const closeEditModal = () => {
+    console.log("Closing edit modal");
+    setShowEditModal(false);
+    setMemberToEdit(null);
   };
 
   return (
@@ -344,14 +360,25 @@ export function MemberManagement() {
                     View Profile
                   </Button>
                   {member.canEdit ? (
-                    <Button 
-                      size="sm" 
-                      className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
-                      onClick={() => handleRateStudent(member.id)}
-                    >
-                      <Star className="h-4 w-4 mr-2" />
-                      Rate Student
-                    </Button>
+                    <>
+                      <Button 
+                        size="sm" 
+                        variant="outline"
+                        className="flex-1 bg-purple-50 text-purple-700 hover:bg-purple-100"
+                        onClick={() => handleEditMember(member)}
+                      >
+                        <Edit className="h-4 w-4 mr-2" />
+                        Edit Details
+                      </Button>
+                      <Button 
+                        size="sm" 
+                        className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
+                        onClick={() => handleRateStudent(member.id)}
+                      >
+                        <Star className="h-4 w-4 mr-2" />
+                        Rate Student
+                      </Button>
+                    </>
                   ) : (
                     <Button size="sm" variant="outline" className="flex-1 bg-green-50 text-green-700 hover:bg-green-100">
                       <Phone className="h-4 w-4 mr-2" />
@@ -377,6 +404,12 @@ export function MemberManagement() {
         isOpen={showRatingModal}
         onClose={closeRatingModal}
         student={studentToRate}
+      />
+
+      <EditMemberModal
+        isOpen={showEditModal}
+        onClose={closeEditModal}
+        member={memberToEdit}
       />
     </div>
   );
