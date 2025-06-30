@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -119,8 +120,11 @@ export function PartnerProfile() {
   };
 
   const getPayoutDisplay = () => {
+    console.log("Getting payout display for type:", partnerInfo.payoutType);
+    console.log("Payout details:", partnerInfo.payoutDetails);
+    
     if (partnerInfo.payoutType === "fixed") {
-      return {
+      const result = {
         icon: <DollarSign className="w-4 h-4 text-green-600" />,
         title: "Fixed Payout",
         amount: `$${partnerInfo.payoutDetails.fixed.amount} ${partnerInfo.payoutDetails.fixed.currency}`,
@@ -129,8 +133,10 @@ export function PartnerProfile() {
         textColor: "text-green-800",
         borderColor: "border-green-200"
       };
+      console.log("Fixed payout result:", result);
+      return result;
     } else {
-      return {
+      const result = {
         icon: <Percent className="w-4 h-4 text-blue-600" />,
         title: "Revenue Share",
         amount: `${partnerInfo.payoutDetails.revenueShare.percentage}%`,
@@ -139,10 +145,13 @@ export function PartnerProfile() {
         textColor: "text-blue-800",
         borderColor: "border-blue-200"
       };
+      console.log("Revenue share result:", result);
+      return result;
     }
   };
 
   const payoutInfo = getPayoutDisplay();
+  console.log("Final payout info:", payoutInfo);
 
   return (
     <div className="p-6 space-y-6 max-w-full overflow-hidden">
