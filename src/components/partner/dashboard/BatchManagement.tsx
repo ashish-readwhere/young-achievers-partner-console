@@ -3,512 +3,475 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
 import { 
-  MapPin, 
-  Users, 
-  Calendar,
-  CheckCircle,
-  Clock,
-  Eye,
-  Edit,
-  MessageSquare,
   Search,
-  Grid3X3
+  Filter,
+  Users,
+  Clock,
+  Calendar,
+  Eye,
+  User,
+  Mail,
+  Phone,
+  Star,
+  Trophy
 } from "lucide-react";
 import { BatchDetailsModal } from "./BatchDetailsModal";
-import RescheduleModal from "./RescheduleModal";
-import { FeedbackModal } from "./FeedbackModal";
+
+interface Batch {
+  id: number;
+  name: string;
+  time: string;
+  day: string;
+  level: string;
+  students: number;
+  capacity: number;
+  status: string;
+}
+
+interface Member {
+  id: number;
+  name: string;
+  age: number;
+  email: string;
+  phone: string;
+  parentPhone: string;
+  parentEmail: string;
+  batchesEnrolled: { id: number; name: string; level: string; status: string }[];
+  joinDate: string;
+  status: string;
+  attendance: number;
+  rating: number;
+  achievements: string[];
+  avatar: string;
+}
+
+interface Stat {
+  label: string;
+  value: string;
+  change: string;
+  color: string;
+}
 
 export function BatchManagement() {
   const [selectedBatch, setSelectedBatch] = useState<any>(null);
-  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
-  const [isRescheduleModalOpen, setIsRescheduleModalOpen] = useState(false);
-  const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [showAllBatches, setShowAllBatches] = useState(false);
+  const [showBatchModal, setShowBatchModal] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchType, setSearchType] = useState<"batch" | "member">("batch");
 
-  // Mock data for current partner (Yoga instructor)
-  const partnerName = "Instructor Sarah Wilson";
-  const partnerSubject = "Yoga";
-  
-  const partnerBatches = [
+  const batches = [
     {
       id: 1,
       name: "Yoga Fundamentals - Batch B",
-      teacher: "Instructor Sarah Wilson",
+      time: "6:00 PM - 7:00 PM",
+      day: "Mon, Wed, Fri",
       level: "Beginner",
-      students: 18,
-      maxStudents: 25,
-      schedule: "Tue, Thu - 2:00 PM",
-      venue: "Noida Stadium",
-      spot: "Practice Area",
-      status: "Active",
-      nextSession: "1/16/2024",
-      nextSessionTime: "02:00 PM",
-      lastSession: "1/11/2024",
-      lastSessionTime: "02:00 PM",
-      capacity: 72,
-      completedSessions: 7,
-      totalSessions: 10,
-      icon: "🧘‍♀️"
+      students: 15,
+      capacity: 20,
+      status: "Active"
     },
     {
       id: 2,
       name: "Yoga Advanced - Batch A",
-      teacher: "Instructor Sarah Wilson",
+      time: "4:00 PM - 5:00 PM",
+      day: "Tue, Thu",
       level: "Advanced",
-      students: 15,
-      maxStudents: 20,
-      schedule: "Mon, Wed, Fri - 10:00 AM",
-      venue: "Talkatora Stadium",
-      spot: "Yoga Area",
-      status: "Active",
-      nextSession: "1/15/2024",
-      nextSessionTime: "10:00 AM",
-      lastSession: "1/12/2024",
-      lastSessionTime: "10:00 AM",
-      capacity: 75,
-      completedSessions: 8,
-      totalSessions: 12,
-      icon: "🧘‍♀️"
+      students: 10,
+      capacity: 12,
+      status: "Active"
     },
     {
       id: 3,
       name: "Yoga Intermediate - Batch C",
-      teacher: "Instructor Sarah Wilson",
+      time: "7:30 PM - 8:30 PM",
+      day: "Mon, Wed",
       level: "Intermediate",
-      students: 22,
-      maxStudents: 30,
-      schedule: "Wed, Fri - 4:00 PM",
-      venue: "Sports Complex",
-      spot: "Hall A",
-      status: "Active",
-      nextSession: "1/17/2024",
-      nextSessionTime: "04:00 PM",
-      lastSession: "1/12/2024",
-      lastSessionTime: "04:00 PM",
-      capacity: 73,
-      completedSessions: 5,
-      totalSessions: 8,
-      icon: "🧘‍♀️"
-    },
-    {
-      id: 4,
-      name: "Morning Yoga - Batch D",
-      teacher: "Instructor Sarah Wilson",
-      level: "Beginner",
       students: 12,
-      maxStudents: 20,
-      schedule: "Mon, Tue - 7:00 AM",
-      venue: "City Park",
-      spot: "Open Ground",
-      status: "Active",
-      nextSession: "1/15/2024",
-      nextSessionTime: "07:00 AM",
-      lastSession: "1/09/2024",
-      lastSessionTime: "07:00 AM",
-      capacity: 60,
-      completedSessions: 4,
-      totalSessions: 12,
-      icon: "🧘‍♀️"
+      capacity: 15,
+      status: "Inactive"
     }
   ];
 
-  // Filter batches based on search term
-  const filteredBatches = partnerBatches.filter(batch =>
-    batch.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    batch.level.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    batch.venue.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  // Show only first 2 batches unless "View All" is clicked
-  const displayedBatches = showAllBatches ? filteredBatches : filteredBatches.slice(0, 2);
-
-  const upcomingSessions = [
+  // Member data for search functionality
+  const members = [
     {
       id: 1,
-      title: "Yoga Fundamentals - Session 8",
-      date: "Jan 16, 2024",
-      time: "2:00 PM",
-      venue: "Noida Stadium - Practice Area",
-      batchName: "Yoga Fundamentals - Batch B",
-      students: 18,
-      status: "Upcoming",
-      batchId: 1
+      name: "Sarah Williams",
+      age: 16,
+      email: "sarah.williams@email.com",
+      phone: "+1 (555) 123-4567",
+      parentPhone: "+1 (555) 123-4500",
+      parentEmail: "parent.sarah@email.com",
+      batchesEnrolled: [
+        { id: 2, name: "Yoga Advanced - Batch A", level: "Advanced", status: "Active" }
+      ],
+      joinDate: "Dec 1, 2024",
+      status: "Active",
+      attendance: 95,
+      rating: 4.5,
+      achievements: ["Flexibility Master", "Best Student"],
+      avatar: "/lovable-uploads/1ba055c7-e9a3-4a04-b0e8-31a2367343ed.png"
     },
     {
       id: 2,
-      title: "Yoga Advanced - Session 9",
-      date: "Jan 15, 2024",
-      time: "10:00 AM",
-      venue: "Talkatora Stadium - Yoga Area",
-      batchName: "Yoga Advanced - Batch A",
-      students: 15,
-      status: "Upcoming",
-      batchId: 2
+      name: "Lisa Garcia",
+      age: 14,
+      email: "lisa.garcia@email.com",
+      phone: "+1 (555) 567-8901",
+      parentPhone: "+1 (555) 567-8900",
+      parentEmail: "parent.lisa@email.com",
+      batchesEnrolled: [
+        { id: 1, name: "Yoga Fundamentals - Batch B", level: "Beginner", status: "Active" }
+      ],
+      joinDate: "Dec 5, 2024",
+      status: "Active",
+      attendance: 89,
+      rating: 4.2,
+      achievements: ["Regular Attendee"],
+      avatar: "/lovable-uploads/1ba055c7-e9a3-4a04-b0e8-31a2367343ed.png"
+    },
+    {
+      id: 3,
+      name: "Mike Johnson",
+      age: 12,
+      email: "mike.johnson@email.com",
+      phone: "+1 (555) 234-5678",
+      parentPhone: "+1 (555) 234-5600",
+      parentEmail: "parent.mike@email.com",
+      batchesEnrolled: [
+        { id: 3, name: "Yoga Intermediate - Batch C", level: "Intermediate", status: "Active" }
+      ],
+      joinDate: "Nov 15, 2024",
+      status: "Active",
+      attendance: 87,
+      rating: 4.0,
+      achievements: ["Consistent Performer"],
+      avatar: "/lovable-uploads/1ba055c7-e9a3-4a04-b0e8-31a2367343ed.png"
     }
   ];
 
-  const handleViewDetails = (batch: any) => {
-    console.log("Opening details for batch:", batch);
-    setSelectedBatch(batch);
-    setIsDetailsModalOpen(true);
-  };
+  // Filter data based on search
+  const filteredBatches = batches.filter(batch =>
+    searchType === "batch" && batch.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
-  const handleViewSessionDetails = (sessionId: number) => {
-    console.log("Opening session details for session ID:", sessionId);
-    const session = upcomingSessions.find(s => s.id === sessionId);
-    if (session) {
-      const relatedBatch = partnerBatches.find(b => b.id === session.batchId);
-      if (relatedBatch) {
-        setSelectedBatch(relatedBatch);
-        setIsDetailsModalOpen(true);
-      }
+  const filteredMembers = members.filter(member =>
+    searchType === "member" && member.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const shouldShowBatches = searchType === "batch" || searchQuery === "";
+  const shouldShowMembers = searchType === "member" && searchQuery !== "";
+
+  const stats = [
+    { 
+      label: "Total Batches", 
+      value: batches.length.toString(), 
+      change: "+1 this week",
+      color: "blue"
+    },
+    { 
+      label: "Active Batches", 
+      value: batches.filter(b => b.status === "Active").length.toString(), 
+      change: "-1 this week",
+      color: "green"
+    },
+    { 
+      label: "Total Enrollment", 
+      value: batches.reduce((sum, b) => sum + b.students, 0).toString(), 
+      change: "+5% vs last month",
+      color: "purple"
+    },
+    { 
+      label: "Avg Batch Capacity", 
+      value: Math.round(batches.reduce((sum, b) => sum + b.capacity, 0) / batches.length).toString(), 
+      change: "No change",
+      color: "orange"
     }
-  };
+  ];
 
-  const handleReschedule = (batch: any) => {
-    console.log("Opening reschedule for batch:", batch);
+  const handleViewBatch = (batch: any) => {
+    console.log("View Batch clicked for:", batch.name);
     setSelectedBatch(batch);
-    setIsRescheduleModalOpen(true);
-  };
-
-  const handleFeedback = (batch: any) => {
-    console.log("Opening feedback for batch:", batch);
-    setSelectedBatch(batch);
-    setIsFeedbackModalOpen(true);
-  };
-
-  const handleRescheduleConfirm = (batchId: string, newDate: Date, newTime: string, reason: string) => {
-    console.log("Rescheduling batch:", batchId, "to:", newDate, newTime, "Reason:", reason);
-    // Here you would typically send the reschedule request to the admin
-    // For now, we'll just log it
-  };
-
-  const handleFeedbackSubmit = (feedback: string, rating: number) => {
-    console.log("Submitting feedback:", feedback, rating);
-    // Here you would typically save the feedback
+    setShowBatchModal(true);
   };
 
   return (
     <div className="w-full bg-white min-h-screen">
       {/* Header */}
-      <div className="bg-white border-b px-4 sm:px-8 py-4 sm:py-6">
-        <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Batch Management</h1>
-        <p className="text-gray-600 mt-1 text-sm sm:text-base">Manage your {partnerSubject} batches and sessions</p>
+      <div className="bg-white border-b px-8 py-6">
+        <h1 className="text-2xl font-bold text-gray-900">Batch Management</h1>
+        <p className="text-gray-600 mt-1">Monitor and manage your yoga batches and enrolled members</p>
       </div>
 
       {/* Main Content */}
-      <div className="p-4 sm:p-8">
-        {/* Stats Overview */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8">
-          <Card className="border-0 shadow-sm bg-blue-50">
-            <CardContent className="p-3 sm:p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xs sm:text-sm font-medium text-blue-600 mb-1">My Active Batches</p>
-                  <p className="text-2xl sm:text-3xl font-bold text-blue-900">{partnerBatches.length}</p>
+      <div className="p-8">
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          {stats.map((stat, index) => (
+            <Card key={index} className={`border-0 shadow-sm bg-${stat.color}-50`}>
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className={`text-sm font-medium text-${stat.color}-600 mb-1`}>{stat.label}</p>
+                    <p className={`text-3xl font-bold text-${stat.color}-900`}>{stat.value}</p>
+                    <p className={`text-xs text-${stat.color}-600 mt-1`}>{stat.change}</p>
+                  </div>
+                  <div className={`w-12 h-12 bg-${stat.color}-500 rounded-lg flex items-center justify-center`}>
+                    <Users className="w-6 h-6 text-white" />
+                  </div>
                 </div>
-                <div className="w-8 h-8 sm:w-12 sm:h-12 bg-blue-500 rounded-lg flex items-center justify-center text-lg sm:text-xl">
-                  🧘‍♀️
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-0 shadow-sm bg-green-50">
-            <CardContent className="p-3 sm:p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xs sm:text-sm font-medium text-green-600 mb-1">Total Students</p>
-                  <p className="text-2xl sm:text-3xl font-bold text-green-900">
-                    {partnerBatches.reduce((sum, batch) => sum + batch.students, 0)}
-                  </p>
-                </div>
-                <div className="w-8 h-8 sm:w-12 sm:h-12 bg-green-500 rounded-lg flex items-center justify-center">
-                  <Users className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-0 shadow-sm bg-purple-50">
-            <CardContent className="p-3 sm:p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xs sm:text-sm font-medium text-purple-600 mb-1">Upcoming Sessions</p>
-                  <p className="text-2xl sm:text-3xl font-bold text-purple-900">{upcomingSessions.length}</p>
-                </div>
-                <div className="w-8 h-8 sm:w-12 sm:h-12 bg-purple-500 rounded-lg flex items-center justify-center">
-                  <Calendar className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-0 shadow-sm bg-orange-50">
-            <CardContent className="p-3 sm:p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xs sm:text-sm font-medium text-orange-600 mb-1">Completed Sessions</p>
-                  <p className="text-2xl sm:text-3xl font-bold text-orange-900">
-                    {partnerBatches.reduce((sum, batch) => sum + batch.completedSessions, 0)}
-                  </p>
-                </div>
-                <div className="w-8 h-8 sm:w-12 sm:h-12 bg-orange-500 rounded-lg flex items-center justify-center">
-                  <CheckCircle className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          ))}
         </div>
 
-        {/* Search and View All Section */}
-        <div className="mb-6">
-          <div className="flex flex-col gap-4 items-start justify-between">
-            <div className="relative w-full max-w-md">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-              <Input
-                placeholder="Search batches..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-            {filteredBatches.length > 2 && (
-              <Button
-                variant="outline"
-                onClick={() => setShowAllBatches(!showAllBatches)}
-                className="flex items-center gap-2 w-full sm:w-auto"
-              >
-                <Grid3X3 className="w-4 h-4" />
-                {showAllBatches ? "Show Less" : `View All (${filteredBatches.length})`}
-              </Button>
-            )}
+        {/* Enhanced Search and Filter */}
+        <div className="flex flex-col sm:flex-row gap-4 mb-6">
+          <div className="flex gap-2">
+            <Button 
+              variant={searchType === "batch" ? "default" : "outline"}
+              size="sm"
+              onClick={() => {
+                setSearchType("batch");
+                setSearchQuery("");
+              }}
+            >
+              Search Batches
+            </Button>
+            <Button 
+              variant={searchType === "member" ? "default" : "outline"}
+              size="sm"
+              onClick={() => {
+                setSearchType("member");
+                setSearchQuery("");
+              }}
+            >
+              Search Members
+            </Button>
           </div>
-          {searchTerm && (
-            <p className="text-sm text-gray-600 mt-2">
-              {filteredBatches.length} batch{filteredBatches.length !== 1 ? 'es' : ''} found
-            </p>
-          )}
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+            <Input 
+              placeholder={searchType === "batch" ? "Search batches..." : "Search members..."}
+              className="pl-10"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+          <Button variant="outline">
+            <Filter className="h-4 w-4 mr-2" />
+            Filter
+          </Button>
         </div>
 
-        {/* Batch Cards Grid */}
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
-          {displayedBatches.length === 0 ? (
-            <div className="col-span-full text-center py-8">
-              <p className="text-gray-500">No batches found matching your search.</p>
-            </div>
-          ) : (
-            displayedBatches.map((batch) => {
-              const progressPercentage = Math.round((batch.completedSessions / batch.totalSessions) * 100);
-              
-              return (
-                <Card key={batch.id} className="border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
-                  <CardHeader className="pb-4">
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-center gap-3 min-w-0">
-                        <div className="text-2xl flex-shrink-0">{batch.icon}</div>
-                        <div className="min-w-0">
-                          <CardTitle className="text-base sm:text-lg font-semibold text-gray-900 truncate">
-                            {batch.name}
-                          </CardTitle>
-                          <p className="text-xs sm:text-sm text-gray-600 mt-1 truncate">
-                            Teacher: {batch.teacher}
-                          </p>
-                          <p className="text-xs sm:text-sm text-gray-600">
-                            Level: {batch.level}
-                          </p>
+        {/* Search Results Info */}
+        {searchQuery && (
+          <div className="text-sm text-gray-600 mb-4">
+            {searchType === "batch" 
+              ? `Found ${filteredBatches.length} batch(es) matching "${searchQuery}"`
+              : `Found ${filteredMembers.length} member(s) matching "${searchQuery}"`
+            }
+          </div>
+        )}
+
+        {/* Member Search Results */}
+        {shouldShowMembers && (
+          <div className="mb-8">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">Member Search Results</h2>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {filteredMembers.map((member) => (
+                <Card key={member.id} className="border-blue-200 bg-blue-25 shadow-sm hover:shadow-md transition-shadow">
+                  <CardContent className="p-6">
+                    {/* Member Header */}
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-center gap-4">
+                        <Avatar className="h-16 w-16">
+                          <AvatarImage src={member.avatar} alt={member.name} />
+                          <AvatarFallback className="bg-blue-100 text-blue-600">
+                            {member.name.split(' ').map(n => n[0]).join('')}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <div className="flex items-center gap-2 mb-1">
+                            <h3 className="text-lg font-semibold text-gray-900">{member.name}</h3>
+                            <Badge 
+                              variant={member.status === "Active" ? "default" : "secondary"}
+                              className={member.status === "Active" ? "bg-green-100 text-green-800" : ""}
+                            >
+                              {member.status}
+                            </Badge>
+                          </div>
+                          <p className="text-sm text-gray-600">Age {member.age} • Joined {member.joinDate}</p>
                         </div>
                       </div>
-                      <Badge 
-                        variant={batch.status === "Active" ? "default" : "secondary"}
-                        className={`${batch.status === "Active" ? "bg-green-100 text-green-800" : ""} flex-shrink-0`}
-                      >
+                    </div>
+
+                    {/* Batch Enrollment Info */}
+                    <div className="mb-4">
+                      <h4 className="text-sm font-medium text-gray-700 mb-2">Enrolled Batches:</h4>
+                      <div className="space-y-2">
+                        {member.batchesEnrolled.map((batch) => (
+                          <div key={batch.id} className="bg-white rounded-lg p-3 border">
+                            <div className="flex items-center justify-between">
+                              <div>
+                                <p className="font-medium text-gray-900">{batch.name}</p>
+                                <p className="text-sm text-gray-600">Level: {batch.level}</p>
+                              </div>
+                              <Badge 
+                                variant="outline" 
+                                className="bg-green-50 text-green-700 border-green-200"
+                              >
+                                {batch.status}
+                              </Badge>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Performance Metrics */}
+                    <div className="grid grid-cols-2 gap-4 mb-4">
+                      <div className="bg-yellow-50 rounded-lg p-3">
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="text-sm font-medium text-yellow-700">Rating</span>
+                          <div className="flex items-center gap-1">
+                            <Star className="w-4 h-4 text-yellow-500 fill-current" />
+                            <span className="text-lg font-bold text-yellow-900">{member.rating}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="bg-green-50 rounded-lg p-3">
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="text-sm font-medium text-green-700">Attendance</span>
+                          <span className="text-lg font-bold text-green-900">{member.attendance}%</span>
+                        </div>
+                        <Progress value={member.attendance} className="h-2" />
+                      </div>
+                    </div>
+
+                    {/* Contact Information */}
+                    <div className="mb-4 p-3 bg-gray-50 rounded-lg">
+                      <p className="text-sm font-medium text-gray-700 mb-2">Contact Information</p>
+                      <div className="space-y-1 text-sm text-gray-600">
+                        <div className="flex items-center gap-2">
+                          <Mail className="h-3 w-3" />
+                          <span>{member.email}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Phone className="h-3 w-3" />
+                          <span>{member.phone}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Phone className="h-3 w-3" />
+                          <span>Parent: {member.parentPhone}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Achievements */}
+                    {member.achievements.length > 0 && (
+                      <div className="mb-4">
+                        <p className="text-sm font-medium text-gray-700 mb-2">Achievements:</p>
+                        <div className="flex flex-wrap gap-2">
+                          {member.achievements.map((achievement, index) => (
+                            <Badge key={index} variant="outline" className="bg-yellow-50 text-yellow-800 border-yellow-200">
+                              <Trophy className="w-3 h-3 mr-1" />
+                              {achievement}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Action Button */}
+                    <Button size="sm" variant="outline" className="w-full">
+                      <Eye className="h-4 w-4 mr-2" />
+                      View Full Profile
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Batch Cards Grid */}
+        {shouldShowBatches && (
+          <div>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">
+              {searchQuery ? "Batch Search Results" : "My Batches"}
+            </h2>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {(searchQuery ? filteredBatches : batches).map((batch) => (
+                <Card key={batch.id} className="shadow-sm hover:shadow-md transition-shadow">
+                  <CardContent className="p-6">
+                    {/* Header with Time and Day */}
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center">
+                          <Clock className="w-6 h-6" />
+                        </div>
+                        <div>
+                          <CardTitle className="text-lg font-semibold">{batch.name}</CardTitle>
+                          <p className="text-sm text-gray-600">{batch.time}</p>
+                          <p className="text-sm text-gray-600">{batch.day}</p>
+                        </div>
+                      </div>
+                      <Badge variant={batch.status === "Active" ? "default" : "secondary"}>
                         {batch.status}
                       </Badge>
                     </div>
-                  </CardHeader>
-                  
-                  <CardContent className="pt-0">
-                    <div className="space-y-4">
-                      {/* Student Count and Schedule */}
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                        <div className="flex items-center gap-4">
-                          <div className="flex items-center gap-1 text-blue-600">
-                            <Users className="w-4 h-4" />
-                            <span className="font-semibold text-sm">{batch.students}/{batch.maxStudents}</span>
-                            <span className="text-xs text-gray-600">students</span>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-1 text-green-600">
-                          <Clock className="w-4 h-4" />
-                          <span className="text-xs sm:text-sm">{batch.schedule}</span>
-                        </div>
+
+                    {/* Level and Enrollment */}
+                    <div className="grid grid-cols-2 gap-4 mb-4">
+                      <div className="bg-purple-50 rounded-lg p-3">
+                        <p className="text-sm font-medium text-purple-700 mb-1">Level</p>
+                        <p className="text-lg font-bold text-purple-900">{batch.level}</p>
                       </div>
-
-                      {/* Batch Progress */}
-                      <div>
-                        <div className="flex justify-between items-center mb-2">
-                          <span className="text-sm text-gray-600">Batch Progress</span>
-                          <span className="text-sm font-medium">
-                            {batch.completedSessions}/{batch.totalSessions} sessions ({progressPercentage}%)
-                          </span>
-                        </div>
-                        <Progress 
-                          value={progressPercentage} 
-                          className={`h-2 ${
-                            progressPercentage >= 80 ? '[&>div]:bg-green-500' : 
-                            progressPercentage >= 50 ? '[&>div]:bg-blue-500' : 
-                            '[&>div]:bg-gray-400'
-                          }`}
-                        />
-                      </div>
-
-                      {/* Sessions Info */}
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        {/* Next Session */}
-                        <div className="bg-blue-50 p-3 rounded-lg">
-                          <p className="text-sm text-blue-600 mb-1 font-medium">Next Session</p>
-                          <div>
-                            <p className="font-medium text-blue-900 text-sm">{batch.nextSession}</p>
-                            <p className="text-sm text-blue-700">
-                              {batch.nextSessionTime}
-                            </p>
-                            <p className="text-xs text-blue-600 mt-1 truncate">{batch.venue} - {batch.spot}</p>
-                          </div>
-                        </div>
-
-                        {/* Last Session */}
-                        <div className="bg-gray-50 p-3 rounded-lg">
-                          <p className="text-sm text-gray-600 mb-1 font-medium">Last Session</p>
-                          <div>
-                            <p className="font-medium text-gray-900 text-sm">{batch.lastSession}</p>
-                            <p className="text-sm text-gray-700">
-                              {batch.lastSessionTime}
-                            </p>
-                            <p className="text-xs text-gray-600 mt-1 truncate">{batch.venue} - {batch.spot}</p>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Action Buttons */}
-                      <div className="flex flex-col sm:flex-row gap-2">
-                        <Button 
-                          size="sm" 
-                          className="flex-1 bg-blue-600 hover:bg-blue-700 text-xs sm:text-sm"
-                          onClick={() => handleViewDetails(batch)}
-                        >
-                          <Eye className="w-4 h-4 mr-1" />
-                          View Details
-                        </Button>
-                        <Button 
-                          size="sm" 
-                          variant="outline" 
-                          className="flex-1 text-xs sm:text-sm"
-                          onClick={() => handleReschedule(batch)}
-                        >
-                          <Edit className="w-4 h-4 mr-1" />
-                          Reschedule
-                        </Button>
-                        <Button 
-                          size="sm" 
-                          variant="outline" 
-                          className="flex-1 text-xs sm:text-sm"
-                          onClick={() => handleFeedback(batch)}
-                        >
-                          <MessageSquare className="w-4 h-4 mr-1" />
-                          Feedback
-                        </Button>
+                      <div className="bg-yellow-50 rounded-lg p-3">
+                        <p className="text-sm font-medium text-yellow-700 mb-1">Enrollment</p>
+                        <p className="text-lg font-bold text-yellow-900">{batch.students}/{batch.capacity}</p>
                       </div>
                     </div>
+
+                    {/* Action Button */}
+                    <Button size="sm" variant="outline" className="w-full" onClick={() => handleViewBatch(batch)}>
+                      <Eye className="h-4 w-4 mr-2" />
+                      View Batch Details
+                    </Button>
                   </CardContent>
                 </Card>
-              );
-            })
-          )}
-        </div>
-
-        {/* Upcoming Sessions Table */}
-        <Card className="border-0 shadow-sm">
-          <CardHeader>
-            <CardTitle className="text-base sm:text-lg font-semibold text-gray-900">Upcoming Sessions</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="overflow-x-auto">
-              <div className="min-w-[600px]">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b text-left">
-                      <th className="py-3 px-2 sm:px-4 font-medium text-gray-700 text-sm">Session</th>
-                      <th className="py-3 px-2 sm:px-4 font-medium text-gray-700 text-sm">Date & Time</th>
-                      <th className="py-3 px-2 sm:px-4 font-medium text-gray-700 text-sm">Venue</th>
-                      <th className="py-3 px-2 sm:px-4 font-medium text-gray-700 text-sm">Students</th>
-                      <th className="py-3 px-2 sm:px-4 font-medium text-gray-700 text-sm">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {upcomingSessions.map((session) => (
-                      <tr key={session.id} className="border-b hover:bg-gray-50">
-                        <td className="py-3 px-2 sm:px-4">
-                          <div>
-                            <p className="font-medium text-gray-900 text-sm">{session.title}</p>
-                            <p className="text-xs text-gray-600">{session.batchName}</p>
-                          </div>
-                        </td>
-                        <td className="py-3 px-2 sm:px-4">
-                          <div className="flex items-center gap-1">
-                            <Calendar className="w-4 h-4 text-gray-400" />
-                            <span className="text-sm">{session.date} at {session.time}</span>
-                          </div>
-                        </td>
-                        <td className="py-3 px-2 sm:px-4">
-                          <div className="flex items-center gap-1">
-                            <MapPin className="w-4 h-4 text-gray-400" />
-                            <span className="text-sm truncate max-w-[150px]">{session.venue}</span>
-                          </div>
-                        </td>
-                        <td className="py-3 px-2 sm:px-4">
-                          <span className="font-medium text-sm">{session.students}</span>
-                        </td>
-                        <td className="py-3 px-2 sm:px-4">
-                          <Button 
-                            size="sm" 
-                            variant="outline"
-                            onClick={() => handleViewSessionDetails(session.id)}
-                          >
-                            <Eye className="w-4 h-4" />
-                          </Button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+              ))}
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        )}
+
+        {/* No Results Message */}
+        {searchQuery && (
+          (searchType === "batch" && filteredBatches.length === 0) ||
+          (searchType === "member" && filteredMembers.length === 0)
+        ) && (
+          <div className="text-center py-12">
+            <div className="text-gray-400 mb-4">
+              <Search className="w-12 h-12 mx-auto" />
+            </div>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">No results found</h3>
+            <p className="text-gray-600">
+              No {searchType === "batch" ? "batches" : "members"} found matching "{searchQuery}"
+            </p>
+          </div>
+        )}
       </div>
 
-      {/* Modals */}
+      {/* Modal */}
       <BatchDetailsModal
-        isOpen={isDetailsModalOpen}
-        onClose={() => setIsDetailsModalOpen(false)}
-        batch={selectedBatch}
-      />
-
-      <RescheduleModal
-        isOpen={isRescheduleModalOpen}
-        onClose={() => setIsRescheduleModalOpen(false)}
-        onReschedule={handleRescheduleConfirm}
-        batch={selectedBatch}
-      />
-
-      <FeedbackModal
-        isOpen={isFeedbackModalOpen}
-        onClose={() => setIsFeedbackModalOpen(false)}
-        onSubmit={handleFeedbackSubmit}
+        isOpen={showBatchModal}
+        onClose={() => {
+          setShowBatchModal(false);
+          setSelectedBatch(null);
+        }}
         batch={selectedBatch}
       />
     </div>
