@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -31,6 +30,7 @@ export function MemberManagement() {
   const [studentToRate, setStudentToRate] = useState<any>(null);
   const [showEditModal, setShowEditModal] = useState(false);
   const [memberToEdit, setMemberToEdit] = useState<any>(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   // Partner can see all members but can only edit those in their batches
   const partnerSubject = "Yoga";
@@ -119,8 +119,16 @@ export function MemberManagement() {
     }
   ];
 
-  const myStudents = members.filter(member => member.canEdit);
-  const allStudents = members;
+  // Filter members based on search query
+  const filteredMembers = members.filter(member =>
+    member.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    member.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    member.batch.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    member.teacher.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const myStudents = filteredMembers.filter(member => member.canEdit);
+  const allStudents = filteredMembers;
 
   const stats = [
     { 
@@ -143,7 +151,7 @@ export function MemberManagement() {
     },
     { 
       label: "My Avg Attendance", 
-      value: Math.round(myStudents.reduce((sum, m) => sum + m.attendance, 0) / myStudents.length) + "%", 
+      value: myStudents.length > 0 ? Math.round(myStudents.reduce((sum, m) => sum + m.attendance, 0) / myStudents.length) + "%" : "0%", 
       change: "+3% vs last month",
       color: "orange"
     }
@@ -226,7 +234,12 @@ export function MemberManagement() {
         <div className="flex flex-col sm:flex-row gap-4 mb-6">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-            <Input placeholder="Search members..." className="pl-10" />
+            <Input 
+              placeholder="Search members..." 
+              className="pl-10" 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
           </div>
           <Button variant="outline" className="w-full sm:w-auto">
             <Filter className="h-4 w-4 mr-2" />
@@ -237,11 +250,14 @@ export function MemberManagement() {
         <div className="text-sm text-gray-600 mb-4">
           <span className="text-blue-600 font-medium">{myStudents.length} students</span> you can manage • 
           <span className="text-gray-500 ml-1">{allStudents.length - myStudents.length} view-only</span>
+          {searchQuery && (
+            <span className="ml-1">• Showing results for "{searchQuery}"</span>
+          )}
         </div>
 
         {/* Member Cards Grid */}
         <div className="grid grid-cols-1 gap-4 sm:gap-6">
-          {members.map((member) => (
+          {filteredMembers.map((member) => (
             <Card key={member.id} className={`${member.canEdit ? 'border-blue-200 bg-blue-25' : 'border-gray-200'} shadow-sm hover:shadow-md transition-shadow`}>
               <CardContent className="p-4 sm:p-6">
                 {/* Header with Avatar and Basic Info */}
@@ -389,6 +405,19 @@ export function MemberManagement() {
             </Card>
           ))}
         </div>
+
+        {/* No Results Message */}
+        {searchQuery && filteredMembers.length === 0 && (
+          <div className="text-center py-12">
+            <div className="text-gray-400 mb-4">
+              <Search className="w-12 h-12 mx-auto" />
+            </div>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">No results found</h3>
+            <p className="text-gray-600">
+              No members found matching "{searchQuery}"
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Modals */}
