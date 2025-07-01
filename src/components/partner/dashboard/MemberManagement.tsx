@@ -77,7 +77,6 @@ export function MemberManagement() {
       nextSession: "Tomorrow 6:00 PM",
       avatar: "/lovable-uploads/1ba055c7-e9a3-4a04-b0e8-31a2367343ed.png"
     },
-    // Other students (view only)
     {
       id: 3,
       name: "Mike Johnson",
@@ -196,26 +195,26 @@ export function MemberManagement() {
   return (
     <div className="w-full bg-white min-h-screen">
       {/* Header */}
-      <div className="bg-white border-b px-8 py-6">
-        <h1 className="text-2xl font-bold text-gray-900">Member Management</h1>
-        <p className="text-gray-600 mt-1">Manage your {partnerSubject} students and view platform members</p>
+      <div className="bg-white border-b px-4 sm:px-8 py-4 sm:py-6">
+        <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Member Management</h1>
+        <p className="text-gray-600 mt-1 text-sm sm:text-base">Manage your {partnerSubject} students and view platform members</p>
       </div>
 
       {/* Main Content */}
-      <div className="p-8">
+      <div className="p-4 sm:p-8">
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
           {stats.map((stat, index) => (
             <Card key={index} className={`border-0 shadow-sm bg-${stat.color}-50`}>
-              <CardContent className="p-6">
+              <CardContent className="p-4 sm:p-6">
                 <div className="flex items-center justify-between">
-                  <div>
-                    <p className={`text-sm font-medium text-${stat.color}-600 mb-1`}>{stat.label}</p>
-                    <p className={`text-3xl font-bold text-${stat.color}-900`}>{stat.value}</p>
-                    <p className={`text-xs text-${stat.color}-600 mt-1`}>{stat.change}</p>
+                  <div className="min-w-0 flex-1">
+                    <p className={`text-xs sm:text-sm font-medium text-${stat.color}-600 mb-1 truncate`}>{stat.label}</p>
+                    <p className={`text-2xl sm:text-3xl font-bold text-${stat.color}-900`}>{stat.value}</p>
+                    <p className={`text-xs text-${stat.color}-600 mt-1 truncate`}>{stat.change}</p>
                   </div>
-                  <div className={`w-12 h-12 bg-${stat.color}-500 rounded-lg flex items-center justify-center`}>
-                    <Users className="w-6 h-6 text-white" />
+                  <div className={`w-10 h-10 sm:w-12 sm:h-12 bg-${stat.color}-500 rounded-lg flex items-center justify-center flex-shrink-0`}>
+                    <Users className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                   </div>
                 </div>
               </CardContent>
@@ -224,12 +223,12 @@ export function MemberManagement() {
         </div>
 
         {/* Search and Filter */}
-        <div className="flex gap-4 mb-6">
+        <div className="flex flex-col sm:flex-row gap-4 mb-6">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
             <Input placeholder="Search members..." className="pl-10" />
           </div>
-          <Button variant="outline">
+          <Button variant="outline" className="w-full sm:w-auto">
             <Filter className="h-4 w-4 mr-2" />
             Filter
           </Button>
@@ -241,32 +240,32 @@ export function MemberManagement() {
         </div>
 
         {/* Member Cards Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-4 sm:gap-6">
           {members.map((member) => (
             <Card key={member.id} className={`${member.canEdit ? 'border-blue-200 bg-blue-25' : 'border-gray-200'} shadow-sm hover:shadow-md transition-shadow`}>
-              <CardContent className="p-6">
+              <CardContent className="p-4 sm:p-6">
                 {/* Header with Avatar and Basic Info */}
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-center gap-4">
-                    <Avatar className="h-16 w-16">
+                <div className="flex items-start justify-between mb-4 gap-3">
+                  <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
+                    <Avatar className="h-12 w-12 sm:h-16 sm:w-16 flex-shrink-0">
                       <AvatarImage src={member.avatar} alt={member.name} />
                       <AvatarFallback className={member.canEdit ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-600'}>
                         {member.name.split(' ').map(n => n[0]).join('')}
                       </AvatarFallback>
                     </Avatar>
-                    <div>
-                      <div className="flex items-center gap-2 mb-1">
-                        <h3 className="text-lg font-semibold text-gray-900">{member.name}</h3>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 mb-1">
+                        <h3 className="text-base sm:text-lg font-semibold text-gray-900 truncate">{member.name}</h3>
                         <Badge 
                           variant={member.status === "Active" ? "default" : "secondary"}
-                          className={member.status === "Active" ? "bg-green-100 text-green-800" : ""}
+                          className={`${member.status === "Active" ? "bg-green-100 text-green-800" : ""} text-xs flex-shrink-0 w-fit`}
                         >
                           {member.status}
                         </Badge>
                       </div>
-                      <p className="text-sm text-gray-600">Age {member.age} • {member.canEdit ? 'Intermediate' : 'Advanced'}</p>
+                      <p className="text-xs sm:text-sm text-gray-600">Age {member.age} • {member.canEdit ? 'Intermediate' : 'Advanced'}</p>
                       {member.canEdit && (
-                        <Badge variant="outline" className="mt-1 text-xs bg-blue-50 text-blue-700">
+                        <Badge variant="outline" className="mt-1 text-xs bg-blue-50 text-blue-700 w-fit">
                           My Student
                         </Badge>
                       )}
@@ -278,22 +277,22 @@ export function MemberManagement() {
                 <div className="mb-4">
                   <div className="flex items-center gap-2 mb-2">
                     {member.canEdit ? (
-                      <div className="w-6 h-6 bg-green-100 rounded flex items-center justify-center">
+                      <div className="w-6 h-6 bg-green-100 rounded flex items-center justify-center flex-shrink-0">
                         <span className="text-green-600 text-xs font-bold">Y</span>
                       </div>
                     ) : (
-                      <div className="w-6 h-6 bg-purple-100 rounded flex items-center justify-center">
+                      <div className="w-6 h-6 bg-purple-100 rounded flex items-center justify-center flex-shrink-0">
                         <span className="text-purple-600 text-xs font-bold">C</span>
                       </div>
                     )}
-                    <span className="text-sm font-medium text-gray-700">{member.batch.split(' - ')[0]}</span>
+                    <span className="text-sm font-medium text-gray-700 truncate">{member.batch.split(' - ')[0]}</span>
                   </div>
-                  <p className="text-sm text-gray-600">{member.batch}</p>
+                  <p className="text-sm text-gray-600 truncate">{member.batch}</p>
                   <p className="text-xs text-gray-500 mt-1">Batches Enrolled: {member.batchesEnrolled}</p>
                 </div>
 
                 {/* Rating and Attendance */}
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-4">
                   <div className="bg-yellow-50 rounded-lg p-3">
                     <div className="flex justify-between items-center mb-2">
                       <span className="text-sm font-medium text-yellow-700">Rating</span>
@@ -318,7 +317,7 @@ export function MemberManagement() {
                     <p className="text-sm font-medium text-gray-700 mb-2">Achievements:</p>
                     <div className="flex flex-wrap gap-2">
                       {member.achievements.map((achievement, index) => (
-                        <Badge key={index} variant="outline" className="bg-yellow-50 text-yellow-800 border-yellow-200">
+                        <Badge key={index} variant="outline" className="bg-yellow-50 text-yellow-800 border-yellow-200 text-xs">
                           <Trophy className="w-3 h-3 mr-1" />
                           {achievement}
                         </Badge>
@@ -338,18 +337,18 @@ export function MemberManagement() {
                   <p className="text-sm font-medium text-gray-700 mb-2">Parent/Guardian Contact</p>
                   <div className="space-y-1">
                     <div className="flex items-center gap-2 text-sm text-gray-600">
-                      <Phone className="h-3 w-3" />
-                      <span>{member.parentPhone}</span>
+                      <Phone className="h-3 w-3 flex-shrink-0" />
+                      <span className="truncate">{member.parentPhone}</span>
                     </div>
                     <div className="flex items-center gap-2 text-sm text-gray-600">
-                      <Mail className="h-3 w-3" />
-                      <span>{member.parentEmail}</span>
+                      <Mail className="h-3 w-3 flex-shrink-0" />
+                      <span className="truncate">{member.parentEmail}</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Action Buttons */}
-                <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row gap-2">
                   <Button 
                     size="sm" 
                     variant="outline" 
