@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -18,11 +17,13 @@ import {
   Star,
   Trophy,
   Award,
-  Edit
+  Edit,
+  Settings
 } from "lucide-react";
 import { StudentProfileModal } from "./StudentProfileModal";
 import { RatingModal } from "./RatingModal";
 import { EditMemberModal } from "./EditMemberModal";
+import { ManageBatchesModal } from "./ManageBatchesModal";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -39,6 +40,8 @@ export function MemberManagement() {
   const [studentToRate, setStudentToRate] = useState<any>(null);
   const [showEditModal, setShowEditModal] = useState(false);
   const [memberToEdit, setMemberToEdit] = useState<any>(null);
+  const [showBatchesModal, setShowBatchesModal] = useState(false);
+  const [memberToManageBatches, setMemberToManageBatches] = useState<any>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
 
@@ -60,7 +63,9 @@ export function MemberManagement() {
       status: "Active",
       attendance: 95,
       rating: 4.5,
-      batchesEnrolled: 2,
+      batchesEnrolled: [
+        { id: 2, name: "Yoga Advanced - Batch A", level: "Advanced", status: "Active" }
+      ],
       canEdit: true,
       teacher: "Instructor Sarah Wilson",
       achievements: ["Flexibility Master", "Best Student"],
@@ -80,7 +85,9 @@ export function MemberManagement() {
       status: "Active",
       attendance: 89,
       rating: 4.2,
-      batchesEnrolled: 1,
+      batchesEnrolled: [
+        { id: 1, name: "Yoga Fundamentals - Batch B", level: "Beginner", status: "Active" }
+      ],
       canEdit: true,
       teacher: "Instructor Sarah Wilson",
       achievements: ["Regular Attendee"],
@@ -205,6 +212,12 @@ export function MemberManagement() {
     setShowEditModal(true);
   };
 
+  const handleManageBatches = (member: any) => {
+    console.log("Manage Batches clicked for:", member.name);
+    setMemberToManageBatches(member);
+    setShowBatchesModal(true);
+  };
+
   const closeProfileModal = () => {
     console.log("Closing profile modal");
     setShowProfileModal(false);
@@ -221,6 +234,12 @@ export function MemberManagement() {
     console.log("Closing edit modal");
     setShowEditModal(false);
     setMemberToEdit(null);
+  };
+
+  const closeBatchesModal = () => {
+    console.log("Closing batches modal");
+    setShowBatchesModal(false);
+    setMemberToManageBatches(null);
   };
 
   const handleClearFilters = () => {
@@ -363,7 +382,7 @@ export function MemberManagement() {
                     <span className="text-sm font-medium text-gray-700 truncate">{member.batch.split(' - ')[0]}</span>
                   </div>
                   <p className="text-sm text-gray-600 truncate">{member.batch}</p>
-                  <p className="text-xs text-gray-500 mt-1">Batches Enrolled: {member.batchesEnrolled}</p>
+                  <p className="text-xs text-gray-500 mt-1">Batches Enrolled: {member.batchesEnrolled.length}</p>
                 </div>
 
                 {/* Rating and Attendance */}
@@ -446,6 +465,15 @@ export function MemberManagement() {
                       </Button>
                       <Button 
                         size="sm" 
+                        variant="outline"
+                        className="flex-1 bg-orange-50 text-orange-700 hover:bg-orange-100"
+                        onClick={() => handleManageBatches(member)}
+                      >
+                        <Settings className="h-4 w-4 mr-2" />
+                        Manage Batches
+                      </Button>
+                      <Button 
+                        size="sm" 
                         className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
                         onClick={() => handleRateStudent(member.id)}
                       >
@@ -500,6 +528,12 @@ export function MemberManagement() {
         isOpen={showEditModal}
         onClose={closeEditModal}
         member={memberToEdit}
+      />
+
+      <ManageBatchesModal
+        isOpen={showBatchesModal}
+        onClose={closeBatchesModal}
+        member={memberToManageBatches}
       />
     </div>
   );
