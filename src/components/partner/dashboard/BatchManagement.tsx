@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -6,6 +5,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { 
   Search,
   Filter,
@@ -19,7 +25,8 @@ import {
   Star,
   Trophy,
   BookOpen,
-  TrendingUp
+  TrendingUp,
+  X
 } from "lucide-react";
 import { BatchDetailsModal } from "./BatchDetailsModal";
 
@@ -68,6 +75,8 @@ export function BatchManagement() {
   const [showBatchModal, setShowBatchModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchType, setSearchType] = useState<"batch" | "member">("batch");
+  const [batchFilter, setBatchFilter] = useState("all");
+  const [memberFilter, setMemberFilter] = useState("all");
 
   const batches = [
     {
@@ -175,17 +184,82 @@ export function BatchManagement() {
     }
   ];
 
-  // Filter data based on search
-  const filteredBatches = batches.filter(batch =>
-    searchType === "batch" && batch.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // Enhanced filter logic for batches
+  const getFilteredBatches = () => {
+    let filtered = batches;
+    
+    // Apply search filter
+    if (searchQuery && searchType === "batch") {
+      filtered = filtered.filter(batch =>
+        batch.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        batch.level.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+    
+    // Apply status filter
+    if (batchFilter !== "all") {
+      filtered = filtered.filter(batch => {
+        switch (batchFilter) {
+          case "active":
+            return batch.status === "Active";
+          case "inactive":
+            return batch.status === "Inactive";
+          case "beginner":
+            return batch.level === "Beginner";
+          case "intermediate":
+            return batch.level === "Intermediate";
+          case "advanced":
+            return batch.level === "Advanced";
+          default:
+            return true;
+        }
+      });
+    }
+    
+    return filtered;
+  };
 
-  const filteredMembers = members.filter(member =>
-    searchType === "member" && member.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // Enhanced filter logic for members
+  const getFilteredMembers = () => {
+    let filtered = members;
+    
+    // Apply search filter
+    if (searchQuery && searchType === "member") {
+      filtered = filtered.filter(member =>
+        member.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        member.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        member.batchesEnrolled.some(batch => 
+          batch.name.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+      );
+    }
+    
+    // Apply status filter
+    if (memberFilter !== "all") {
+      filtered = filtered.filter(member => {
+        switch (memberFilter) {
+          case "active":
+            return member.status === "Active";
+          case "inactive":
+            return member.status === "Inactive";
+          case "high-rating":
+            return member.rating >= 4.0;
+          case "low-attendance":
+            return member.attendance < 90;
+          default:
+            return true;
+        }
+      });
+    }
+    
+    return filtered;
+  };
 
-  const shouldShowBatches = searchType === "batch" || searchQuery === "";
-  const shouldShowMembers = searchType === "member" && searchQuery !== "";
+  const filteredBatches = getFilteredBatches();
+  const filteredMembers = getFilteredMembers();
+
+  const shouldShowBatches = searchType === "batch";
+  const shouldShowMembers = searchType === "member";
 
   const stats = [
     { 
@@ -220,6 +294,21 @@ export function BatchManagement() {
     setShowBatchModal(true);
   };
 
+  const handleSearchTypeChange = (type: "batch" | "member") => {
+    setSearchType(type);
+    setSearchQuery("");
+    setBatchFilter("all");
+    setMemberFilter("all");
+  };
+
+  const clearAllFilters = () => {
+    setSearchQuery("");
+    setBatchFilter("all");
+    setMemberFilter("all");
+  };
+
+  const hasActiveFilters = searchQuery !== "" || batchFilter !== "all" || memberFilter !== "all";
+
   return (
     <div className="w-full bg-white min-h-screen">
       {/* Header */}
@@ -251,50 +340,94 @@ export function BatchManagement() {
         </div>
 
         {/* Enhanced Search and Filter */}
-        <div className="flex flex-col sm:flex-row gap-4 mb-6">
+        <div className="flex flex-col gap-4 mb-6">
+          {/* Search Type Toggle */}
           <div className="flex gap-2">
             <Button 
               variant={searchType === "batch" ? "default" : "outline"}
               size="sm"
-              onClick={() => {
-                setSearchType("batch");
-                setSearchQuery("");
-              }}
+              onClick={() => handleSearchTypeChange("batch")}
             >
               Search Batches
             </Button>
             <Button 
               variant={searchType === "member" ? "default" : "outline"}
               size="sm"
-              onClick={() => {
-                setSearchType("member");
-                setSearchQuery("");
-              }}
+              onClick={() => handleSearchTypeChange("member")}
             >
               Search Members
             </Button>
           </div>
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-            <Input 
-              placeholder={searchType === "batch" ? "Search batches..." : "Search members..."}
-              className="pl-10"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
+
+          {/* Search and Filter Row */}
+          <div className="flex flex-col sm:flex-row gap-4">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              <Input 
+                placeholder={searchType === "batch" ? "Search batches..." : "Search members..."}
+                className="pl-10"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+            
+            {/* Filter Dropdown */}
+            <Select 
+              value={searchType === "batch" ? batchFilter : memberFilter} 
+              onValueChange={(value) => {
+                if (searchType === "batch") {
+                  setBatchFilter(value);
+                } else {
+                  setMemberFilter(value);
+                }
+              }}
+            >
+              <SelectTrigger className="w-full sm:w-48">
+                <Filter className="h-4 w-4 mr-2" />
+                <SelectValue placeholder="Filter" />
+              </SelectTrigger>
+              <SelectContent className="bg-white border shadow-lg z-50">
+                {searchType === "batch" ? (
+                  <>
+                    <SelectItem value="all">All Batches</SelectItem>
+                    <SelectItem value="active">Active Only</SelectItem>
+                    <SelectItem value="inactive">Inactive Only</SelectItem>
+                    <SelectItem value="beginner">Beginner Level</SelectItem>
+                    <SelectItem value="intermediate">Intermediate Level</SelectItem>
+                    <SelectItem value="advanced">Advanced Level</SelectItem>
+                  </>
+                ) : (
+                  <>
+                    <SelectItem value="all">All Members</SelectItem>
+                    <SelectItem value="active">Active Only</SelectItem>
+                    <SelectItem value="inactive">Inactive Only</SelectItem>
+                    <SelectItem value="high-rating">High Rating (4.0+)</SelectItem>
+                    <SelectItem value="low-attendance">Low Attendance (&lt;90%)</SelectItem>
+                  </>
+                )}
+              </SelectContent>
+            </Select>
+
+            {/* Clear Filters Button */}
+            {hasActiveFilters && (
+              <Button variant="outline" size="sm" onClick={clearAllFilters}>
+                <X className="h-4 w-4 mr-2" />
+                Clear Filters
+              </Button>
+            )}
           </div>
-          <Button variant="outline">
-            <Filter className="h-4 w-4 mr-2" />
-            Filter
-          </Button>
         </div>
 
         {/* Search Results Info */}
-        {searchQuery && (
+        {(searchQuery || (searchType === "batch" ? batchFilter !== "all" : memberFilter !== "all")) && (
           <div className="text-sm text-gray-600 mb-4">
             {searchType === "batch" 
-              ? `Found ${filteredBatches.length} batch(es) matching "${searchQuery}"`
-              : `Found ${filteredMembers.length} member(s) matching "${searchQuery}"`
+              ? `Found ${filteredBatches.length} batch(es)`
+              : `Found ${filteredMembers.length} member(s)`
+            }
+            {searchQuery && ` matching "${searchQuery}"`}
+            {(searchType === "batch" ? batchFilter !== "all" : memberFilter !== "all") && 
+              ` with applied filters`
             }
           </div>
         )}
@@ -420,14 +553,14 @@ export function BatchManagement() {
           </div>
         )}
 
-        {/* Batch Cards Grid - RESTORED ORIGINAL DESIGN */}
+        {/* Batch Cards Grid */}
         {shouldShowBatches && (
           <div>
             <h2 className="text-lg font-semibold text-gray-900 mb-4">
-              {searchQuery ? "Batch Search Results" : "My Batches"}
+              {searchQuery || batchFilter !== "all" ? "Batch Search Results" : "My Batches"}
             </h2>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {(searchQuery ? filteredBatches : batches).map((batch) => (
+              {filteredBatches.map((batch) => (
                 <Card key={batch.id} className="shadow-sm hover:shadow-md transition-shadow">
                   <CardContent className="p-6">
                     {/* Header with Time and Day */}
@@ -514,17 +647,15 @@ export function BatchManagement() {
         )}
 
         {/* No Results Message */}
-        {searchQuery && (
-          (searchType === "batch" && filteredBatches.length === 0) ||
-          (searchType === "member" && filteredMembers.length === 0)
-        ) && (
+        {((shouldShowBatches && filteredBatches.length === 0) ||
+          (shouldShowMembers && filteredMembers.length === 0)) && (
           <div className="text-center py-12">
             <div className="text-gray-400 mb-4">
               <Search className="w-12 h-12 mx-auto" />
             </div>
             <h3 className="text-lg font-medium text-gray-900 mb-2">No results found</h3>
             <p className="text-gray-600">
-              No {searchType === "batch" ? "batches" : "members"} found matching "{searchQuery}"
+              No {searchType === "batch" ? "batches" : "members"} found with the current search and filter criteria
             </p>
           </div>
         )}
