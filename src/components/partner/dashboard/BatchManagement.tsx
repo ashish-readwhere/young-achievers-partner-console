@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -16,7 +17,9 @@ import {
   Mail,
   Phone,
   Star,
-  Trophy
+  Trophy,
+  BookOpen,
+  TrendingUp
 } from "lucide-react";
 import { BatchDetailsModal } from "./BatchDetailsModal";
 
@@ -29,6 +32,11 @@ interface Batch {
   students: number;
   capacity: number;
   status: string;
+  progress: number;
+  nextSession: string;
+  previousSession: string;
+  completedSessions: number;
+  totalSessions: number;
 }
 
 interface Member {
@@ -70,7 +78,12 @@ export function BatchManagement() {
       level: "Beginner",
       students: 15,
       capacity: 20,
-      status: "Active"
+      status: "Active",
+      progress: 65,
+      nextSession: "Today 6:00 PM",
+      previousSession: "Yesterday 6:00 PM",
+      completedSessions: 13,
+      totalSessions: 20
     },
     {
       id: 2,
@@ -80,7 +93,12 @@ export function BatchManagement() {
       level: "Advanced",
       students: 10,
       capacity: 12,
-      status: "Active"
+      status: "Active",
+      progress: 80,
+      nextSession: "Tomorrow 4:00 PM",
+      previousSession: "2 days ago 4:00 PM",
+      completedSessions: 16,
+      totalSessions: 20
     },
     {
       id: 3,
@@ -90,7 +108,12 @@ export function BatchManagement() {
       level: "Intermediate",
       students: 12,
       capacity: 15,
-      status: "Inactive"
+      status: "Inactive",
+      progress: 45,
+      nextSession: "On Hold",
+      previousSession: "Last week 7:30 PM",
+      completedSessions: 9,
+      totalSessions: 20
     }
   ];
 
@@ -184,9 +207,9 @@ export function BatchManagement() {
       color: "purple"
     },
     { 
-      label: "Avg Batch Capacity", 
-      value: Math.round(batches.reduce((sum, b) => sum + b.capacity, 0) / batches.length).toString(), 
-      change: "No change",
+      label: "Avg Batch Progress", 
+      value: Math.round(batches.reduce((sum, b) => sum + b.progress, 0) / batches.length) + "%", 
+      change: "+8% this month",
       color: "orange"
     }
   ];
@@ -411,12 +434,18 @@ export function BatchManagement() {
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex items-center gap-4">
                         <div className="w-12 h-12 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center">
-                          <Clock className="w-6 h-6" />
+                          <BookOpen className="w-6 h-6" />
                         </div>
                         <div>
                           <CardTitle className="text-lg font-semibold">{batch.name}</CardTitle>
-                          <p className="text-sm text-gray-600">{batch.time}</p>
-                          <p className="text-sm text-gray-600">{batch.day}</p>
+                          <div className="flex items-center gap-2 text-sm text-gray-600 mt-1">
+                            <Clock className="w-4 h-4" />
+                            <span>{batch.time}</span>
+                          </div>
+                          <div className="flex items-center gap-2 text-sm text-gray-600">
+                            <Calendar className="w-4 h-4" />
+                            <span>{batch.day}</span>
+                          </div>
                         </div>
                       </div>
                       <Badge variant={batch.status === "Active" ? "default" : "secondary"}>
@@ -424,14 +453,50 @@ export function BatchManagement() {
                       </Badge>
                     </div>
 
+                    {/* Progress Section */}
+                    <div className="mb-4">
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="text-sm font-medium text-gray-700">Batch Progress</span>
+                        <span className="text-sm font-bold text-gray-900">{batch.progress}%</span>
+                      </div>
+                      <Progress value={batch.progress} className="h-3 mb-1" />
+                      <p className="text-xs text-gray-600">
+                        {batch.completedSessions} of {batch.totalSessions} sessions completed
+                      </p>
+                    </div>
+
+                    {/* Session Information */}
+                    <div className="grid grid-cols-1 gap-3 mb-4">
+                      <div className="bg-green-50 rounded-lg p-3">
+                        <div className="flex items-center gap-2 mb-1">
+                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                          <span className="text-sm font-medium text-green-700">Next Session</span>
+                        </div>
+                        <p className="text-sm text-green-900 font-medium">{batch.nextSession}</p>
+                      </div>
+                      <div className="bg-gray-50 rounded-lg p-3">
+                        <div className="flex items-center gap-2 mb-1">
+                          <div className="w-2 h-2 bg-gray-500 rounded-full"></div>
+                          <span className="text-sm font-medium text-gray-700">Previous Session</span>
+                        </div>
+                        <p className="text-sm text-gray-900">{batch.previousSession}</p>
+                      </div>
+                    </div>
+
                     {/* Level and Enrollment */}
                     <div className="grid grid-cols-2 gap-4 mb-4">
                       <div className="bg-purple-50 rounded-lg p-3">
-                        <p className="text-sm font-medium text-purple-700 mb-1">Level</p>
+                        <div className="flex items-center gap-2 mb-1">
+                          <TrendingUp className="w-4 h-4 text-purple-600" />
+                          <span className="text-sm font-medium text-purple-700">Level</span>
+                        </div>
                         <p className="text-lg font-bold text-purple-900">{batch.level}</p>
                       </div>
                       <div className="bg-yellow-50 rounded-lg p-3">
-                        <p className="text-sm font-medium text-yellow-700 mb-1">Enrollment</p>
+                        <div className="flex items-center gap-2 mb-1">
+                          <Users className="w-4 h-4 text-yellow-600" />
+                          <span className="text-sm font-medium text-yellow-700">Enrollment</span>
+                        </div>
                         <p className="text-lg font-bold text-yellow-900">{batch.students}/{batch.capacity}</p>
                       </div>
                     </div>
