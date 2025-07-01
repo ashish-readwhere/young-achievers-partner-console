@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -255,22 +256,22 @@ export function MemberManagement() {
   return (
     <div className="w-full bg-white min-h-screen">
       {/* Header */}
-      <div className="bg-white border-b px-4 sm:px-8 py-4 sm:py-6">
+      <div className="bg-white border-b px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
         <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Member Management</h1>
         <p className="text-gray-600 mt-1 text-sm sm:text-base">Manage your {partnerSubject} students and view platform members</p>
       </div>
 
       {/* Main Content */}
-      <div className="p-4 sm:p-8">
+      <div className="p-4 sm:p-6 lg:p-8">
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
           {stats.map((stat, index) => (
             <Card key={index} className={`border-0 shadow-sm bg-${stat.color}-50`}>
               <CardContent className="p-4 sm:p-6">
                 <div className="flex items-center justify-between">
                   <div className="min-w-0 flex-1">
                     <p className={`text-xs sm:text-sm font-medium text-${stat.color}-600 mb-1 truncate`}>{stat.label}</p>
-                    <p className={`text-2xl sm:text-3xl font-bold text-${stat.color}-900`}>{stat.value}</p>
+                    <p className={`text-xl sm:text-2xl lg:text-3xl font-bold text-${stat.color}-900`}>{stat.value}</p>
                     <p className={`text-xs text-${stat.color}-600 mt-1 truncate`}>{stat.change}</p>
                   </div>
                   <div className={`w-10 h-10 sm:w-12 sm:h-12 bg-${stat.color}-500 rounded-lg flex items-center justify-center flex-shrink-0`}>
@@ -339,14 +340,14 @@ export function MemberManagement() {
         </div>
 
         {/* Member Cards Grid */}
-        <div className="grid grid-cols-1 gap-4 sm:gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-1 2xl:grid-cols-2 gap-4 sm:gap-6">
           {filteredMembers.map((member) => (
             <Card key={member.id} className={`${member.canEdit ? 'border-blue-200 bg-blue-25' : 'border-gray-200'} shadow-sm hover:shadow-md transition-shadow`}>
               <CardContent className="p-4 sm:p-6">
                 {/* Header with Avatar and Basic Info */}
                 <div className="flex items-start justify-between mb-4 gap-3">
                   <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
-                    <Avatar className="h-12 w-12 sm:h-16 sm:w-16 flex-shrink-0">
+                    <Avatar className="h-12 w-12 sm:h-14 sm:w-14 lg:h-16 lg:w-16 flex-shrink-0">
                       <AvatarImage src={member.avatar} alt={member.name} />
                       <AvatarFallback className={member.canEdit ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-600'}>
                         {member.name.split(' ').map(n => n[0]).join('')}
@@ -390,8 +391,8 @@ export function MemberManagement() {
                   <p className="text-xs text-gray-500 mt-1">Batches Enrolled: {Array.isArray(member.batchesEnrolled) ? member.batchesEnrolled.length : 1}</p>
                 </div>
 
-                {/* Rating and Attendance */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-4">
+                {/* Rating and Attendance - Improved for tablet */}
+                <div className="grid grid-cols-2 gap-3 mb-4">
                   <div className="bg-yellow-50 rounded-lg p-3">
                     <div className="flex justify-between items-center mb-2">
                       <span className="text-sm font-medium text-yellow-700">Rating</span>
@@ -446,23 +447,26 @@ export function MemberManagement() {
                   </div>
                 </div>
 
-                {/* Action Buttons */}
-                <div className="flex flex-col sm:flex-row gap-2">
+                {/* Action Buttons - Improved responsive layout */}
+                <div className="space-y-2">
+                  {/* First row - View Profile (always visible) */}
                   <Button 
                     size="sm" 
                     variant="outline" 
-                    className="flex-1"
+                    className="w-full"
                     onClick={() => handleViewProfile(member)}
                   >
                     <Eye className="h-4 w-4 mr-2" />
                     View Profile
                   </Button>
+                  
+                  {/* Second row - Student actions or Contact Parent */}
                   {member.canEdit ? (
-                    <>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-2">
                       <Button 
                         size="sm" 
                         variant="outline"
-                        className="flex-1 bg-purple-50 text-purple-700 hover:bg-purple-100"
+                        className="bg-purple-50 text-purple-700 hover:bg-purple-100"
                         onClick={() => handleEditMember(member)}
                       >
                         <Edit className="h-4 w-4 mr-2" />
@@ -471,25 +475,29 @@ export function MemberManagement() {
                       <Button 
                         size="sm" 
                         variant="outline"
-                        className="flex-1 bg-orange-50 text-orange-700 hover:bg-orange-100"
+                        className="bg-orange-50 text-orange-700 hover:bg-orange-100"
                         onClick={() => handleManageBatches(member)}
                       >
                         <Settings className="h-4 w-4 mr-2" />
                         Manage Batches
                       </Button>
-                      <Button 
-                        size="sm" 
-                        className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
-                        onClick={() => handleRateStudent(member.id)}
-                      >
-                        <Star className="h-4 w-4 mr-2" />
-                        Rate Student
-                      </Button>
-                    </>
+                    </div>
                   ) : (
-                    <Button size="sm" variant="outline" className="flex-1 bg-green-50 text-green-700 hover:bg-green-100">
+                    <Button size="sm" variant="outline" className="w-full bg-green-50 text-green-700 hover:bg-green-100">
                       <Phone className="h-4 w-4 mr-2" />
                       Contact Parent
+                    </Button>
+                  )}
+                  
+                  {/* Third row - Rate Student (only for editable students) */}
+                  {member.canEdit && (
+                    <Button 
+                      size="sm" 
+                      className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                      onClick={() => handleRateStudent(member.id)}
+                    >
+                      <Star className="h-4 w-4 mr-2" />
+                      Rate Student
                     </Button>
                   )}
                 </div>
