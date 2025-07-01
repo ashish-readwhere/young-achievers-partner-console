@@ -420,7 +420,7 @@ export function BatchManagement() {
           </div>
         )}
 
-        {/* Batch Cards Grid */}
+        {/* Batch Cards Grid - RESTORED ORIGINAL DESIGN */}
         {shouldShowBatches && (
           <div>
             <h2 className="text-lg font-semibold text-gray-900 mb-4">
