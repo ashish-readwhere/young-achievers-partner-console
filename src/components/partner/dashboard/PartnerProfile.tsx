@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -294,42 +293,6 @@ export function PartnerProfile() {
                   </div>
                 </div>
               ))}
-            </CardContent>
-          </Card>
-
-          {/* Quick Actions */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Quick Actions</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <Button 
-                className="w-full justify-start text-sm" 
-                variant="outline" 
-                size="sm"
-                onClick={handleContactSupport}
-              >
-                <Mail className="mr-2 h-4 w-4 flex-shrink-0" />
-                <span className="truncate">Contact Support</span>
-              </Button>
-              <Button 
-                className="w-full justify-start text-sm" 
-                variant="outline" 
-                size="sm"
-                onClick={handleViewCertificates}
-              >
-                <Award className="mr-2 h-4 w-4 flex-shrink-0" />
-                <span className="truncate">View Certificates</span>
-              </Button>
-              <Button 
-                className="w-full justify-start text-sm" 
-                variant="outline" 
-                size="sm"
-                onClick={handleScheduleMeeting}
-              >
-                <Calendar className="mr-2 h-4 w-4 flex-shrink-0" />
-                <span className="truncate">Schedule Meeting</span>
-              </Button>
             </CardContent>
           </Card>
         </div>
