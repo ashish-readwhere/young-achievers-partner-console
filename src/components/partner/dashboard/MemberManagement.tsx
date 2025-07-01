@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -22,6 +23,14 @@ import {
 import { StudentProfileModal } from "./StudentProfileModal";
 import { RatingModal } from "./RatingModal";
 import { EditMemberModal } from "./EditMemberModal";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export function MemberManagement() {
   const [selectedStudent, setSelectedStudent] = useState<any>(null);
@@ -31,6 +40,7 @@ export function MemberManagement() {
   const [showEditModal, setShowEditModal] = useState(false);
   const [memberToEdit, setMemberToEdit] = useState<any>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
 
   // Partner can see all members but can only edit those in their batches
   const partnerSubject = "Yoga";
@@ -87,7 +97,7 @@ export function MemberManagement() {
       parentEmail: "parent.mike@email.com",
       batch: "Chess - Intermediate",
       joinDate: "Nov 15, 2024",
-      status: "Active",
+      status: "Inactive",
       attendance: 87,
       rating: 4.0,
       batchesEnrolled: 1,
@@ -119,13 +129,21 @@ export function MemberManagement() {
     }
   ];
 
-  // Filter members based on search query
-  const filteredMembers = members.filter(member =>
-    member.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    member.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    member.batch.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    member.teacher.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // Filter members based on search query and status filter
+  const filteredMembers = members.filter(member => {
+    const matchesSearch = searchQuery === "" || 
+      member.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      member.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      member.batch.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      member.teacher.toLowerCase().includes(searchQuery.toLowerCase());
+    
+    const matchesStatus = statusFilter === "all" || 
+      (statusFilter === "active" && member.status === "Active") ||
+      (statusFilter === "inactive" && member.status === "Inactive") ||
+      (statusFilter === "my-students" && member.canEdit);
+    
+    return matchesSearch && matchesStatus;
+  });
 
   const myStudents = filteredMembers.filter(member => member.canEdit);
   const allStudents = filteredMembers;
@@ -133,25 +151,30 @@ export function MemberManagement() {
   const stats = [
     { 
       label: "My Students", 
-      value: myStudents.length.toString(), 
+      value: members.filter(m => m.canEdit).length.toString(), 
       change: "+2 this week",
       color: "blue"
     },
     { 
       label: "Active in My Batches", 
-      value: myStudents.filter(m => m.status === "Active").length.toString(), 
+      value: members.filter(m => m.canEdit && m.status === "Active").length.toString(), 
       change: "+1 this week",
       color: "green"
     },
     { 
       label: "Total Platform Members", 
-      value: allStudents.length.toString(), 
+      value: members.length.toString(), 
       change: "View only access",
       color: "purple"
     },
     { 
       label: "My Avg Attendance", 
-      value: myStudents.length > 0 ? Math.round(myStudents.reduce((sum, m) => sum + m.attendance, 0) / myStudents.length) + "%" : "0%", 
+      value: (() => {
+        const myActiveStudents = members.filter(m => m.canEdit);
+        return myActiveStudents.length > 0 ? 
+          Math.round(myActiveStudents.reduce((sum, m) => sum + m.attendance, 0) / myActiveStudents.length) + "%" : 
+          "0%";
+      })(), 
       change: "+3% vs last month",
       color: "orange"
     }
@@ -200,6 +223,11 @@ export function MemberManagement() {
     setMemberToEdit(null);
   };
 
+  const handleClearFilters = () => {
+    setSearchQuery("");
+    setStatusFilter("all");
+  };
+
   return (
     <div className="w-full bg-white min-h-screen">
       {/* Header */}
@@ -235,23 +263,54 @@ export function MemberManagement() {
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
             <Input 
-              placeholder="Search members..." 
+              placeholder="Search by name, email, batch, or teacher..." 
               className="pl-10" 
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => {
+                console.log("Search query changed:", e.target.value);
+                setSearchQuery(e.target.value);
+              }}
             />
           </div>
-          <Button variant="outline" className="w-full sm:w-auto">
-            <Filter className="h-4 w-4 mr-2" />
-            Filter
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="w-full sm:w-auto">
+                <Filter className="h-4 w-4 mr-2" />
+                Filter {statusFilter !== "all" && `(${statusFilter})`}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuLabel>Filter by Status</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => setStatusFilter("all")}>
+                All Members
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setStatusFilter("active")}>
+                Active Only
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setStatusFilter("inactive")}>
+                Inactive Only
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setStatusFilter("my-students")}>
+                My Students Only
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={handleClearFilters}>
+                Clear All Filters
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
 
         <div className="text-sm text-gray-600 mb-4">
           <span className="text-blue-600 font-medium">{myStudents.length} students</span> you can manage • 
           <span className="text-gray-500 ml-1">{allStudents.length - myStudents.length} view-only</span>
-          {searchQuery && (
-            <span className="ml-1">• Showing results for "{searchQuery}"</span>
+          {(searchQuery || statusFilter !== "all") && (
+            <span className="ml-1">
+              • Showing {filteredMembers.length} results
+              {searchQuery && ` for "${searchQuery}"`}
+              {statusFilter !== "all" && ` (${statusFilter})`}
+            </span>
           )}
         </div>
 
@@ -407,15 +466,18 @@ export function MemberManagement() {
         </div>
 
         {/* No Results Message */}
-        {searchQuery && filteredMembers.length === 0 && (
+        {filteredMembers.length === 0 && (searchQuery || statusFilter !== "all") && (
           <div className="text-center py-12">
             <div className="text-gray-400 mb-4">
               <Search className="w-12 h-12 mx-auto" />
             </div>
             <h3 className="text-lg font-medium text-gray-900 mb-2">No results found</h3>
             <p className="text-gray-600">
-              No members found matching "{searchQuery}"
+              No members found matching your search criteria.
             </p>
+            <Button variant="outline" className="mt-4" onClick={handleClearFilters}>
+              Clear Filters
+            </Button>
           </div>
         )}
       </div>
