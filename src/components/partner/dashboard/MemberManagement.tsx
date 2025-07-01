@@ -107,7 +107,9 @@ export function MemberManagement() {
       status: "Inactive",
       attendance: 87,
       rating: 4.0,
-      batchesEnrolled: 1,
+      batchesEnrolled: [
+        { id: 3, name: "Chess - Intermediate", level: "Intermediate", status: "Inactive" }
+      ],
       canEdit: false,
       teacher: "Master John Smith",
       achievements: ["Tournament Winner"],
@@ -127,7 +129,10 @@ export function MemberManagement() {
       status: "Active",
       attendance: 92,
       rating: 4.8,
-      batchesEnrolled: 2,
+      batchesEnrolled: [
+        { id: 4, name: "Coding - Python Basics", level: "Beginner", status: "Active" },
+        { id: 5, name: "Coding - Advanced", level: "Advanced", status: "Active" }
+      ],
       canEdit: false,
       teacher: "Prof. Tech Guru",
       achievements: ["Code Master"],
@@ -382,7 +387,7 @@ export function MemberManagement() {
                     <span className="text-sm font-medium text-gray-700 truncate">{member.batch.split(' - ')[0]}</span>
                   </div>
                   <p className="text-sm text-gray-600 truncate">{member.batch}</p>
-                  <p className="text-xs text-gray-500 mt-1">Batches Enrolled: {member.batchesEnrolled.length}</p>
+                  <p className="text-xs text-gray-500 mt-1">Batches Enrolled: {Array.isArray(member.batchesEnrolled) ? member.batchesEnrolled.length : 1}</p>
                 </div>
 
                 {/* Rating and Attendance */}
