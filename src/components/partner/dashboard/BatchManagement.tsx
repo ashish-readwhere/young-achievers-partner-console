@@ -265,25 +265,21 @@ export function BatchManagement() {
     { 
       label: "Total Batches", 
       value: batches.length.toString(), 
-      change: "+1 this week",
       color: "blue"
     },
     { 
       label: "Active Batches", 
       value: batches.filter(b => b.status === "Active").length.toString(), 
-      change: "-1 this week",
       color: "green"
     },
     { 
       label: "Total Enrollment", 
       value: batches.reduce((sum, b) => sum + b.students, 0).toString(), 
-      change: "+5% vs last month",
       color: "purple"
     },
     { 
       label: "Avg Batch Progress", 
       value: Math.round(batches.reduce((sum, b) => sum + b.progress, 0) / batches.length) + "%", 
-      change: "+8% this month",
       color: "orange"
     }
   ];
@@ -328,7 +324,6 @@ export function BatchManagement() {
                   <div>
                     <p className={`text-sm font-medium text-${stat.color}-600 mb-1`}>{stat.label}</p>
                     <p className={`text-3xl font-bold text-${stat.color}-900`}>{stat.value}</p>
-                    <p className={`text-xs text-${stat.color}-600 mt-1`}>{stat.change}</p>
                   </div>
                   <div className={`w-12 h-12 bg-${stat.color}-500 rounded-lg flex items-center justify-center`}>
                     <Users className="w-6 h-6 text-white" />

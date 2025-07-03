@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -35,10 +34,10 @@ export function PartnerOverview({ onNavigate }: PartnerOverviewProps) {
   const partnerSubject = "Yoga";
   
   const stats = [
-    { label: "Active Batches", value: "2", change: "+1 this month", icon: Users, color: "blue" },
-    { label: "Total Students", value: "33", change: "+5 this week", icon: Users, color: "green" },
-    { label: "This Week Sessions", value: "8", change: "4 completed", icon: Calendar, color: "purple" },
-    { label: "Average Rating", value: "4.8", change: "+0.2 vs last month", icon: Star, color: "yellow" }
+    { label: "Active Batches", value: "2", icon: Users, color: "blue" },
+    { label: "Total Students", value: "33", icon: Users, color: "green" },
+    { label: "This Week Sessions", value: "8", icon: Calendar, color: "purple" },
+    { label: "Average Rating", value: "4.8", icon: Star, color: "yellow" }
   ];
 
   const recentStudents = [
@@ -164,7 +163,6 @@ export function PartnerOverview({ onNavigate }: PartnerOverviewProps) {
                   <div className="min-w-0 flex-1">
                     <p className={`text-xs font-medium text-${stat.color}-600 mb-1 leading-tight`}>{stat.label}</p>
                     <p className={`text-xl font-bold text-${stat.color}-900 leading-tight`}>{stat.value}</p>
-                    <p className={`text-xs text-${stat.color}-600 mt-1 leading-tight truncate`}>{stat.change}</p>
                   </div>
                   <div className={`w-10 h-10 bg-${stat.color}-500 rounded-lg flex items-center justify-center flex-shrink-0 ml-2`}>
                     <stat.icon className="w-5 h-5 text-white" />
