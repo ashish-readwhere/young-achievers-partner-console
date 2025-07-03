@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -5,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { EditProfileModal } from "./EditProfileModal";
 import { 
   User,
   Mail,
@@ -13,7 +13,6 @@ import {
   MapPin,
   Calendar,
   Award,
-  Edit,
   CheckCircle,
   FileText,
   MessageSquare,
@@ -22,8 +21,6 @@ import {
 } from "lucide-react";
 
 export function PartnerProfile() {
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  
   const partnerInfo = {
     name: "John Smith",
     contactPerson: "John Smith", // Same as name since teacher is the partner
@@ -73,11 +70,6 @@ export function PartnerProfile() {
     { label: "Success Rate", value: "94%" },
     { label: "Average Rating", value: "4.8/5" }
   ];
-
-  const handleEditProfile = () => {
-    console.log("Edit profile clicked");
-    setIsEditModalOpen(true);
-  };
 
   const handleContactSupport = () => {
     window.open('mailto:support@youngachievers.com?subject=Partner Support - Profile Query&body=Hello, I need help with my partner profile...', '_self');
@@ -159,15 +151,6 @@ export function PartnerProfile() {
         <div className="flex-1 min-w-0">
           <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 break-words">Partner Profile</h1>
           <p className="text-gray-600 mt-2 text-sm lg:text-base">Manage your partner information and track performance</p>
-        </div>
-        <div className="flex-shrink-0">
-          <Button 
-            onClick={handleEditProfile}
-            className="w-full lg:w-auto whitespace-nowrap"
-          >
-            <Edit className="h-4 w-4 mr-2" />
-            Edit Profile
-          </Button>
         </div>
       </div>
 
@@ -297,12 +280,6 @@ export function PartnerProfile() {
           </Card>
         </div>
       </div>
-
-      <EditProfileModal
-        isOpen={isEditModalOpen}
-        onClose={() => setIsEditModalOpen(false)}
-        partnerInfo={partnerInfo}
-      />
     </div>
   );
 }
