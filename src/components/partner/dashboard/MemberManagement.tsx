@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -52,6 +51,32 @@ export function MemberManagement({ onNavigate }: MemberManagementProps) {
   // Partner can see all members but can only edit those in their batches
   const partnerSubject = "Yoga";
   
+  // Helper function to get actual dates
+  const getNextSessionDate = (sessionInfo: string) => {
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+    
+    if (sessionInfo.includes("Today")) {
+      return {
+        date: today.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+        day: today.toLocaleDateString('en-US', { weekday: 'long' }),
+        time: sessionInfo.split(' ').slice(-2).join(' ')
+      };
+    } else if (sessionInfo.includes("Tomorrow")) {
+      return {
+        date: tomorrow.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+        day: tomorrow.toLocaleDateString('en-US', { weekday: 'long' }),
+        time: sessionInfo.split(' ').slice(-2).join(' ')
+      };
+    }
+    return {
+      date: sessionInfo,
+      day: '',
+      time: ''
+    };
+  };
+  
   // Only show students enrolled in partner's batches (Yoga batches)
   const members = [
     {
@@ -72,7 +97,6 @@ export function MemberManagement({ onNavigate }: MemberManagementProps) {
       ],
       canEdit: true,
       teacher: "Instructor Sarah Wilson",
-      achievements: ["Flexibility Master", "Best Student"],
       nextSession: "Today 4:00 PM",
       nextSessionDate: "Today",
       nextSessionDay: "Monday",
@@ -96,7 +120,6 @@ export function MemberManagement({ onNavigate }: MemberManagementProps) {
       ],
       canEdit: true,
       teacher: "Instructor Sarah Wilson",
-      achievements: ["Regular Attendee"],
       nextSession: "Tomorrow 6:00 PM",
       nextSessionDate: "Tomorrow",
       nextSessionDay: "Tuesday",
@@ -287,109 +310,112 @@ export function MemberManagement({ onNavigate }: MemberManagementProps) {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredMembers.map((member) => (
-                    <TableRow key={member.id} className="hover:bg-gray-50 bg-blue-25">
-                      <TableCell>
-                        <div className="flex items-center gap-3">
-                          <Avatar className="h-10 w-10 flex-shrink-0">
-                            <AvatarImage src={member.avatar} alt={member.name} />
-                            <AvatarFallback className="bg-blue-100 text-blue-600">
-                              {member.name.split(' ').map(n => n[0]).join('')}
-                            </AvatarFallback>
-                          </Avatar>
-                          <div className="min-w-0">
-                            <div className="flex items-center gap-2 mb-1">
-                              <h3 className="text-sm font-semibold text-gray-900 truncate">{member.name}</h3>
-                              <Badge 
-                                variant={member.status === "Active" ? "default" : "secondary"}
-                                className={`${member.status === "Active" ? "bg-green-100 text-green-800" : ""} text-xs`}
-                              >
-                                {member.status}
+                  {filteredMembers.map((member) => {
+                    const nextSessionInfo = getNextSessionDate(member.nextSession);
+                    return (
+                      <TableRow key={member.id} className="hover:bg-gray-50 bg-blue-25">
+                        <TableCell>
+                          <div className="flex items-center gap-3">
+                            <Avatar className="h-10 w-10 flex-shrink-0">
+                              <AvatarImage src={member.avatar} alt={member.name} />
+                              <AvatarFallback className="bg-blue-100 text-blue-600">
+                                {member.name.split(' ').map(n => n[0]).join('')}
+                              </AvatarFallback>
+                            </Avatar>
+                            <div className="min-w-0">
+                              <div className="flex items-center gap-2 mb-1">
+                                <h3 className="text-sm font-semibold text-gray-900 truncate">{member.name}</h3>
+                                <Badge 
+                                  variant={member.status === "Active" ? "default" : "secondary"}
+                                  className={`${member.status === "Active" ? "bg-green-100 text-green-800" : ""} text-xs`}
+                                >
+                                  {member.status}
+                                </Badge>
+                              </div>
+                              <p className="text-xs text-gray-600">Age {member.age}</p>
+                              <Badge variant="outline" className="mt-1 text-xs bg-blue-50 text-blue-700">
+                                My Student
                               </Badge>
                             </div>
-                            <p className="text-xs text-gray-600">Age {member.age}</p>
-                            <Badge variant="outline" className="mt-1 text-xs bg-blue-50 text-blue-700">
-                              My Student
-                            </Badge>
                           </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="space-y-1">
-                          <div className="flex items-center gap-2">
-                            <div className="w-5 h-5 bg-green-100 rounded flex items-center justify-center flex-shrink-0">
-                              <span className="text-green-600 text-xs font-bold">Y</span>
-                            </div>
-                            <span className="text-sm font-medium text-gray-700">{member.batch.split(' - ')[0]}</span>
-                          </div>
-                          <p className="text-xs text-gray-600">{member.batch}</p>
-                          <p className="text-xs text-gray-500">Batches: {Array.isArray(member.batchesEnrolled) ? member.batchesEnrolled.length : 1}</p>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="space-y-1">
-                          <div className="text-xs text-gray-600">
-                            <strong>Student:</strong>
-                          </div>
-                          <div className="flex items-center gap-1 text-xs text-gray-600">
-                            <Phone className="h-3 w-3" />
-                            <span>{member.phone}</span>
-                          </div>
-                          <div className="text-xs text-gray-600 mt-2">
-                            <strong>Parent:</strong>
-                          </div>
-                          <div className="flex items-center gap-1 text-xs text-gray-600">
-                            <Phone className="h-3 w-3" />
-                            <span>{member.parentPhone}</span>
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="space-y-2">
-                          <div className="flex items-center gap-2">
-                            <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                            <span className="text-sm font-medium">{member.rating}</span>
-                          </div>
+                        </TableCell>
+                        <TableCell>
                           <div className="space-y-1">
-                            <div className="flex items-center justify-between">
-                              <span className="text-xs text-gray-600">Attendance</span>
-                              <span className="text-xs font-medium">{member.attendance}%</span>
+                            <div className="flex items-center gap-2">
+                              <div className="w-5 h-5 bg-green-100 rounded flex items-center justify-center flex-shrink-0">
+                                <span className="text-green-600 text-xs font-bold">Y</span>
+                              </div>
+                              <span className="text-sm font-medium text-gray-700">{member.batch.split(' - ')[0]}</span>
                             </div>
-                            <Progress value={member.attendance} className="h-1.5 w-16" />
+                            <p className="text-xs text-gray-600">{member.batch}</p>
+                            <p className="text-xs text-gray-500">Batches: {Array.isArray(member.batchesEnrolled) ? member.batchesEnrolled.length : 1}</p>
                           </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="space-y-1">
-                          <p className="text-sm font-medium text-gray-900">{member.nextSessionDate}</p>
-                          <p className="text-xs text-gray-600">{member.nextSessionDay}</p>
-                          <p className="text-xs text-gray-500">{member.nextSession.split(' ').slice(-2).join(' ')}</p>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex flex-col gap-1">
-                          <Button 
-                            size="sm" 
-                            variant="outline" 
-                            className="text-xs h-7"
-                            onClick={() => handleViewProfile(member)}
-                          >
-                            <Eye className="h-3 w-3 mr-1" />
-                            View
-                          </Button>
-                          
-                          <Button 
-                            size="sm" 
-                            className="bg-blue-600 hover:bg-blue-700 text-white text-xs h-7"
-                            onClick={() => handleRateStudent(member.id)}
-                          >
-                            <Star className="h-3 w-3 mr-1" />
-                            Rate
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                        </TableCell>
+                        <TableCell>
+                          <div className="space-y-1">
+                            <div className="text-xs text-gray-600">
+                              <strong>Student:</strong>
+                            </div>
+                            <div className="flex items-center gap-1 text-xs text-gray-600">
+                              <Phone className="h-3 w-3" />
+                              <span>{member.phone}</span>
+                            </div>
+                            <div className="text-xs text-gray-600 mt-2">
+                              <strong>Parent:</strong>
+                            </div>
+                            <div className="flex items-center gap-1 text-xs text-gray-600">
+                              <Phone className="h-3 w-3" />
+                              <span>{member.parentPhone}</span>
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="space-y-2">
+                            <div className="flex items-center gap-2">
+                              <Star className="w-4 h-4 text-yellow-500 fill-current" />
+                              <span className="text-sm font-medium">{member.rating}</span>
+                            </div>
+                            <div className="space-y-1">
+                              <div className="flex items-center justify-between">
+                                <span className="text-xs text-gray-600">Attendance</span>
+                                <span className="text-xs font-medium">{member.attendance}%</span>
+                              </div>
+                              <Progress value={member.attendance} className="h-1.5 w-16" />
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="space-y-1">
+                            <p className="text-sm font-medium text-gray-900">{nextSessionInfo.date}</p>
+                            <p className="text-xs text-gray-600">{nextSessionInfo.day}</p>
+                            <p className="text-xs text-gray-500">{nextSessionInfo.time}</p>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex flex-col gap-1">
+                            <Button 
+                              size="sm" 
+                              variant="outline" 
+                              className="text-xs h-7"
+                              onClick={() => handleViewProfile(member)}
+                            >
+                              <Eye className="h-3 w-3 mr-1" />
+                              View
+                            </Button>
+                            
+                            <Button 
+                              size="sm" 
+                              className="bg-blue-600 hover:bg-blue-700 text-white text-xs h-7"
+                              onClick={() => handleRateStudent(member.id)}
+                            >
+                              <Star className="h-3 w-3 mr-1" />
+                              Rate
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
                 </TableBody>
               </Table>
             </div>
