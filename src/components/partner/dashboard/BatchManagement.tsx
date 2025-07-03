@@ -107,6 +107,46 @@ export function BatchManagement({ onNavigate }: BatchManagementProps) {
     setStatusFilter("all");
   };
 
+  const getStatColors = (color: string) => {
+    switch (color) {
+      case "blue":
+        return {
+          bg: "bg-blue-50",
+          text: "text-blue-600",
+          textBold: "text-blue-900",
+          iconBg: "bg-blue-500"
+        };
+      case "green":
+        return {
+          bg: "bg-green-50",
+          text: "text-green-600",
+          textBold: "text-green-900",
+          iconBg: "bg-green-500"
+        };
+      case "purple":
+        return {
+          bg: "bg-purple-50",
+          text: "text-purple-600",
+          textBold: "text-purple-900",
+          iconBg: "bg-purple-500"
+        };
+      case "orange":
+        return {
+          bg: "bg-orange-50",
+          text: "text-orange-600",
+          textBold: "text-orange-900",
+          iconBg: "bg-orange-500"
+        };
+      default:
+        return {
+          bg: "bg-gray-50",
+          text: "text-gray-600",
+          textBold: "text-gray-900",
+          iconBg: "bg-gray-500"
+        };
+    }
+  };
+
   const stats = [
     { label: "Total Batches", value: totalBatches.toString(), icon: BookOpen, color: "blue" },
     { label: "Total Students", value: `${totalStudents}/${totalCapacity}`, icon: Users, color: "green" },
@@ -127,20 +167,17 @@ export function BatchManagement({ onNavigate }: BatchManagementProps) {
         {/* Summary Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {stats.map((stat, index) => {
-            const bgColorClass = `bg-${stat.color}-50`;
-            const textColorClass = `text-${stat.color}-600`;
-            const textBoldClass = `text-${stat.color}-900`;
-            const iconBgClass = `bg-${stat.color}-500`;
+            const colors = getStatColors(stat.color);
             
             return (
-              <Card key={index} className={`border-0 shadow-sm ${bgColorClass}`}>
+              <Card key={index} className={`border-0 shadow-sm ${colors.bg}`}>
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div className="min-w-0 flex-1">
-                      <p className={`text-xs font-medium ${textColorClass} mb-1 leading-tight`}>{stat.label}</p>
-                      <p className={`text-xl font-bold ${textBoldClass} leading-tight`}>{stat.value}</p>
+                      <p className={`text-xs font-medium ${colors.text} mb-1 leading-tight`}>{stat.label}</p>
+                      <p className={`text-xl font-bold ${colors.textBold} leading-tight`}>{stat.value}</p>
                     </div>
-                    <div className={`w-10 h-10 ${iconBgClass} rounded-lg flex items-center justify-center flex-shrink-0 ml-2`}>
+                    <div className={`w-10 h-10 ${colors.iconBg} rounded-lg flex items-center justify-center flex-shrink-0 ml-2`}>
                       <stat.icon className="w-5 h-5 text-white" />
                     </div>
                   </div>
