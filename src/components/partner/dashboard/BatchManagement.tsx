@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -39,6 +38,8 @@ export function BatchManagement({ onNavigate }: BatchManagementProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
   const [scheduleFilter, setScheduleFilter] = useState("All");
+
+  console.log("BatchManagement component rendering with layout: Stats first, then Search");
 
   const batches = [
     {
@@ -124,7 +125,7 @@ export function BatchManagement({ onNavigate }: BatchManagementProps) {
 
       {/* Main Content */}
       <div className="p-4 space-y-6">
-        {/* Summary Stats */}
+        {/* Summary Stats - This should appear FIRST */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {stats.map((stat, index) => (
             <Card key={index} className={`border-0 shadow-sm bg-${stat.color}-50`}>
@@ -143,7 +144,7 @@ export function BatchManagement({ onNavigate }: BatchManagementProps) {
           ))}
         </div>
 
-        {/* Search and Filter Section */}
+        {/* Search and Filter Section - This should appear SECOND */}
         <Card className="border shadow-sm">
           <CardContent className="p-4">
             <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
@@ -226,7 +227,7 @@ export function BatchManagement({ onNavigate }: BatchManagementProps) {
           </CardContent>
         </Card>
 
-        {/* Batch Listing Table */}
+        {/* Batch Listing Table - This should appear THIRD */}
         <Card className="border shadow-sm">
           <CardHeader>
             <CardTitle className="text-base font-semibold text-gray-900">
