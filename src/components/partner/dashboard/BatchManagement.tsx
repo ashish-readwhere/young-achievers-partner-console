@@ -149,8 +149,8 @@ export function BatchManagement({ onNavigate }: BatchManagementProps) {
 
   const stats = [
     { label: "Total Batches", value: totalBatches.toString(), icon: BookOpen, color: "blue" },
-    { label: "Total Students", value: `${totalStudents}/${totalCapacity}`, icon: Users, color: "green" },
-    { label: "Average Progress", value: `${averageProgress}%`, icon: TrendingUp, color: "purple" },
+    { label: "Total Students", value: totalStudents.toString() + "/" + totalCapacity.toString(), icon: Users, color: "green" },
+    { label: "Average Progress", value: averageProgress.toString() + "%", icon: TrendingUp, color: "purple" },
     { label: "Sessions Completed", value: completedSessions.toString(), icon: Award, color: "orange" }
   ];
 
@@ -170,14 +170,14 @@ export function BatchManagement({ onNavigate }: BatchManagementProps) {
             const colors = getStatColors(stat.color);
             
             return (
-              <Card key={index} className={`border-0 shadow-sm ${colors.bg}`}>
+              <Card key={index} className={"border-0 shadow-sm " + colors.bg}>
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div className="min-w-0 flex-1">
-                      <p className={`text-xs font-medium ${colors.text} mb-1 leading-tight`}>{stat.label}</p>
-                      <p className={`text-xl font-bold ${colors.textBold} leading-tight`}>{stat.value}</p>
+                      <p className={"text-xs font-medium " + colors.text + " mb-1 leading-tight"}>{stat.label}</p>
+                      <p className={"text-xl font-bold " + colors.textBold + " leading-tight"}>{stat.value}</p>
                     </div>
-                    <div className={`w-10 h-10 ${colors.iconBg} rounded-lg flex items-center justify-center flex-shrink-0 ml-2`}>
+                    <div className={"w-10 h-10 " + colors.iconBg + " rounded-lg flex items-center justify-center flex-shrink-0 ml-2"}>
                       <stat.icon className="w-5 h-5 text-white" />
                     </div>
                   </div>
@@ -205,7 +205,7 @@ export function BatchManagement({ onNavigate }: BatchManagementProps) {
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="w-full sm:w-auto">
                 <Filter className="h-4 w-4 mr-2" />
-                Filter {statusFilter !== "all" && `(${statusFilter})`}
+                Filter {statusFilter !== "all" && "(" + statusFilter + ")"}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
@@ -238,8 +238,8 @@ export function BatchManagement({ onNavigate }: BatchManagementProps) {
           <span className="text-blue-600 font-medium">{filteredBatches.length} batches</span> found
           {(searchQuery || statusFilter !== "all") && (
             <span className="ml-1">
-              {searchQuery && ` for "${searchQuery}"`}
-              {statusFilter !== "all" && ` (${statusFilter})`}
+              {searchQuery && " for \"" + searchQuery + "\""}
+              {statusFilter !== "all" && " (" + statusFilter + ")"}
             </span>
           )}
         </div>
