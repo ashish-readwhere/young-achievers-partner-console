@@ -41,7 +41,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-export function MemberManagement() {
+interface MemberManagementProps {
+  onNavigate?: (section: string, id?: number) => void;
+}
+
+export function MemberManagement({ onNavigate }: MemberManagementProps) {
   const [selectedStudent, setSelectedStudent] = useState<any>(null);
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [showRatingModal, setShowRatingModal] = useState(false);
@@ -78,6 +82,8 @@ export function MemberManagement() {
       teacher: "Instructor Sarah Wilson",
       achievements: ["Flexibility Master", "Best Student"],
       nextSession: "Today 4:00 PM",
+      nextSessionDate: "Today",
+      nextSessionDay: "Monday",
       avatar: "/lovable-uploads/1ba055c7-e9a3-4a04-b0e8-31a2367343ed.png"
     },
     {
@@ -100,6 +106,8 @@ export function MemberManagement() {
       teacher: "Instructor Sarah Wilson",
       achievements: ["Regular Attendee"],
       nextSession: "Tomorrow 6:00 PM",
+      nextSessionDate: "Tomorrow",
+      nextSessionDay: "Tuesday",
       avatar: "/lovable-uploads/1ba055c7-e9a3-4a04-b0e8-31a2367343ed.png"
     },
     {
@@ -122,6 +130,8 @@ export function MemberManagement() {
       teacher: "Master John Smith",
       achievements: ["Tournament Winner"],
       nextSession: "Tomorrow 3:00 PM",
+      nextSessionDate: "Tomorrow",
+      nextSessionDay: "Tuesday",
       avatar: "/lovable-uploads/1ba055c7-e9a3-4a04-b0e8-31a2367343ed.png"
     },
     {
@@ -145,6 +155,8 @@ export function MemberManagement() {
       teacher: "Prof. Tech Guru",
       achievements: ["Code Master"],
       nextSession: "Today 5:00 PM",
+      nextSessionDate: "Today",
+      nextSessionDay: "Monday",
       avatar: "/lovable-uploads/1ba055c7-e9a3-4a04-b0e8-31a2367343ed.png"
     }
   ];
@@ -197,9 +209,10 @@ export function MemberManagement() {
   ];
 
   const handleViewProfile = (member: any) => {
-    console.log("View Profile clicked for:", member.name);
-    setSelectedStudent(member);
-    setShowProfileModal(true);
+    console.log("Navigate to student profile for:", member.name);
+    if (onNavigate) {
+      onNavigate('student-profile', member.id);
+    }
   };
 
   const handleRateStudent = (studentId: number) => {
@@ -441,7 +454,11 @@ export function MemberManagement() {
                         </div>
                       </TableCell>
                       <TableCell>
-                        <p className="text-sm text-gray-900">{member.nextSession}</p>
+                        <div className="space-y-1">
+                          <p className="text-sm font-medium text-gray-900">{member.nextSessionDate}</p>
+                          <p className="text-xs text-gray-600">{member.nextSessionDay}</p>
+                          <p className="text-xs text-gray-500">{member.nextSession.split(' ').slice(-2).join(' ')}</p>
+                        </div>
                       </TableCell>
                       <TableCell>
                         <div className="flex flex-col gap-1">
@@ -455,27 +472,7 @@ export function MemberManagement() {
                             View
                           </Button>
                           
-                          {member.canEdit ? (
-                            <>
-                              <Button 
-                                size="sm" 
-                                variant="outline"
-                                className="bg-purple-50 text-purple-700 hover:bg-purple-100 text-xs h-7"
-                                onClick={() => handleEditMember(member)}
-                              >
-                                <Edit className="h-3 w-3 mr-1" />
-                                Edit
-                              </Button>
-                              <Button 
-                                size="sm" 
-                                className="bg-blue-600 hover:bg-blue-700 text-white text-xs h-7"
-                                onClick={() => handleRateStudent(member.id)}
-                              >
-                                <Star className="h-3 w-3 mr-1" />
-                                Rate
-                              </Button>
-                            </>
-                          ) : (
+                          {!member.canEdit && (
                             <Button size="sm" variant="outline" className="bg-green-50 text-green-700 hover:bg-green-100 text-xs h-7">
                               <Phone className="h-3 w-3 mr-1" />
                               Contact
