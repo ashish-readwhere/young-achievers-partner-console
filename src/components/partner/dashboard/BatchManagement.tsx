@@ -124,6 +124,25 @@ export function BatchManagement({ onNavigate }: BatchManagementProps) {
 
       {/* Main Content */}
       <div className="p-4 space-y-6">
+        {/* Summary Stats */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {stats.map((stat, index) => (
+            <Card key={index} className={`border-0 shadow-sm bg-${stat.color}-50`}>
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div className="min-w-0 flex-1">
+                    <p className={`text-xs font-medium text-${stat.color}-600 mb-1 leading-tight`}>{stat.label}</p>
+                    <p className={`text-xl font-bold text-${stat.color}-900 leading-tight`}>{stat.value}</p>
+                  </div>
+                  <div className={`w-10 h-10 bg-${stat.color}-500 rounded-lg flex items-center justify-center flex-shrink-0 ml-2`}>
+                    <stat.icon className="w-5 h-5 text-white" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
         {/* Search and Filter Section */}
         <Card className="border shadow-sm">
           <CardContent className="p-4">
@@ -206,25 +225,6 @@ export function BatchManagement({ onNavigate }: BatchManagementProps) {
             )}
           </CardContent>
         </Card>
-
-        {/* Summary Stats */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {stats.map((stat, index) => (
-            <Card key={index} className={`border-0 shadow-sm bg-${stat.color}-50`}>
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between">
-                  <div className="min-w-0 flex-1">
-                    <p className={`text-xs font-medium text-${stat.color}-600 mb-1 leading-tight`}>{stat.label}</p>
-                    <p className={`text-xl font-bold text-${stat.color}-900 leading-tight`}>{stat.value}</p>
-                  </div>
-                  <div className={`w-10 h-10 bg-${stat.color}-500 rounded-lg flex items-center justify-center flex-shrink-0 ml-2`}>
-                    <stat.icon className="w-5 h-5 text-white" />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
 
         {/* Batch Listing Table */}
         <Card className="border shadow-sm">
