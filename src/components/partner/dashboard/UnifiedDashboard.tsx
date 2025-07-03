@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -36,7 +37,6 @@ export function UnifiedDashboard({ onNavigate }: UnifiedDashboardProps) {
       name: "Yoga Fundamentals - Batch B",
       time: "6:00 PM - 7:00 PM",
       day: "Monday, Wednesday, Friday",
-      level: "Beginner",
       students: 15,
       capacity: 20,
       status: "Active",
@@ -51,7 +51,6 @@ export function UnifiedDashboard({ onNavigate }: UnifiedDashboardProps) {
       name: "Yoga Advanced - Batch A",
       time: "4:00 PM - 5:00 PM",
       day: "Tuesday, Thursday",
-      level: "Advanced",
       students: 10,
       capacity: 12,
       status: "Active",
