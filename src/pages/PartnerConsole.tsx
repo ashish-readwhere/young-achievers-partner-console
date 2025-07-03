@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { PartnerSidebar } from "@/components/partner/PartnerSidebar";
-import { PartnerOverview } from "@/components/partner/dashboard/PartnerOverview";
+import { UnifiedDashboard } from "@/components/partner/dashboard/UnifiedDashboard";
 import { BatchManagement } from "@/components/partner/dashboard/BatchManagement";
 import { MemberManagement } from "@/components/partner/dashboard/MemberManagement";
 import { PartnerProfile } from "@/components/partner/dashboard/PartnerProfile";
@@ -26,7 +26,7 @@ const PartnerConsoleContent = () => {
     console.log("Current active section:", activeSection);
     switch (activeSection) {
       case "overview":
-        return <PartnerOverview onNavigate={handleNavigation} />;
+        return <UnifiedDashboard onNavigate={handleNavigation} />;
       case "batches":
         return <BatchManagement />;
       case "members":
@@ -35,7 +35,7 @@ const PartnerConsoleContent = () => {
         return <PartnerProfile />;
       default:
         console.log("Defaulting to overview for section:", activeSection);
-        return <PartnerOverview onNavigate={handleNavigation} />;
+        return <UnifiedDashboard onNavigate={handleNavigation} />;
     }
   };
 

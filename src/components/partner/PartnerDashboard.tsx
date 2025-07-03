@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { PartnerOverview } from "./dashboard/PartnerOverview";
+import { UnifiedDashboard } from "./dashboard/UnifiedDashboard";
 import { BatchManagement } from "./dashboard/BatchManagement";
 import { MemberManagement } from "./dashboard/MemberManagement";
 import { PartnerProfile } from "./dashboard/PartnerProfile";
@@ -15,7 +15,7 @@ export function PartnerDashboard() {
   const renderContent = () => {
     switch (activeSection) {
       case "overview":
-        return <PartnerOverview onNavigate={handleNavigation} />;
+        return <UnifiedDashboard onNavigate={handleNavigation} />;
       case "batches":
         return <BatchManagement />;
       case "members":
@@ -23,7 +23,7 @@ export function PartnerDashboard() {
       case "profile":
         return <PartnerProfile />;
       default:
-        return <PartnerOverview onNavigate={handleNavigation} />;
+        return <UnifiedDashboard onNavigate={handleNavigation} />;
     }
   };
 

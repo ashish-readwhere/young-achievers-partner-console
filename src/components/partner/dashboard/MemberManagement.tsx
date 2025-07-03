@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -165,19 +164,16 @@ export function MemberManagement() {
     { 
       label: "My Students", 
       value: members.filter(m => m.canEdit).length.toString(), 
-      change: "+2 this week",
       color: "blue"
     },
     { 
       label: "Active in My Batches", 
       value: members.filter(m => m.canEdit && m.status === "Active").length.toString(), 
-      change: "+1 this week",
       color: "green"
     },
     { 
       label: "Total Platform Members", 
       value: members.length.toString(), 
-      change: "View only access",
       color: "purple"
     },
     { 
@@ -188,7 +184,6 @@ export function MemberManagement() {
           Math.round(myActiveStudents.reduce((sum, m) => sum + m.attendance, 0) / myActiveStudents.length) + "%" : 
           "0%";
       })(), 
-      change: "+3% vs last month",
       color: "orange"
     }
   ];
@@ -272,7 +267,6 @@ export function MemberManagement() {
                   <div className="min-w-0 flex-1">
                     <p className={`text-xs sm:text-sm font-medium text-${stat.color}-600 mb-1 truncate`}>{stat.label}</p>
                     <p className={`text-xl sm:text-2xl lg:text-3xl font-bold text-${stat.color}-900`}>{stat.value}</p>
-                    <p className={`text-xs text-${stat.color}-600 mt-1 truncate`}>{stat.change}</p>
                   </div>
                   <div className={`w-10 h-10 sm:w-12 sm:h-12 bg-${stat.color}-500 rounded-lg flex items-center justify-center flex-shrink-0`}>
                     <Users className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
