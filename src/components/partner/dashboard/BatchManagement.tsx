@@ -9,7 +9,9 @@ import {
   Calendar, 
   Clock,
   Eye,
-  BookOpen
+  BookOpen,
+  TrendingUp,
+  Award
 } from "lucide-react";
 import {
   Table,
@@ -56,12 +58,26 @@ export function BatchManagement({ onNavigate }: BatchManagementProps) {
     }
   ];
 
+  // Calculate summary stats
+  const totalBatches = batches.length;
+  const totalStudents = batches.reduce((sum, batch) => sum + batch.students, 0);
+  const totalCapacity = batches.reduce((sum, batch) => sum + batch.capacity, 0);
+  const averageProgress = Math.round(batches.reduce((sum, batch) => sum + batch.progress, 0) / batches.length);
+  const completedSessions = batches.reduce((sum, batch) => sum + batch.completedSessions, 0);
+
   const handleViewBatchDetails = (batchId: number) => {
     console.log("Navigating to batch details for ID:", batchId);
     if (onNavigate) {
       onNavigate('batch-details', batchId);
     }
   };
+
+  const stats = [
+    { label: "Total Batches", value: totalBatches.toString(), icon: BookOpen, color: "blue" },
+    { label: "Total Students", value: `${totalStudents}/${totalCapacity}`, icon: Users, color: "green" },
+    { label: "Average Progress", value: `${averageProgress}%`, icon: TrendingUp, color: "purple" },
+    { label: "Sessions Completed", value: completedSessions.toString(), icon: Award, color: "orange" }
+  ];
 
   return (
     <div className="w-full bg-white min-h-screen">
@@ -72,7 +88,27 @@ export function BatchManagement({ onNavigate }: BatchManagementProps) {
       </div>
 
       {/* Main Content */}
-      <div className="p-4">
+      <div className="p-4 space-y-6">
+        {/* Summary Stats */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {stats.map((stat, index) => (
+            <Card key={index} className={`border-0 shadow-sm bg-${stat.color}-50`}>
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div className="min-w-0 flex-1">
+                    <p className={`text-xs font-medium text-${stat.color}-600 mb-1 leading-tight`}>{stat.label}</p>
+                    <p className={`text-xl font-bold text-${stat.color}-900 leading-tight`}>{stat.value}</p>
+                  </div>
+                  <div className={`w-10 h-10 bg-${stat.color}-500 rounded-lg flex items-center justify-center flex-shrink-0 ml-2`}>
+                    <stat.icon className="w-5 h-5 text-white" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {/* Batch Listing Table */}
         <Card className="border shadow-sm">
           <CardHeader>
             <CardTitle className="text-base font-semibold text-gray-900">Batch Listing</CardTitle>
