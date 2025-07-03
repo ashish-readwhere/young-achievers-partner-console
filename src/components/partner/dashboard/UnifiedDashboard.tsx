@@ -86,6 +86,16 @@ export function UnifiedDashboard({ onNavigate }: UnifiedDashboardProps) {
     onNavigate('batch-details', batch.id);
   };
 
+  const handleViewSessionDetails = (sessionId: number) => {
+    console.log("Navigate to session details for session ID:", sessionId);
+    onNavigate('session-details', sessionId);
+  };
+
+  const handleViewAllSessions = () => {
+    console.log("Navigate to all sessions view");
+    onNavigate('session-details');
+  };
+
   return (
     <div className="w-full bg-white min-h-screen">
       {/* Header */}
@@ -194,7 +204,7 @@ export function UnifiedDashboard({ onNavigate }: UnifiedDashboardProps) {
               <Button 
                 variant="outline" 
                 size="sm"
-                onClick={() => onNavigate('batches')}
+                onClick={handleViewAllSessions}
                 className="text-xs"
               >
                 View All
@@ -225,7 +235,7 @@ export function UnifiedDashboard({ onNavigate }: UnifiedDashboardProps) {
                       <Button 
                         size="sm" 
                         variant="outline"
-                        onClick={() => onNavigate('session-details')}
+                        onClick={() => handleViewSessionDetails(session.id)}
                         className="w-full text-xs"
                       >
                         <Eye className="w-3 h-3 mr-2" />
