@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -20,6 +21,14 @@ import {
   Edit,
   Settings
 } from "lucide-react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { StudentProfileModal } from "./StudentProfileModal";
 import { RatingModal } from "./RatingModal";
 import { EditMemberModal } from "./EditMemberModal";
@@ -333,172 +342,169 @@ export function MemberManagement() {
           )}
         </div>
 
-        {/* Member Cards Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-1 2xl:grid-cols-2 gap-4 sm:gap-6">
-          {filteredMembers.map((member) => (
-            <Card key={member.id} className={`${member.canEdit ? 'border-blue-200 bg-blue-25' : 'border-gray-200'} shadow-sm hover:shadow-md transition-shadow`}>
-              <CardContent className="p-4 sm:p-6">
-                {/* Header with Avatar and Basic Info */}
-                <div className="flex items-start justify-between mb-4 gap-3">
-                  <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
-                    <Avatar className="h-12 w-12 sm:h-14 sm:w-14 lg:h-16 lg:w-16 flex-shrink-0">
-                      <AvatarImage src={member.avatar} alt={member.name} />
-                      <AvatarFallback className={member.canEdit ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-600'}>
-                        {member.name.split(' ').map(n => n[0]).join('')}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 mb-1">
-                        <h3 className="text-base sm:text-lg font-semibold text-gray-900 truncate">{member.name}</h3>
-                        <Badge 
-                          variant={member.status === "Active" ? "default" : "secondary"}
-                          className={`${member.status === "Active" ? "bg-green-100 text-green-800" : ""} text-xs flex-shrink-0 w-fit`}
-                        >
-                          {member.status}
-                        </Badge>
-                      </div>
-                      <p className="text-xs sm:text-sm text-gray-600">Age {member.age} • {member.canEdit ? 'Intermediate' : 'Advanced'}</p>
-                      {member.canEdit && (
-                        <Badge variant="outline" className="mt-1 text-xs bg-blue-50 text-blue-700 w-fit">
-                          My Student
-                        </Badge>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Course/Batch Info */}
-                <div className="mb-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    {member.canEdit ? (
-                      <div className="w-6 h-6 bg-green-100 rounded flex items-center justify-center flex-shrink-0">
-                        <span className="text-green-600 text-xs font-bold">Y</span>
-                      </div>
-                    ) : (
-                      <div className="w-6 h-6 bg-purple-100 rounded flex items-center justify-center flex-shrink-0">
-                        <span className="text-purple-600 text-xs font-bold">C</span>
-                      </div>
-                    )}
-                    <span className="text-sm font-medium text-gray-700 truncate">{member.batch.split(' - ')[0]}</span>
-                  </div>
-                  <p className="text-sm text-gray-600 truncate">{member.batch}</p>
-                  <p className="text-xs text-gray-500 mt-1">Batches Enrolled: {Array.isArray(member.batchesEnrolled) ? member.batchesEnrolled.length : 1}</p>
-                </div>
-
-                {/* Rating and Attendance - Improved for tablet */}
-                <div className="grid grid-cols-2 gap-3 mb-4">
-                  <div className="bg-yellow-50 rounded-lg p-3">
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="text-sm font-medium text-yellow-700">Rating</span>
-                      <div className="flex items-center gap-1">
-                        <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                        <span className="text-lg font-bold text-yellow-900">{member.rating}</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="bg-green-50 rounded-lg p-3">
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="text-sm font-medium text-green-700">Attendance</span>
-                      <span className="text-lg font-bold text-green-900">{member.attendance}%</span>
-                    </div>
-                    <Progress value={member.attendance} className="h-2" />
-                  </div>
-                </div>
-
-                {/* Achievements */}
-                {member.achievements.length > 0 && (
-                  <div className="mb-4">
-                    <p className="text-sm font-medium text-gray-700 mb-2">Achievements:</p>
-                    <div className="flex flex-wrap gap-2">
-                      {member.achievements.map((achievement, index) => (
-                        <Badge key={index} variant="outline" className="bg-yellow-50 text-yellow-800 border-yellow-200 text-xs">
-                          <Trophy className="w-3 h-3 mr-1" />
-                          {achievement}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Session Info */}
-                <div className="mb-4">
-                  <p className="text-sm font-medium text-gray-700">Next Session</p>
-                  <p className="text-sm text-gray-900">{member.nextSession}</p>
-                </div>
-
-                {/* Parent/Guardian Contact */}
-                <div className="mb-4 p-3 bg-gray-50 rounded-lg">
-                  <p className="text-sm font-medium text-gray-700 mb-2">Parent/Guardian Contact</p>
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
-                      <Phone className="h-3 w-3 flex-shrink-0" />
-                      <span className="truncate">{member.parentPhone}</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
-                      <Mail className="h-3 w-3 flex-shrink-0" />
-                      <span className="truncate">{member.parentEmail}</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Action Buttons - Improved responsive layout */}
-                <div className="space-y-2">
-                  {/* First row - View Profile (always visible) */}
-                  <Button 
-                    size="sm" 
-                    variant="outline" 
-                    className="w-full"
-                    onClick={() => handleViewProfile(member)}
-                  >
-                    <Eye className="h-4 w-4 mr-2" />
-                    View Profile
-                  </Button>
-                  
-                  {/* Second row - Student actions or Contact Parent */}
-                  {member.canEdit ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-2">
-                      <Button 
-                        size="sm" 
-                        variant="outline"
-                        className="bg-purple-50 text-purple-700 hover:bg-purple-100"
-                        onClick={() => handleEditMember(member)}
-                      >
-                        <Edit className="h-4 w-4 mr-2" />
-                        Edit Details
-                      </Button>
-                      <Button 
-                        size="sm" 
-                        variant="outline"
-                        className="bg-orange-50 text-orange-700 hover:bg-orange-100"
-                        onClick={() => handleManageBatches(member)}
-                      >
-                        <Settings className="h-4 w-4 mr-2" />
-                        Manage Batches
-                      </Button>
-                    </div>
-                  ) : (
-                    <Button size="sm" variant="outline" className="w-full bg-green-50 text-green-700 hover:bg-green-100">
-                      <Phone className="h-4 w-4 mr-2" />
-                      Contact Parent
-                    </Button>
-                  )}
-                  
-                  {/* Third row - Rate Student (only for editable students) */}
-                  {member.canEdit && (
-                    <Button 
-                      size="sm" 
-                      className="w-full bg-blue-600 hover:bg-blue-700 text-white"
-                      onClick={() => handleRateStudent(member.id)}
-                    >
-                      <Star className="h-4 w-4 mr-2" />
-                      Rate Student
-                    </Button>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+        {/* Member Listing Table */}
+        <Card className="border shadow-sm">
+          <CardHeader>
+            <CardTitle className="text-base font-semibold text-gray-900">Member Listing</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Student</TableHead>
+                    <TableHead>Subject/Batch</TableHead>
+                    <TableHead>Contact Info</TableHead>
+                    <TableHead>Performance</TableHead>
+                    <TableHead>Next Session</TableHead>
+                    <TableHead>Achievements</TableHead>
+                    <TableHead>Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredMembers.map((member) => (
+                    <TableRow key={member.id} className={`hover:bg-gray-50 ${member.canEdit ? 'bg-blue-25' : ''}`}>
+                      <TableCell>
+                        <div className="flex items-center gap-3">
+                          <Avatar className="h-10 w-10 flex-shrink-0">
+                            <AvatarImage src={member.avatar} alt={member.name} />
+                            <AvatarFallback className={member.canEdit ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-600'}>
+                              {member.name.split(' ').map(n => n[0]).join('')}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="min-w-0">
+                            <div className="flex items-center gap-2 mb-1">
+                              <h3 className="text-sm font-semibold text-gray-900 truncate">{member.name}</h3>
+                              <Badge 
+                                variant={member.status === "Active" ? "default" : "secondary"}
+                                className={`${member.status === "Active" ? "bg-green-100 text-green-800" : ""} text-xs`}
+                              >
+                                {member.status}
+                              </Badge>
+                            </div>
+                            <p className="text-xs text-gray-600">Age {member.age}</p>
+                            {member.canEdit && (
+                              <Badge variant="outline" className="mt-1 text-xs bg-blue-50 text-blue-700">
+                                My Student
+                              </Badge>
+                            )}
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-2">
+                            {member.canEdit ? (
+                              <div className="w-5 h-5 bg-green-100 rounded flex items-center justify-center flex-shrink-0">
+                                <span className="text-green-600 text-xs font-bold">Y</span>
+                              </div>
+                            ) : (
+                              <div className="w-5 h-5 bg-purple-100 rounded flex items-center justify-center flex-shrink-0">
+                                <span className="text-purple-600 text-xs font-bold">C</span>
+                              </div>
+                            )}
+                            <span className="text-sm font-medium text-gray-700">{member.batch.split(' - ')[0]}</span>
+                          </div>
+                          <p className="text-xs text-gray-600">{member.batch}</p>
+                          <p className="text-xs text-gray-500">Batches: {Array.isArray(member.batchesEnrolled) ? member.batchesEnrolled.length : 1}</p>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="space-y-1">
+                          <div className="text-xs text-gray-600">
+                            <strong>Student:</strong>
+                          </div>
+                          <div className="flex items-center gap-1 text-xs text-gray-600">
+                            <Phone className="h-3 w-3" />
+                            <span>{member.phone}</span>
+                          </div>
+                          <div className="text-xs text-gray-600 mt-2">
+                            <strong>Parent:</strong>
+                          </div>
+                          <div className="flex items-center gap-1 text-xs text-gray-600">
+                            <Phone className="h-3 w-3" />
+                            <span>{member.parentPhone}</span>
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2">
+                            <Star className="w-4 h-4 text-yellow-500 fill-current" />
+                            <span className="text-sm font-medium">{member.rating}</span>
+                          </div>
+                          <div className="space-y-1">
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs text-gray-600">Attendance</span>
+                              <span className="text-xs font-medium">{member.attendance}%</span>
+                            </div>
+                            <Progress value={member.attendance} className="h-1.5 w-16" />
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <p className="text-sm text-gray-900">{member.nextSession}</p>
+                      </TableCell>
+                      <TableCell>
+                        <div className="space-y-1">
+                          {member.achievements.slice(0, 2).map((achievement, index) => (
+                            <Badge key={index} variant="outline" className="bg-yellow-50 text-yellow-800 border-yellow-200 text-xs mr-1">
+                              <Trophy className="w-3 h-3 mr-1" />
+                              {achievement}
+                            </Badge>
+                          ))}
+                          {member.achievements.length > 2 && (
+                            <p className="text-xs text-gray-500">+{member.achievements.length - 2} more</p>
+                          )}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex flex-col gap-1">
+                          <Button 
+                            size="sm" 
+                            variant="outline" 
+                            className="text-xs h-7"
+                            onClick={() => handleViewProfile(member)}
+                          >
+                            <Eye className="h-3 w-3 mr-1" />
+                            View
+                          </Button>
+                          
+                          {member.canEdit ? (
+                            <>
+                              <Button 
+                                size="sm" 
+                                variant="outline"
+                                className="bg-purple-50 text-purple-700 hover:bg-purple-100 text-xs h-7"
+                                onClick={() => handleEditMember(member)}
+                              >
+                                <Edit className="h-3 w-3 mr-1" />
+                                Edit
+                              </Button>
+                              <Button 
+                                size="sm" 
+                                className="bg-blue-600 hover:bg-blue-700 text-white text-xs h-7"
+                                onClick={() => handleRateStudent(member.id)}
+                              >
+                                <Star className="h-3 w-3 mr-1" />
+                                Rate
+                              </Button>
+                            </>
+                          ) : (
+                            <Button size="sm" variant="outline" className="bg-green-50 text-green-700 hover:bg-green-100 text-xs h-7">
+                              <Phone className="h-3 w-3 mr-1" />
+                              Contact
+                            </Button>
+                          )}
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* No Results Message */}
         {filteredMembers.length === 0 && (searchQuery || statusFilter !== "all") && (
