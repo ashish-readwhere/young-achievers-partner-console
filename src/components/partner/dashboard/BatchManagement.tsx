@@ -238,8 +238,8 @@ export function BatchManagement({ onNavigate }: BatchManagementProps) {
           <span className="text-blue-600 font-medium">{filteredBatches.length} batches</span> found
           {(searchQuery || statusFilter !== "all") && (
             <span className="ml-1">
-              {searchQuery && " for \"" + searchQuery + "\""}
-              {statusFilter !== "all" && " (" + statusFilter + ")"}
+              {searchQuery && (" for \"" + searchQuery + "\"")}
+              {statusFilter !== "all" && (" (" + statusFilter + ")")}
             </span>
           )}
         </div>
