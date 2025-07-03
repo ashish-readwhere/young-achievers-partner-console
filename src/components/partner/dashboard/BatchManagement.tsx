@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -12,6 +13,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { 
   Search,
   Filter,
@@ -28,7 +37,6 @@ import {
   TrendingUp,
   X
 } from "lucide-react";
-import { BatchDetailsModal } from "./BatchDetailsModal";
 
 interface Batch {
   id: number;
@@ -63,16 +71,7 @@ interface Member {
   avatar: string;
 }
 
-interface Stat {
-  label: string;
-  value: string;
-  change: string;
-  color: string;
-}
-
 export function BatchManagement() {
-  const [selectedBatch, setSelectedBatch] = useState<any>(null);
-  const [showBatchModal, setShowBatchModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchType, setSearchType] = useState<"batch" | "member">("batch");
   const [batchFilter, setBatchFilter] = useState("all");
@@ -89,8 +88,8 @@ export function BatchManagement() {
       capacity: 20,
       status: "Active",
       progress: 65,
-      nextSession: "Today 6:00 PM",
-      previousSession: "Yesterday 6:00 PM",
+      nextSession: "Monday, Jan 15 at 6:00 PM",
+      previousSession: "Friday, Jan 12 at 6:00 PM",
       completedSessions: 13,
       totalSessions: 20
     },
@@ -104,8 +103,8 @@ export function BatchManagement() {
       capacity: 12,
       status: "Active",
       progress: 80,
-      nextSession: "Tomorrow 4:00 PM",
-      previousSession: "2 days ago 4:00 PM",
+      nextSession: "Tuesday, Jan 16 at 4:00 PM",
+      previousSession: "Thursday, Jan 11 at 4:00 PM",
       completedSessions: 16,
       totalSessions: 20
     },
@@ -120,7 +119,7 @@ export function BatchManagement() {
       status: "Inactive",
       progress: 45,
       nextSession: "On Hold",
-      previousSession: "Last week 7:30 PM",
+      previousSession: "Wednesday, Jan 10 at 7:30 PM",
       completedSessions: 9,
       totalSessions: 20
     }
@@ -139,7 +138,7 @@ export function BatchManagement() {
       batchesEnrolled: [
         { id: 2, name: "Yoga Advanced - Batch A", level: "Advanced", status: "Active" }
       ],
-      joinDate: "Dec 1, 2024",
+      joinDate: "Monday, Dec 1, 2024",
       status: "Active",
       attendance: 95,
       rating: 4.5,
@@ -157,7 +156,7 @@ export function BatchManagement() {
       batchesEnrolled: [
         { id: 1, name: "Yoga Fundamentals - Batch B", level: "Beginner", status: "Active" }
       ],
-      joinDate: "Dec 5, 2024",
+      joinDate: "Thursday, Dec 5, 2024",
       status: "Active",
       attendance: 89,
       rating: 4.2,
@@ -175,7 +174,7 @@ export function BatchManagement() {
       batchesEnrolled: [
         { id: 3, name: "Yoga Intermediate - Batch C", level: "Intermediate", status: "Active" }
       ],
-      joinDate: "Nov 15, 2024",
+      joinDate: "Friday, Nov 15, 2024",
       status: "Active",
       attendance: 87,
       rating: 4.0,
@@ -284,10 +283,14 @@ export function BatchManagement() {
     }
   ];
 
-  const handleViewBatch = (batch: any) => {
-    console.log("View Batch clicked for:", batch.name);
-    setSelectedBatch(batch);
-    setShowBatchModal(true);
+  const handleViewBatch = (batchId: number) => {
+    console.log("Navigate to batch details for ID:", batchId);
+    // Navigate to batch details page
+  };
+
+  const handleViewMember = (memberId: number) => {
+    console.log("Navigate to member profile for ID:", memberId);
+    // Navigate to member profile page
   };
 
   const handleSearchTypeChange = (type: "batch" | "member") => {
@@ -427,124 +430,90 @@ export function BatchManagement() {
           </div>
         )}
 
-        {/* Member Search Results */}
+        {/* Member Search Results - Table Format */}
         {shouldShowMembers && (
           <div className="mb-8">
             <h2 className="text-lg font-semibold text-gray-900 mb-4">Member Search Results</h2>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {filteredMembers.map((member) => (
-                <Card key={member.id} className="border-blue-200 bg-blue-25 shadow-sm hover:shadow-md transition-shadow">
-                  <CardContent className="p-6">
-                    {/* Member Header */}
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex items-center gap-4">
-                        <Avatar className="h-16 w-16">
-                          <AvatarImage src={member.avatar} alt={member.name} />
-                          <AvatarFallback className="bg-blue-100 text-blue-600">
-                            {member.name.split(' ').map(n => n[0]).join('')}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <div className="flex items-center gap-2 mb-1">
-                            <h3 className="text-lg font-semibold text-gray-900">{member.name}</h3>
-                            <Badge 
-                              variant={member.status === "Active" ? "default" : "secondary"}
-                              className={member.status === "Active" ? "bg-green-100 text-green-800" : ""}
-                            >
-                              {member.status}
-                            </Badge>
+            <Card>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Student</TableHead>
+                    <TableHead>Age</TableHead>
+                    <TableHead>Batch</TableHead>
+                    <TableHead>Join Date</TableHead>
+                    <TableHead>Attendance</TableHead>
+                    <TableHead>Rating</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredMembers.map((member) => (
+                    <TableRow key={member.id}>
+                      <TableCell>
+                        <div className="flex items-center gap-3">
+                          <Avatar className="h-10 w-10">
+                            <AvatarImage src={member.avatar} alt={member.name} />
+                            <AvatarFallback className="bg-blue-100 text-blue-600">
+                              {member.name.split(' ').map(n => n[0]).join('')}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <p className="font-medium text-gray-900">{member.name}</p>
+                            <p className="text-sm text-gray-600">{member.email}</p>
                           </div>
-                          <p className="text-sm text-gray-600">Age {member.age} • Joined {member.joinDate}</p>
                         </div>
-                      </div>
-                    </div>
-
-                    {/* Batch Enrollment Info */}
-                    <div className="mb-4">
-                      <h4 className="text-sm font-medium text-gray-700 mb-2">Enrolled Batches:</h4>
-                      <div className="space-y-2">
-                        {member.batchesEnrolled.map((batch) => (
-                          <div key={batch.id} className="bg-white rounded-lg p-3 border">
-                            <div className="flex items-center justify-between">
-                              <div>
-                                <p className="font-medium text-gray-900">{batch.name}</p>
-                                <p className="text-sm text-gray-600">Level: {batch.level}</p>
-                              </div>
-                              <Badge 
-                                variant="outline" 
-                                className="bg-green-50 text-green-700 border-green-200"
-                              >
-                                {batch.status}
+                      </TableCell>
+                      <TableCell>{member.age}</TableCell>
+                      <TableCell>
+                        <div>
+                          {member.batchesEnrolled.map((batch, index) => (
+                            <div key={batch.id} className={index > 0 ? "mt-1" : ""}>
+                              <p className="text-sm font-medium">{batch.name}</p>
+                              <Badge variant="outline" className="text-xs">
+                                {batch.level}
                               </Badge>
                             </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Performance Metrics */}
-                    <div className="grid grid-cols-2 gap-4 mb-4">
-                      <div className="bg-yellow-50 rounded-lg p-3">
-                        <div className="flex justify-between items-center mb-2">
-                          <span className="text-sm font-medium text-yellow-700">Rating</span>
-                          <div className="flex items-center gap-1">
-                            <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                            <span className="text-lg font-bold text-yellow-900">{member.rating}</span>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="bg-green-50 rounded-lg p-3">
-                        <div className="flex justify-between items-center mb-2">
-                          <span className="text-sm font-medium text-green-700">Attendance</span>
-                          <span className="text-lg font-bold text-green-900">{member.attendance}%</span>
-                        </div>
-                        <Progress value={member.attendance} className="h-2" />
-                      </div>
-                    </div>
-
-                    {/* Contact Information */}
-                    <div className="mb-4 p-3 bg-gray-50 rounded-lg">
-                      <p className="text-sm font-medium text-gray-700 mb-2">Contact Information</p>
-                      <div className="space-y-1 text-sm text-gray-600">
-                        <div className="flex items-center gap-2">
-                          <Mail className="h-3 w-3" />
-                          <span>{member.email}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Phone className="h-3 w-3" />
-                          <span>{member.phone}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Phone className="h-3 w-3" />
-                          <span>Parent: {member.parentPhone}</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Achievements */}
-                    {member.achievements.length > 0 && (
-                      <div className="mb-4">
-                        <p className="text-sm font-medium text-gray-700 mb-2">Achievements:</p>
-                        <div className="flex flex-wrap gap-2">
-                          {member.achievements.map((achievement, index) => (
-                            <Badge key={index} variant="outline" className="bg-yellow-50 text-yellow-800 border-yellow-200">
-                              <Trophy className="w-3 h-3 mr-1" />
-                              {achievement}
-                            </Badge>
                           ))}
                         </div>
-                      </div>
-                    )}
-
-                    {/* Action Button */}
-                    <Button size="sm" variant="outline" className="w-full">
-                      <Eye className="h-4 w-4 mr-2" />
-                      View Full Profile
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+                      </TableCell>
+                      <TableCell className="text-sm">{member.joinDate}</TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-medium">{member.attendance}%</span>
+                          <Progress value={member.attendance} className="h-2 w-16" />
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-1">
+                          <Star className="w-4 h-4 text-yellow-500 fill-current" />
+                          <span className="text-sm font-medium">{member.rating}</span>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge 
+                          variant={member.status === "Active" ? "default" : "secondary"}
+                          className={member.status === "Active" ? "bg-green-100 text-green-800" : ""}
+                        >
+                          {member.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={() => handleViewMember(member.id)}
+                        >
+                          <Eye className="h-4 w-4 mr-1" />
+                          View
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </Card>
           </div>
         )}
 
@@ -630,7 +599,7 @@ export function BatchManagement() {
                     </div>
 
                     {/* Action Button */}
-                    <Button size="sm" variant="outline" className="w-full" onClick={() => handleViewBatch(batch)}>
+                    <Button size="sm" variant="outline" className="w-full" onClick={() => handleViewBatch(batch.id)}>
                       <Eye className="h-4 w-4 mr-2" />
                       View Batch Details
                     </Button>
@@ -655,16 +624,6 @@ export function BatchManagement() {
           </div>
         )}
       </div>
-
-      {/* Modal */}
-      <BatchDetailsModal
-        isOpen={showBatchModal}
-        onClose={() => {
-          setShowBatchModal(false);
-          setSelectedBatch(null);
-        }}
-        batch={selectedBatch}
-      />
     </div>
   );
 }

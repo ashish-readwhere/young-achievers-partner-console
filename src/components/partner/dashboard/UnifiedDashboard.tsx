@@ -4,7 +4,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { 
   Users, 
   Calendar, 
@@ -12,26 +11,15 @@ import {
   Clock,
   MapPin,
   Eye,
-  User,
   BookOpen,
   TrendingUp
 } from "lucide-react";
-import { StudentProfileModal } from "./StudentProfileModal";
-import { RatingModal } from "./RatingModal";
-import { BatchDetailsModal } from "./BatchDetailsModal";
 
 interface UnifiedDashboardProps {
   onNavigate: (section: string) => void;
 }
 
 export function UnifiedDashboard({ onNavigate }: UnifiedDashboardProps) {
-  const [selectedStudent, setSelectedStudent] = useState<any>(null);
-  const [showProfileModal, setShowProfileModal] = useState(false);
-  const [showRatingModal, setShowRatingModal] = useState(false);
-  const [studentToRate, setStudentToRate] = useState<any>(null);
-  const [selectedBatch, setSelectedBatch] = useState<any>(null);
-  const [showBatchModal, setShowBatchModal] = useState(false);
-
   // Partner data and stats
   const partnerName = "Instructor Sarah Wilson";
   const partnerSubject = "Yoga";
@@ -54,8 +42,8 @@ export function UnifiedDashboard({ onNavigate }: UnifiedDashboardProps) {
       capacity: 20,
       status: "Active",
       progress: 65,
-      nextSession: "Today 6:00 PM",
-      previousSession: "Yesterday 6:00 PM",
+      nextSession: "Monday, Jan 15 at 6:00 PM",
+      previousSession: "Friday, Jan 12 at 6:00 PM",
       completedSessions: 13,
       totalSessions: 20
     },
@@ -69,8 +57,8 @@ export function UnifiedDashboard({ onNavigate }: UnifiedDashboardProps) {
       capacity: 12,
       status: "Active",
       progress: 80,
-      nextSession: "Tomorrow 4:00 PM",
-      previousSession: "2 days ago 4:00 PM",
+      nextSession: "Tuesday, Jan 16 at 4:00 PM",
+      previousSession: "Thursday, Jan 11 at 4:00 PM",
       completedSessions: 16,
       totalSessions: 20
     }
@@ -80,7 +68,7 @@ export function UnifiedDashboard({ onNavigate }: UnifiedDashboardProps) {
     {
       id: 1,
       title: "Yoga Advanced - Session 9",
-      date: "Jan 15, 2024",
+      date: "Monday, Jan 15, 2024",
       time: "10:00 AM",
       venue: "Talkatora Stadium",
       students: 15
@@ -88,39 +76,16 @@ export function UnifiedDashboard({ onNavigate }: UnifiedDashboardProps) {
     {
       id: 2,
       title: "Yoga Fundamentals - Session 8",
-      date: "Jan 16, 2024",
+      date: "Tuesday, Jan 16, 2024",
       time: "2:00 PM",
       venue: "Noida Stadium",
       students: 18
     }
   ];
 
-  const handleViewProfile = (student: any) => {
-    console.log("View Profile clicked for:", student.name);
-    setSelectedStudent(student);
-    setShowProfileModal(true);
-  };
-
-  const handleRateStudent = (studentId: number) => {
-    console.log("Rate Student clicked for ID:", studentId);
-    setStudentToRate({ id: studentId, name: "Student Name", avatar: "/lovable-uploads/1ba055c7-e9a3-4a04-b0e8-31a2367343ed.png" });
-    setShowRatingModal(true);
-  };
-
   const handleViewBatch = (batch: any) => {
-    console.log("View Batch clicked for:", batch.name);
-    setSelectedBatch(batch);
-    setShowBatchModal(true);
-  };
-
-  const closeProfileModal = () => {
-    setShowProfileModal(false);
-    setSelectedStudent(null);
-  };
-
-  const closeRatingModal = () => {
-    setShowRatingModal(false);
-    setStudentToRate(null);
+    console.log("Navigate to batch details for:", batch.name);
+    onNavigate('batch-details');
   };
 
   return (
@@ -262,7 +227,7 @@ export function UnifiedDashboard({ onNavigate }: UnifiedDashboardProps) {
                       <Button 
                         size="sm" 
                         variant="outline"
-                        onClick={() => onNavigate('batches')}
+                        onClick={() => onNavigate('session-details')}
                         className="w-full text-xs"
                       >
                         <Eye className="w-3 h-3 mr-2" />
@@ -276,29 +241,6 @@ export function UnifiedDashboard({ onNavigate }: UnifiedDashboardProps) {
           </Card>
         </div>
       </div>
-
-      {/* Modals */}
-      <StudentProfileModal
-        isOpen={showProfileModal}
-        onClose={closeProfileModal}
-        onRateStudent={handleRateStudent}
-        student={selectedStudent}
-      />
-
-      <RatingModal
-        isOpen={showRatingModal}
-        onClose={closeRatingModal}
-        student={studentToRate}
-      />
-
-      <BatchDetailsModal
-        isOpen={showBatchModal}
-        onClose={() => {
-          setShowBatchModal(false);
-          setSelectedBatch(null);
-        }}
-        batch={selectedBatch}
-      />
     </div>
   );
 }
