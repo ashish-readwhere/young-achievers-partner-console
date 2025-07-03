@@ -1,4 +1,4 @@
-
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -16,6 +16,7 @@ import {
   Clock,
   ArrowLeft
 } from "lucide-react";
+import { RatingModal } from "./RatingModal";
 
 interface StudentBatch {
   id: number;
@@ -38,6 +39,9 @@ interface StudentProfileProps {
 }
 
 export function StudentProfile({ onNavigate, studentId }: StudentProfileProps) {
+  const [showRatingModal, setShowRatingModal] = useState(false);
+  const [studentToRate, setStudentToRate] = useState<any>(null);
+
   // Mock student data - in real app, this would be fetched based on studentId
   const student = {
     id: studentId || 1,
@@ -89,8 +93,19 @@ export function StudentProfile({ onNavigate, studentId }: StudentProfileProps) {
   ];
 
   const handleRateStudent = () => {
-    console.log("Navigate to rating page for student:", student.id);
-    onNavigate('rate-student');
+    console.log("Rate Student clicked for ID:", student.id);
+    setStudentToRate({
+      id: student.id,
+      name: student.name,
+      avatar: student.avatar
+    });
+    setShowRatingModal(true);
+  };
+
+  const closeRatingModal = () => {
+    console.log("Closing rating modal");
+    setShowRatingModal(false);
+    setStudentToRate(null);
   };
 
   return (
@@ -329,6 +344,13 @@ export function StudentProfile({ onNavigate, studentId }: StudentProfileProps) {
           </Button>
         </div>
       </div>
+
+      {/* Rating Modal */}
+      <RatingModal
+        isOpen={showRatingModal}
+        onClose={closeRatingModal}
+        student={studentToRate}
+      />
     </div>
   );
 }
