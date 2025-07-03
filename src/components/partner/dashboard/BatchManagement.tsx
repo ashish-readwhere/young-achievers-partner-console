@@ -126,21 +126,28 @@ export function BatchManagement({ onNavigate }: BatchManagementProps) {
       <div className="p-4 space-y-6">
         {/* Summary Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {stats.map((stat, index) => (
-            <Card key={index} className={`border-0 shadow-sm bg-${stat.color}-50`}>
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between">
-                  <div className="min-w-0 flex-1">
-                    <p className={`text-xs font-medium text-${stat.color}-600 mb-1 leading-tight`}>{stat.label}</p>
-                    <p className={`text-xl font-bold text-${stat.color}-900 leading-tight`}>{stat.value}</p>
+          {stats.map((stat, index) => {
+            const bgColorClass = `bg-${stat.color}-50`;
+            const textColorClass = `text-${stat.color}-600`;
+            const textBoldClass = `text-${stat.color}-900`;
+            const iconBgClass = `bg-${stat.color}-500`;
+            
+            return (
+              <Card key={index} className={`border-0 shadow-sm ${bgColorClass}`}>
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <div className="min-w-0 flex-1">
+                      <p className={`text-xs font-medium ${textColorClass} mb-1 leading-tight`}>{stat.label}</p>
+                      <p className={`text-xl font-bold ${textBoldClass} leading-tight`}>{stat.value}</p>
+                    </div>
+                    <div className={`w-10 h-10 ${iconBgClass} rounded-lg flex items-center justify-center flex-shrink-0 ml-2`}>
+                      <stat.icon className="w-5 h-5 text-white" />
+                    </div>
                   </div>
-                  <div className={`w-10 h-10 bg-${stat.color}-500 rounded-lg flex items-center justify-center flex-shrink-0 ml-2`}>
-                    <stat.icon className="w-5 h-5 text-white" />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                </CardContent>
+              </Card>
+            );
+          })}
         </div>
 
         {/* Search and Filter */}
