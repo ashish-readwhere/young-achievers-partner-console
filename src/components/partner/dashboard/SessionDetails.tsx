@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -16,7 +17,10 @@ import {
   Plus,
   CheckCircle,
   XCircle,
-  AlertCircle
+  AlertCircle,
+  FileText,
+  Download,
+  MessageSquare
 } from "lucide-react";
 import {
   Table,
@@ -49,7 +53,10 @@ export function SessionDetails({ onNavigate, sessionId }: SessionDetailsProps) {
       batchId: 2,
       students: 15,
       attendanceRate: null,
-      instructor: "Sarah Wilson"
+      instructor: "Sarah Wilson",
+      notes: "Focus on advanced breathing techniques and balance poses. Ensure all students have proper mats and blocks.",
+      materials: ["Yoga mats", "Blocks", "Straps", "Bolsters"],
+      previousNotes: "Students showed great improvement in flexibility. Need to work more on core strength."
     },
     {
       id: 2,
@@ -63,7 +70,10 @@ export function SessionDetails({ onNavigate, sessionId }: SessionDetailsProps) {
       batchId: 1,
       students: 18,
       attendanceRate: null,
-      instructor: "Sarah Wilson"
+      instructor: "Sarah Wilson",
+      notes: "Introduction to Sun Salutation sequences. Take it slow for beginners.",
+      materials: ["Yoga mats", "Water bottles", "Towels"],
+      previousNotes: "Good energy in the class. Some students need more guidance on posture alignment."
     },
     {
       id: 3,
@@ -77,7 +87,10 @@ export function SessionDetails({ onNavigate, sessionId }: SessionDetailsProps) {
       batchId: 2,
       students: 15,
       attendanceRate: 87,
-      instructor: "Sarah Wilson"
+      instructor: "Sarah Wilson",
+      notes: "Completed session focused on backbends and hip openers.",
+      materials: ["Yoga mats", "Blocks", "Straps"],
+      previousNotes: "Excellent participation. Students are ready for more challenging poses."
     },
     {
       id: 4,
@@ -91,7 +104,10 @@ export function SessionDetails({ onNavigate, sessionId }: SessionDetailsProps) {
       batchId: 1,
       students: 18,
       attendanceRate: 94,
-      instructor: "Sarah Wilson"
+      instructor: "Sarah Wilson",
+      notes: "Great session on basic standing poses and alignment.",
+      materials: ["Yoga mats", "Blocks"],
+      previousNotes: "Students are improving steadily. Focus on breathing techniques next time."
     },
     {
       id: 5,
@@ -105,7 +121,10 @@ export function SessionDetails({ onNavigate, sessionId }: SessionDetailsProps) {
       batchId: 2,
       students: 15,
       attendanceRate: null,
-      instructor: "Sarah Wilson"
+      instructor: "Sarah Wilson",
+      notes: "Session cancelled due to venue unavailability. Rescheduled for next week.",
+      materials: [],
+      previousNotes: "Students were notified in advance. Make-up session scheduled."
     }
   ];
 
@@ -249,6 +268,87 @@ export function SessionDetails({ onNavigate, sessionId }: SessionDetailsProps) {
                   <Eye className="w-4 h-4 mr-2" />
                   View Batch Details
                 </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Session Notes */}
+          <Card className="border-0 shadow-sm">
+            <CardHeader>
+              <CardTitle className="text-base font-semibold text-gray-900">Session Notes</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="p-4 bg-blue-50 rounded-lg">
+                  <div className="flex items-start gap-3">
+                    <FileText className="w-5 h-5 text-blue-600 mt-0.5" />
+                    <div>
+                      <h4 className="font-medium text-gray-900 mb-2">Current Session Notes</h4>
+                      <p className="text-sm text-gray-700">{selectedSession.notes}</p>
+                    </div>
+                  </div>
+                </div>
+                {selectedSession.previousNotes && (
+                  <div className="p-4 bg-gray-50 rounded-lg">
+                    <div className="flex items-start gap-3">
+                      <MessageSquare className="w-5 h-5 text-gray-600 mt-0.5" />
+                      <div>
+                        <h4 className="font-medium text-gray-900 mb-2">Previous Session Feedback</h4>
+                        <p className="text-sm text-gray-700">{selectedSession.previousNotes}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Required Materials */}
+          {selectedSession.materials.length > 0 && (
+            <Card className="border-0 shadow-sm">
+              <CardHeader>
+                <CardTitle className="text-base font-semibold text-gray-900">Required Materials</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                  {selectedSession.materials.map((material, index) => (
+                    <div key={index} className="flex items-center gap-2 p-3 bg-green-50 rounded-lg">
+                      <CheckCircle className="w-4 h-4 text-green-600" />
+                      <span className="text-sm text-gray-900">{material}</span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Session Resources */}
+          <Card className="border-0 shadow-sm">
+            <CardHeader>
+              <CardTitle className="text-base font-semibold text-gray-900">Session Resources</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <FileText className="w-4 h-4 text-gray-600" />
+                    <span className="text-sm text-gray-900">Session Plan PDF</span>
+                  </div>
+                  <Button size="sm" variant="outline">
+                    <Download className="w-3 h-3 mr-2" />
+                    Download
+                  </Button>
+                </div>
+                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <FileText className="w-4 h-4 text-gray-600" />
+                    <span className="text-sm text-gray-900">Attendance Sheet</span>
+                  </div>
+                  <Button size="sm" variant="outline">
+                    <Download className="w-3 h-3 mr-2" />
+                    Download
+                  </Button>
+                </div>
               </div>
             </CardContent>
           </Card>
