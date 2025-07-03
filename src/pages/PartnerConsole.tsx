@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { PartnerSidebar } from "@/components/partner/PartnerSidebar";
@@ -7,6 +6,7 @@ import { BatchManagement } from "@/components/partner/dashboard/BatchManagement"
 import { MemberManagement } from "@/components/partner/dashboard/MemberManagement";
 import { PartnerProfile } from "@/components/partner/dashboard/PartnerProfile";
 import { StudentProfile } from "@/components/partner/dashboard/StudentProfile";
+import { BatchDetails } from "@/components/partner/dashboard/BatchDetails";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Home, Menu } from "lucide-react";
@@ -16,14 +16,17 @@ import { useSidebar } from "@/components/ui/sidebar";
 const PartnerConsoleContent = () => {
   const [activeSection, setActiveSection] = useState("overview");
   const [selectedStudentId, setSelectedStudentId] = useState<number | undefined>();
+  const [selectedBatchId, setSelectedBatchId] = useState<number | undefined>();
   const isMobile = useIsMobile();
   const { toggleSidebar } = useSidebar();
 
-  const handleNavigation = (section: string, studentId?: number) => {
-    console.log("Navigating to section:", section, "Student ID:", studentId);
+  const handleNavigation = (section: string, id?: number) => {
+    console.log("Navigating to section:", section, "ID:", id);
     setActiveSection(section);
-    if (studentId) {
-      setSelectedStudentId(studentId);
+    if (section === "student-profile" && id) {
+      setSelectedStudentId(id);
+    } else if (section === "batch-details" && id) {
+      setSelectedBatchId(id);
     }
   };
 
@@ -41,19 +44,7 @@ const PartnerConsoleContent = () => {
       case "student-profile":
         return <StudentProfile onNavigate={handleNavigation} studentId={selectedStudentId} />;
       case "batch-details":
-        return (
-          <div className="p-8">
-            <h1 className="text-2xl font-bold text-gray-900 mb-4">Batch Details</h1>
-            <p className="text-gray-600">Complete batch information and management will be displayed here.</p>
-            <Button 
-              variant="outline" 
-              onClick={() => handleNavigation('batches')}
-              className="mt-4"
-            >
-              Back to Batch Management
-            </Button>
-          </div>
-        );
+        return <BatchDetails onNavigate={handleNavigation} batchId={selectedBatchId} />;
       case "session-details":
         return (
           <div className="p-8">

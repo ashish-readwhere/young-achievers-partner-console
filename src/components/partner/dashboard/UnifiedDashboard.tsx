@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -16,7 +15,7 @@ import {
 } from "lucide-react";
 
 interface UnifiedDashboardProps {
-  onNavigate: (section: string) => void;
+  onNavigate: (section: string, batchId?: number) => void;
 }
 
 export function UnifiedDashboard({ onNavigate }: UnifiedDashboardProps) {
@@ -36,14 +35,14 @@ export function UnifiedDashboard({ onNavigate }: UnifiedDashboardProps) {
       id: 1,
       name: "Yoga Fundamentals - Batch B",
       time: "6:00 PM - 7:00 PM",
-      day: "Mon, Wed, Fri",
+      day: "Monday, Wednesday, Friday",
       level: "Beginner",
       students: 15,
       capacity: 20,
       status: "Active",
       progress: 65,
-      nextSession: "Monday, Jan 15 at 6:00 PM",
-      previousSession: "Friday, Jan 12 at 6:00 PM",
+      nextSession: "Monday, January 15 at 6:00 PM",
+      previousSession: "Friday, January 12 at 6:00 PM",
       completedSessions: 13,
       totalSessions: 20
     },
@@ -51,14 +50,14 @@ export function UnifiedDashboard({ onNavigate }: UnifiedDashboardProps) {
       id: 2,
       name: "Yoga Advanced - Batch A",
       time: "4:00 PM - 5:00 PM",
-      day: "Tue, Thu",
+      day: "Tuesday, Thursday",
       level: "Advanced",
       students: 10,
       capacity: 12,
       status: "Active",
       progress: 80,
-      nextSession: "Tuesday, Jan 16 at 4:00 PM",
-      previousSession: "Thursday, Jan 11 at 4:00 PM",
+      nextSession: "Tuesday, January 16 at 4:00 PM",
+      previousSession: "Thursday, January 11 at 4:00 PM",
       completedSessions: 16,
       totalSessions: 20
     }
@@ -68,7 +67,7 @@ export function UnifiedDashboard({ onNavigate }: UnifiedDashboardProps) {
     {
       id: 1,
       title: "Yoga Advanced - Session 9",
-      date: "Monday, Jan 15, 2024",
+      date: "Monday, January 15, 2024",
       time: "10:00 AM",
       venue: "Talkatora Stadium",
       students: 15
@@ -76,7 +75,7 @@ export function UnifiedDashboard({ onNavigate }: UnifiedDashboardProps) {
     {
       id: 2,
       title: "Yoga Fundamentals - Session 8",
-      date: "Tuesday, Jan 16, 2024",
+      date: "Tuesday, January 16, 2024",
       time: "2:00 PM",
       venue: "Noida Stadium",
       students: 18
@@ -84,8 +83,8 @@ export function UnifiedDashboard({ onNavigate }: UnifiedDashboardProps) {
   ];
 
   const handleViewBatch = (batch: any) => {
-    console.log("Navigate to batch details for:", batch.name);
-    onNavigate('batch-details');
+    console.log("Navigate to batch details for:", batch.name, "ID:", batch.id);
+    onNavigate('batch-details', batch.id);
   };
 
   return (
