@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -357,7 +356,6 @@ export function MemberManagement() {
                     <TableHead>Contact Info</TableHead>
                     <TableHead>Performance</TableHead>
                     <TableHead>Next Session</TableHead>
-                    <TableHead>Achievements</TableHead>
                     <TableHead>Actions</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -444,19 +442,6 @@ export function MemberManagement() {
                       </TableCell>
                       <TableCell>
                         <p className="text-sm text-gray-900">{member.nextSession}</p>
-                      </TableCell>
-                      <TableCell>
-                        <div className="space-y-1">
-                          {member.achievements.slice(0, 2).map((achievement, index) => (
-                            <Badge key={index} variant="outline" className="bg-yellow-50 text-yellow-800 border-yellow-200 text-xs mr-1">
-                              <Trophy className="w-3 h-3 mr-1" />
-                              {achievement}
-                            </Badge>
-                          ))}
-                          {member.achievements.length > 2 && (
-                            <p className="text-xs text-gray-500">+{member.achievements.length - 2} more</p>
-                          )}
-                        </div>
                       </TableCell>
                       <TableCell>
                         <div className="flex flex-col gap-1">
