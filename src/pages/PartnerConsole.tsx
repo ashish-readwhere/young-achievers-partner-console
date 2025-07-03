@@ -7,6 +7,7 @@ import { MemberManagement } from "@/components/partner/dashboard/MemberManagemen
 import { PartnerProfile } from "@/components/partner/dashboard/PartnerProfile";
 import { StudentProfile } from "@/components/partner/dashboard/StudentProfile";
 import { BatchDetails } from "@/components/partner/dashboard/BatchDetails";
+import { SessionDetails } from "@/components/partner/dashboard/SessionDetails";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Home, Menu } from "lucide-react";
@@ -31,6 +32,8 @@ const PartnerConsoleContent = () => {
       setSelectedBatchId(id);
     } else if (section === "session-attendance" && id) {
       setSelectedSessionId(id);
+    } else if (section === "session-details" && id) {
+      setSelectedSessionId(id);
     }
   };
 
@@ -52,19 +55,7 @@ const PartnerConsoleContent = () => {
       case "session-attendance":
         return <SessionAttendance onNavigate={handleNavigation} sessionId={selectedSessionId} />;
       case "session-details":
-        return (
-          <div className="p-8">
-            <h1 className="text-2xl font-bold text-gray-900 mb-4">Session Details</h1>
-            <p className="text-gray-600">Complete session information and management will be displayed here.</p>
-            <Button 
-              variant="outline" 
-              onClick={() => handleNavigation('overview')}
-              className="mt-4"
-            >
-              Back to Dashboard
-            </Button>
-          </div>
-        );
+        return <SessionDetails onNavigate={handleNavigation} sessionId={selectedSessionId} />;
       case "rate-student":
         return (
           <div className="p-8">
