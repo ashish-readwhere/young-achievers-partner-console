@@ -60,8 +60,8 @@ export function MemberManagement({ onNavigate }: MemberManagementProps) {
   // Partner can see all members but can only edit those in their batches
   const partnerSubject = "Yoga";
   
+  // Only show students enrolled in partner's batches (Yoga batches)
   const members = [
-    // Partner's students (editable)
     {
       id: 1,
       name: "Sarah Williams",
@@ -108,55 +108,6 @@ export function MemberManagement({ onNavigate }: MemberManagementProps) {
       nextSession: "Tomorrow 6:00 PM",
       nextSessionDate: "Tomorrow",
       nextSessionDay: "Tuesday",
-      avatar: "/lovable-uploads/1ba055c7-e9a3-4a04-b0e8-31a2367343ed.png"
-    },
-    {
-      id: 3,
-      name: "Mike Johnson",
-      age: 12,
-      email: "mike.johnson@email.com",
-      phone: "+1 (555) 234-5678",
-      parentPhone: "+1 (555) 234-5600",
-      parentEmail: "parent.mike@email.com",
-      batch: "Chess - Intermediate",
-      joinDate: "Nov 15, 2024",
-      status: "Inactive",
-      attendance: 87,
-      rating: 4.0,
-      batchesEnrolled: [
-        { id: 3, name: "Chess - Intermediate", level: "Intermediate", status: "Inactive" }
-      ],
-      canEdit: false,
-      teacher: "Master John Smith",
-      achievements: ["Tournament Winner"],
-      nextSession: "Tomorrow 3:00 PM",
-      nextSessionDate: "Tomorrow",
-      nextSessionDay: "Tuesday",
-      avatar: "/lovable-uploads/1ba055c7-e9a3-4a04-b0e8-31a2367343ed.png"
-    },
-    {
-      id: 4,
-      name: "Emily Chen",
-      age: 15,
-      email: "emily.chen@email.com",
-      phone: "+1 (555) 345-6789",
-      parentPhone: "+1 (555) 345-6700",
-      parentEmail: "parent.emily@email.com",
-      batch: "Coding - Python Basics",
-      joinDate: "Nov 20, 2024",
-      status: "Active",
-      attendance: 92,
-      rating: 4.8,
-      batchesEnrolled: [
-        { id: 4, name: "Coding - Python Basics", level: "Beginner", status: "Active" },
-        { id: 5, name: "Coding - Advanced", level: "Advanced", status: "Active" }
-      ],
-      canEdit: false,
-      teacher: "Prof. Tech Guru",
-      achievements: ["Code Master"],
-      nextSession: "Today 5:00 PM",
-      nextSessionDate: "Today",
-      nextSessionDay: "Monday",
       avatar: "/lovable-uploads/1ba055c7-e9a3-4a04-b0e8-31a2367343ed.png"
     }
   ];
@@ -274,7 +225,7 @@ export function MemberManagement({ onNavigate }: MemberManagementProps) {
       {/* Header */}
       <div className="bg-white border-b px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
         <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Member Management</h1>
-        <p className="text-gray-600 mt-1 text-sm sm:text-base">Manage your {partnerSubject} students and view platform members</p>
+        <p className="text-gray-600 mt-1 text-sm sm:text-base">Manage your {partnerSubject} students</p>
       </div>
 
       {/* Main Content */}
@@ -343,8 +294,7 @@ export function MemberManagement({ onNavigate }: MemberManagementProps) {
         </div>
 
         <div className="text-sm text-gray-600 mb-4">
-          <span className="text-blue-600 font-medium">{myStudents.length} students</span> you can manage • 
-          <span className="text-gray-500 ml-1">{allStudents.length - myStudents.length} view-only</span>
+          <span className="text-blue-600 font-medium">{myStudents.length} students</span> enrolled in your batches
           {(searchQuery || statusFilter !== "all") && (
             <span className="ml-1">
               • Showing {filteredMembers.length} results
@@ -374,12 +324,12 @@ export function MemberManagement({ onNavigate }: MemberManagementProps) {
                 </TableHeader>
                 <TableBody>
                   {filteredMembers.map((member) => (
-                    <TableRow key={member.id} className={`hover:bg-gray-50 ${member.canEdit ? 'bg-blue-25' : ''}`}>
+                    <TableRow key={member.id} className="hover:bg-gray-50 bg-blue-25">
                       <TableCell>
                         <div className="flex items-center gap-3">
                           <Avatar className="h-10 w-10 flex-shrink-0">
                             <AvatarImage src={member.avatar} alt={member.name} />
-                            <AvatarFallback className={member.canEdit ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-600'}>
+                            <AvatarFallback className="bg-blue-100 text-blue-600">
                               {member.name.split(' ').map(n => n[0]).join('')}
                             </AvatarFallback>
                           </Avatar>
@@ -394,26 +344,18 @@ export function MemberManagement({ onNavigate }: MemberManagementProps) {
                               </Badge>
                             </div>
                             <p className="text-xs text-gray-600">Age {member.age}</p>
-                            {member.canEdit && (
-                              <Badge variant="outline" className="mt-1 text-xs bg-blue-50 text-blue-700">
-                                My Student
-                              </Badge>
-                            )}
+                            <Badge variant="outline" className="mt-1 text-xs bg-blue-50 text-blue-700">
+                              My Student
+                            </Badge>
                           </div>
                         </div>
                       </TableCell>
                       <TableCell>
                         <div className="space-y-1">
                           <div className="flex items-center gap-2">
-                            {member.canEdit ? (
-                              <div className="w-5 h-5 bg-green-100 rounded flex items-center justify-center flex-shrink-0">
-                                <span className="text-green-600 text-xs font-bold">Y</span>
-                              </div>
-                            ) : (
-                              <div className="w-5 h-5 bg-purple-100 rounded flex items-center justify-center flex-shrink-0">
-                                <span className="text-purple-600 text-xs font-bold">C</span>
-                              </div>
-                            )}
+                            <div className="w-5 h-5 bg-green-100 rounded flex items-center justify-center flex-shrink-0">
+                              <span className="text-green-600 text-xs font-bold">Y</span>
+                            </div>
                             <span className="text-sm font-medium text-gray-700">{member.batch.split(' - ')[0]}</span>
                           </div>
                           <p className="text-xs text-gray-600">{member.batch}</p>
@@ -472,12 +414,14 @@ export function MemberManagement({ onNavigate }: MemberManagementProps) {
                             View
                           </Button>
                           
-                          {!member.canEdit && (
-                            <Button size="sm" variant="outline" className="bg-green-50 text-green-700 hover:bg-green-100 text-xs h-7">
-                              <Phone className="h-3 w-3 mr-1" />
-                              Contact
-                            </Button>
-                          )}
+                          <Button 
+                            size="sm" 
+                            className="bg-blue-600 hover:bg-blue-700 text-white text-xs h-7"
+                            onClick={() => handleRateStudent(member.id)}
+                          >
+                            <Star className="h-3 w-3 mr-1" />
+                            Rate
+                          </Button>
                         </div>
                       </TableCell>
                     </TableRow>
