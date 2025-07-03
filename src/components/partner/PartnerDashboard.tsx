@@ -27,7 +27,7 @@ export function PartnerDashboard() {
       case "overview":
         return <UnifiedDashboard onNavigate={handleNavigation} />;
       case "batches":
-        return <BatchManagement />;
+        return <BatchManagement onNavigate={handleNavigation} />;
       case "members":
         return <MemberManagement />;
       case "profile":
