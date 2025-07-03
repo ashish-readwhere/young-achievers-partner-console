@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { 
   ArrowLeft,
@@ -12,7 +13,8 @@ import {
   Users,
   Check,
   X,
-  User
+  User,
+  Search
 } from "lucide-react";
 import {
   Table,
@@ -80,6 +82,8 @@ export function SessionAttendance({ onNavigate, sessionId }: SessionAttendancePr
     }
   ]);
 
+  const [searchTerm, setSearchTerm] = useState("");
+
   const handleAttendanceChange = (studentId: number, status: "present" | "absent") => {
     setStudents(prev => prev.map(student => 
       student.id === studentId 
@@ -102,6 +106,10 @@ export function SessionAttendance({ onNavigate, sessionId }: SessionAttendancePr
     const notMarked = students.filter(s => s.attendance === "not_marked").length;
     return { present, absent, notMarked, total: students.length };
   };
+
+  const filteredStudents = students.filter(student =>
+    student.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const stats = getAttendanceStats();
 
@@ -217,7 +225,18 @@ export function SessionAttendance({ onNavigate, sessionId }: SessionAttendancePr
         {/* Student Attendance List */}
         <Card className="border-0 shadow-sm">
           <CardHeader>
-            <CardTitle className="text-base font-semibold text-gray-900">Student Attendance</CardTitle>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <CardTitle className="text-base font-semibold text-gray-900">Student Attendance</CardTitle>
+              <div className="relative w-full sm:w-64">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <Input
+                  placeholder="Search student name..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+            </div>
           </CardHeader>
           <CardContent>
             <div className="overflow-x-auto">
@@ -231,7 +250,7 @@ export function SessionAttendance({ onNavigate, sessionId }: SessionAttendancePr
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {students.map((student) => (
+                  {filteredStudents.map((student) => (
                     <TableRow key={student.id}>
                       <TableCell>
                         <div className="flex items-center gap-3">
@@ -305,6 +324,13 @@ export function SessionAttendance({ onNavigate, sessionId }: SessionAttendancePr
                       </TableCell>
                     </TableRow>
                   ))}
+                  {filteredStudents.length === 0 && (
+                    <TableRow>
+                      <TableCell colSpan={4} className="text-center py-8 text-gray-500">
+                        No students found matching "{searchTerm}"
+                      </TableCell>
+                    </TableRow>
+                  )}
                 </TableBody>
               </Table>
             </div>
