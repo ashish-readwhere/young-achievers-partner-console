@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -116,10 +117,10 @@ export function StudentProfile({ onNavigate, studentId }: StudentProfileProps) {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => onNavigate('batches')}
+            onClick={() => onNavigate('members')}
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Batch Management
+            Back to Member Management
           </Button>
         </div>
         
@@ -233,28 +234,6 @@ export function StudentProfile({ onNavigate, studentId }: StudentProfileProps) {
           </Card>
         </div>
 
-        {/* Achievements */}
-        {student.achievements.length > 0 && (
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg flex items-center gap-2">
-                <Trophy className="w-5 h-5" />
-                Achievements
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-wrap gap-3">
-                {student.achievements.map((achievement, index) => (
-                  <Badge key={index} variant="outline" className="bg-yellow-50 text-yellow-800 border-yellow-200 px-3 py-1">
-                    <Trophy className="w-3 h-3 mr-2" />
-                    {achievement}
-                  </Badge>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
         {/* Batch Enrollments */}
         <Card>
           <CardHeader>
@@ -339,8 +318,8 @@ export function StudentProfile({ onNavigate, studentId }: StudentProfileProps) {
             <Star className="w-4 h-4 mr-2" />
             Rate Student
           </Button>
-          <Button variant="outline" onClick={() => onNavigate('batches')} className="flex-1">
-            Back to Batch Management
+          <Button variant="outline" onClick={() => onNavigate('members')} className="flex-1">
+            Back to Member Management
           </Button>
         </div>
       </div>
