@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -15,8 +14,6 @@ import {
   User,
   Search,
   Plus,
-  Edit3,
-  Trash2,
   CheckCircle,
   XCircle,
   AlertCircle
@@ -252,18 +249,6 @@ export function SessionDetails({ onNavigate, sessionId }: SessionDetailsProps) {
                   <Eye className="w-4 h-4 mr-2" />
                   View Batch Details
                 </Button>
-                {selectedSession.status === "Upcoming" && (
-                  <>
-                    <Button variant="outline">
-                      <Edit3 className="w-4 h-4 mr-2" />
-                      Edit Session
-                    </Button>
-                    <Button variant="outline" className="border-red-300 text-red-600 hover:bg-red-50">
-                      <Trash2 className="w-4 h-4 mr-2" />
-                      Cancel Session
-                    </Button>
-                  </>
-                )}
               </div>
             </CardContent>
           </Card>
