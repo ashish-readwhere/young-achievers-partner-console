@@ -8,15 +8,20 @@ import { StudentProfile } from "./dashboard/StudentProfile";
 import { BatchDetails } from "./dashboard/BatchDetails";
 import { SessionAttendance } from "./dashboard/SessionAttendance";
 
-export function PartnerDashboard() {
-  const [activeSection, setActiveSection] = useState("overview");
+interface PartnerDashboardProps {
+  onNavigate: (section: string, id?: number) => void;
+  currentSection: string;
+  selectedId?: number;
+}
+
+export function PartnerDashboard({ onNavigate, currentSection, selectedId }: PartnerDashboardProps) {
   const [selectedStudentId, setSelectedStudentId] = useState<number | undefined>();
   const [selectedBatchId, setSelectedBatchId] = useState<number | undefined>();
   const [selectedSessionId, setSelectedSessionId] = useState<number | undefined>();
 
   const handleNavigation = (section: string, id?: number) => {
     console.log("Navigating to section:", section, "ID:", id);
-    setActiveSection(section);
+    onNavigate(section, id);
     if (section === "student-profile" && id) {
       setSelectedStudentId(id);
     } else if (section === "batch-details" && id) {
@@ -27,7 +32,7 @@ export function PartnerDashboard() {
   };
 
   const renderContent = () => {
-    switch (activeSection) {
+    switch (currentSection) {
       case "overview":
         return <UnifiedDashboard onNavigate={handleNavigation} />;
       case "batches":
@@ -37,11 +42,11 @@ export function PartnerDashboard() {
       case "profile":
         return <PartnerProfile />;
       case "student-profile":
-        return <StudentProfile onNavigate={handleNavigation} studentId={selectedStudentId} />;
+        return <StudentProfile onNavigate={handleNavigation} studentId={selectedStudentId || selectedId} />;
       case "batch-details":
-        return <BatchDetails onNavigate={handleNavigation} batchId={selectedBatchId} />;
+        return <BatchDetails onNavigate={handleNavigation} batchId={selectedBatchId || selectedId} />;
       case "session-attendance":
-        return <SessionAttendance onNavigate={handleNavigation} sessionId={selectedSessionId} />;
+        return <SessionAttendance onNavigate={handleNavigation} sessionId={selectedSessionId || selectedId} />;
       case "session-details":
         return <div className="p-8"><h1 className="text-2xl font-bold">Session Details Page</h1><p>Full session details will be shown here.</p></div>;
       case "rate-student":
