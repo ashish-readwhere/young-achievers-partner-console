@@ -42,7 +42,7 @@ const PartnerConsoleContent = () => {
       case "batches":
         return <BatchManagement onNavigate={handleNavigation} />;
       case "members":
-        return <MemberManagement />;
+        return <MemberManagement onNavigate={handleNavigation} />;
       case "profile":
         return <PartnerProfile />;
       case "student-profile":
