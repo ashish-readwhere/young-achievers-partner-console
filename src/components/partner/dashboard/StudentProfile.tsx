@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -40,6 +39,7 @@ interface StudentProfileProps {
 }
 
 export function StudentProfile({ onNavigate, studentId }: StudentProfileProps) {
+  console.log("StudentProfile rendered - achievements section should be removed");
   const [showRatingModal, setShowRatingModal] = useState(false);
   const [studentToRate, setStudentToRate] = useState<any>(null);
 
@@ -117,7 +117,10 @@ export function StudentProfile({ onNavigate, studentId }: StudentProfileProps) {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => onNavigate('members')}
+            onClick={() => {
+              console.log("Back to Member Management clicked");
+              onNavigate('members');
+            }}
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Member Management
