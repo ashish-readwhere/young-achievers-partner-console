@@ -3,7 +3,6 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { 
   Users, 
@@ -12,9 +11,7 @@ import {
   Eye,
   BookOpen,
   TrendingUp,
-  Award,
-  Search,
-  Filter
+  Award
 } from "lucide-react";
 import {
   Table,
@@ -24,23 +21,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 interface BatchManagementProps {
   onNavigate?: (section: string, id?: number) => void;
 }
 
 export function BatchManagement({ onNavigate }: BatchManagementProps) {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
-
   const batches = [
     {
       id: 1,
@@ -72,28 +58,12 @@ export function BatchManagement({ onNavigate }: BatchManagementProps) {
     }
   ];
 
-  // Filter batches based on search query and status filter
-  const filteredBatches = batches.filter(batch => {
-    const matchesSearch = searchQuery === "" || 
-      batch.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      batch.days.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      batch.time.toLowerCase().includes(searchQuery.toLowerCase());
-    
-    const matchesStatus = statusFilter === "all" || 
-      (statusFilter === "active" && batch.status === "Active") ||
-      (statusFilter === "inactive" && batch.status === "Inactive") ||
-      (statusFilter === "high-progress" && batch.progress >= 70) ||
-      (statusFilter === "low-progress" && batch.progress < 70);
-    
-    return matchesSearch && matchesStatus;
-  });
-
   // Calculate summary stats
-  const totalBatches = filteredBatches.length;
-  const totalStudents = filteredBatches.reduce((sum, batch) => sum + batch.students, 0);
-  const totalCapacity = filteredBatches.reduce((sum, batch) => sum + batch.capacity, 0);
-  const averageProgress = filteredBatches.length > 0 ? Math.round(filteredBatches.reduce((sum, batch) => sum + batch.progress, 0) / filteredBatches.length) : 0;
-  const completedSessions = filteredBatches.reduce((sum, batch) => sum + batch.completedSessions, 0);
+  const totalBatches = batches.length;
+  const totalStudents = batches.reduce((sum, batch) => sum + batch.students, 0);
+  const totalCapacity = batches.reduce((sum, batch) => sum + batch.capacity, 0);
+  const averageProgress = Math.round(batches.reduce((sum, batch) => sum + batch.progress, 0) / batches.length);
+  const completedSessions = batches.reduce((sum, batch) => sum + batch.completedSessions, 0);
 
   const handleViewBatchDetails = (batchId: number) => {
     console.log("Navigating to batch details for ID:", batchId);
@@ -102,55 +72,10 @@ export function BatchManagement({ onNavigate }: BatchManagementProps) {
     }
   };
 
-  const handleClearFilters = () => {
-    setSearchQuery("");
-    setStatusFilter("all");
-  };
-
-  const getStatColors = (color: string) => {
-    switch (color) {
-      case "blue":
-        return {
-          bg: "bg-blue-50",
-          text: "text-blue-600",
-          textBold: "text-blue-900",
-          iconBg: "bg-blue-500"
-        };
-      case "green":
-        return {
-          bg: "bg-green-50",
-          text: "text-green-600",
-          textBold: "text-green-900",
-          iconBg: "bg-green-500"
-        };
-      case "purple":
-        return {
-          bg: "bg-purple-50",
-          text: "text-purple-600",
-          textBold: "text-purple-900",
-          iconBg: "bg-purple-500"
-        };
-      case "orange":
-        return {
-          bg: "bg-orange-50",
-          text: "text-orange-600",
-          textBold: "text-orange-900",
-          iconBg: "bg-orange-500"
-        };
-      default:
-        return {
-          bg: "bg-gray-50",
-          text: "text-gray-600",
-          textBold: "text-gray-900",
-          iconBg: "bg-gray-500"
-        };
-    }
-  };
-
   const stats = [
     { label: "Total Batches", value: totalBatches.toString(), icon: BookOpen, color: "blue" },
-    { label: "Total Students", value: totalStudents.toString() + "/" + totalCapacity.toString(), icon: Users, color: "green" },
-    { label: "Average Progress", value: averageProgress.toString() + "%", icon: TrendingUp, color: "purple" },
+    { label: "Total Students", value: `${totalStudents}/${totalCapacity}`, icon: Users, color: "green" },
+    { label: "Average Progress", value: `${averageProgress}%`, icon: TrendingUp, color: "purple" },
     { label: "Sessions Completed", value: completedSessions.toString(), icon: Award, color: "orange" }
   ];
 
@@ -166,82 +91,21 @@ export function BatchManagement({ onNavigate }: BatchManagementProps) {
       <div className="p-4 space-y-6">
         {/* Summary Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {stats.map((stat, index) => {
-            const colors = getStatColors(stat.color);
-            
-            return (
-              <Card key={index} className={"border-0 shadow-sm " + colors.bg}>
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between">
-                    <div className="min-w-0 flex-1">
-                      <p className={"text-xs font-medium " + colors.text + " mb-1 leading-tight"}>{stat.label}</p>
-                      <p className={"text-xl font-bold " + colors.textBold + " leading-tight"}>{stat.value}</p>
-                    </div>
-                    <div className={"w-10 h-10 " + colors.iconBg + " rounded-lg flex items-center justify-center flex-shrink-0 ml-2"}>
-                      <stat.icon className="w-5 h-5 text-white" />
-                    </div>
+          {stats.map((stat, index) => (
+            <Card key={index} className={`border-0 shadow-sm bg-${stat.color}-50`}>
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div className="min-w-0 flex-1">
+                    <p className={`text-xs font-medium text-${stat.color}-600 mb-1 leading-tight`}>{stat.label}</p>
+                    <p className={`text-xl font-bold text-${stat.color}-900 leading-tight`}>{stat.value}</p>
                   </div>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
-
-        {/* Search and Filter */}
-        <div className="flex flex-col sm:flex-row gap-4">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-            <Input 
-              placeholder="Search by batch name, time, or days..." 
-              className="pl-10" 
-              value={searchQuery}
-              onChange={(e) => {
-                console.log("Search query changed:", e.target.value);
-                setSearchQuery(e.target.value);
-              }}
-            />
-          </div>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="w-full sm:w-auto">
-                <Filter className="h-4 w-4 mr-2" />
-                Filter {statusFilter !== "all" && "(" + statusFilter + ")"}
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuLabel>Filter by Status</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => setStatusFilter("all")}>
-                All Batches
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setStatusFilter("active")}>
-                Active Only
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setStatusFilter("inactive")}>
-                Inactive Only
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setStatusFilter("high-progress")}>
-                High Progress (70%+)
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setStatusFilter("low-progress")}>
-                Low Progress (<70%)
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={handleClearFilters}>
-                Clear All Filters
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-
-        <div className="text-sm text-gray-600">
-          <span className="text-blue-600 font-medium">{filteredBatches.length} batches</span> found
-          {(searchQuery || statusFilter !== "all") && (
-            <span className="ml-1">
-              {searchQuery && (" for \"" + searchQuery + "\"")}
-              {statusFilter !== "all" && (" (" + statusFilter + ")")}
-            </span>
-          )}
+                  <div className={`w-10 h-10 bg-${stat.color}-500 rounded-lg flex items-center justify-center flex-shrink-0 ml-2`}>
+                    <stat.icon className="w-5 h-5 text-white" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
         </div>
 
         {/* Batch Listing Table */}
@@ -264,7 +128,7 @@ export function BatchManagement({ onNavigate }: BatchManagementProps) {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredBatches.map((batch) => (
+                  {batches.map((batch) => (
                     <TableRow key={batch.id} className="hover:bg-gray-50">
                       <TableCell>
                         <div className="flex items-center gap-3">
@@ -333,22 +197,6 @@ export function BatchManagement({ onNavigate }: BatchManagementProps) {
             </div>
           </CardContent>
         </Card>
-
-        {/* No Results Message */}
-        {filteredBatches.length === 0 && (searchQuery || statusFilter !== "all") && (
-          <div className="text-center py-12">
-            <div className="text-gray-400 mb-4">
-              <Search className="w-12 h-12 mx-auto" />
-            </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No results found</h3>
-            <p className="text-gray-600">
-              No batches found matching your search criteria.
-            </p>
-            <Button variant="outline" className="mt-4" onClick={handleClearFilters}>
-              Clear Filters
-            </Button>
-          </div>
-        )}
       </div>
     </div>
   );
