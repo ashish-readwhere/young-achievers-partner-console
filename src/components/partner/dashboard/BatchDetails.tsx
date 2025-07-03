@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -37,7 +38,6 @@ export function BatchDetails({ onNavigate, batchId }: BatchDetailsProps) {
     name: "Yoga Fundamentals - Batch B",
     time: "6:00 PM - 7:00 PM",
     day: "Monday, Wednesday, Friday",
-    level: "Beginner",
     students: 15,
     capacity: 20,
     status: "Active",
@@ -205,12 +205,6 @@ export function BatchDetails({ onNavigate, batchId }: BatchDetailsProps) {
               <div>
                 <p className="text-gray-600 mb-1">Venue</p>
                 <p className="font-medium text-gray-900">{batchData.venue}</p>
-              </div>
-              <div>
-                <p className="text-gray-600 mb-1">Level</p>
-                <Badge variant="outline" className="bg-blue-50 text-blue-700">
-                  {batchData.level}
-                </Badge>
               </div>
             </div>
           </CardContent>

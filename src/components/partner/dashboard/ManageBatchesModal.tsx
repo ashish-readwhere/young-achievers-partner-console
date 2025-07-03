@@ -15,7 +15,7 @@ interface ManageBatchesModalProps {
     id: number;
     name: string;
     avatar: string;
-    batchesEnrolled?: { id: number; name: string; level: string; status: string }[];
+    batchesEnrolled?: { id: number; name: string; status: string }[];
   } | null;
 }
 
@@ -27,11 +27,11 @@ export function ManageBatchesModal({ isOpen, onClose, member }: ManageBatchesMod
 
   // Available batches (partner's yoga batches)
   const availableBatches = [
-    { id: 1, name: "Yoga Fundamentals - Batch B", level: "Beginner", time: "6:00 PM - 7:00 PM", day: "Mon, Wed, Fri" },
-    { id: 2, name: "Yoga Advanced - Batch A", level: "Advanced", time: "4:00 PM - 5:00 PM", day: "Tue, Thu" },
-    { id: 3, name: "Yoga Intermediate - Batch C", level: "Intermediate", time: "7:30 PM - 8:30 PM", day: "Mon, Wed" },
-    { id: 4, name: "Yoga Morning Flow", level: "Beginner", time: "7:00 AM - 8:00 AM", day: "Daily" },
-    { id: 5, name: "Yoga Power Session", level: "Advanced", time: "8:00 PM - 9:00 PM", day: "Wed, Fri" }
+    { id: 1, name: "Yoga Fundamentals - Batch B", time: "6:00 PM - 7:00 PM", day: "Mon, Wed, Fri" },
+    { id: 2, name: "Yoga Advanced - Batch A", time: "4:00 PM - 5:00 PM", day: "Tue, Thu" },
+    { id: 3, name: "Yoga Intermediate - Batch C", time: "7:30 PM - 8:30 PM", day: "Mon, Wed" },
+    { id: 4, name: "Yoga Morning Flow", time: "7:00 AM - 8:00 AM", day: "Daily" },
+    { id: 5, name: "Yoga Power Session", time: "8:00 PM - 9:00 PM", day: "Wed, Fri" }
   ];
 
   // Reset form when member changes
@@ -157,7 +157,6 @@ export function ManageBatchesModal({ isOpen, onClose, member }: ManageBatchesMod
                       <div className="flex items-center justify-between">
                         <div>
                           <p className="font-medium text-gray-900">{batch.name}</p>
-                          <p className="text-sm text-gray-600">Level: {batch.level}</p>
                         </div>
                         <Badge 
                           variant="outline" 
@@ -215,7 +214,6 @@ export function ManageBatchesModal({ isOpen, onClose, member }: ManageBatchesMod
                             )}
                           </div>
                           <div className="text-sm text-gray-600">
-                            <p>Level: {batch.level}</p>
                             <p>Time: {batch.time}</p>
                             <p>Days: {batch.day}</p>
                           </div>
