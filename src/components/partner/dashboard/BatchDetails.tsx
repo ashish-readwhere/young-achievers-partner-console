@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -123,8 +122,8 @@ export function BatchDetails({ onNavigate, batchId }: BatchDetailsProps) {
   };
 
   const handleSessionClick = (sessionId: number) => {
-    console.log("Navigate to session details for ID:", sessionId);
-    onNavigate('session-details');
+    console.log("Navigate to session attendance for ID:", sessionId);
+    onNavigate('session-attendance', sessionId);
   };
 
   return (

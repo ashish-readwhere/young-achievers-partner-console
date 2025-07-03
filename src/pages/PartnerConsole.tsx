@@ -12,11 +12,13 @@ import { Link } from "react-router-dom";
 import { Home, Menu } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useSidebar } from "@/components/ui/sidebar";
+import { SessionAttendance } from "@/components/partner/dashboard/SessionAttendance";
 
 const PartnerConsoleContent = () => {
   const [activeSection, setActiveSection] = useState("overview");
   const [selectedStudentId, setSelectedStudentId] = useState<number | undefined>();
   const [selectedBatchId, setSelectedBatchId] = useState<number | undefined>();
+  const [selectedSessionId, setSelectedSessionId] = useState<number | undefined>();
   const isMobile = useIsMobile();
   const { toggleSidebar } = useSidebar();
 
@@ -27,6 +29,8 @@ const PartnerConsoleContent = () => {
       setSelectedStudentId(id);
     } else if (section === "batch-details" && id) {
       setSelectedBatchId(id);
+    } else if (section === "session-attendance" && id) {
+      setSelectedSessionId(id);
     }
   };
 
@@ -45,6 +49,8 @@ const PartnerConsoleContent = () => {
         return <StudentProfile onNavigate={handleNavigation} studentId={selectedStudentId} />;
       case "batch-details":
         return <BatchDetails onNavigate={handleNavigation} batchId={selectedBatchId} />;
+      case "session-attendance":
+        return <SessionAttendance onNavigate={handleNavigation} sessionId={selectedSessionId} />;
       case "session-details":
         return (
           <div className="p-8">
@@ -93,6 +99,8 @@ const PartnerConsoleContent = () => {
         return "Student Profile";
       case "batch-details":
         return "Batch Details";
+      case "session-attendance":
+        return "Session Attendance";
       case "session-details":
         return "Session Details";
       case "rate-student":
