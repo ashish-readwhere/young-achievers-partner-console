@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -18,7 +19,8 @@ import {
   Trophy,
   Award,
   Edit,
-  Settings
+  Settings,
+  Info
 } from "lucide-react";
 import {
   Table,
@@ -37,6 +39,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface MemberManagementProps {
   onNavigate?: (section: string, id?: number) => void;
@@ -208,243 +216,265 @@ export function MemberManagement({ onNavigate }: MemberManagementProps) {
   };
 
   return (
-    <div className="w-full bg-white min-h-screen">
-      {/* Header */}
-      <div className="bg-white border-b px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
-        <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Member Management</h1>
-        <p className="text-gray-600 mt-1 text-sm sm:text-base">Manage students enrolled in your {partnerSubject} batches</p>
-      </div>
-
-      {/* Main Content */}
-      <div className="p-4 sm:p-6 lg:p-8">
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
-          {stats.map((stat, index) => (
-            <Card key={index} className={`border-0 shadow-sm bg-${stat.color}-50`}>
-              <CardContent className="p-4 sm:p-6">
-                <div className="flex items-center justify-between">
-                  <div className="min-w-0 flex-1">
-                    <p className={`text-xs sm:text-sm font-medium text-${stat.color}-600 mb-1 truncate`}>{stat.label}</p>
-                    <p className={`text-xl sm:text-2xl lg:text-3xl font-bold text-${stat.color}-900`}>{stat.value}</p>
-                  </div>
-                  <div className={`w-10 h-10 sm:w-12 sm:h-12 bg-${stat.color}-500 rounded-lg flex items-center justify-center flex-shrink-0`}>
-                    <Users className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+    <TooltipProvider>
+      <div className="w-full bg-white min-h-screen">
+        {/* Header */}
+        <div className="bg-white border-b px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Member Management</h1>
+          <p className="text-gray-600 mt-1 text-sm sm:text-base">Manage students enrolled in your {partnerSubject} batches</p>
         </div>
 
-        {/* Search and Filter */}
-        <div className="flex flex-col sm:flex-row gap-4 mb-6">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-            <Input 
-              placeholder="Search by name, email, batch, or teacher..." 
-              className="pl-10" 
-              value={searchQuery}
-              onChange={(e) => {
-                console.log("Search query changed:", e.target.value);
-                setSearchQuery(e.target.value);
-              }}
-            />
+        {/* Main Content */}
+        <div className="p-4 sm:p-6 lg:p-8">
+          {/* Stats Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
+            {stats.map((stat, index) => (
+              <Card key={index} className={`border-0 shadow-sm bg-${stat.color}-50`}>
+                <CardContent className="p-4 sm:p-6">
+                  <div className="flex items-center justify-between">
+                    <div className="min-w-0 flex-1">
+                      <p className={`text-xs sm:text-sm font-medium text-${stat.color}-600 mb-1 truncate`}>{stat.label}</p>
+                      <p className={`text-xl sm:text-2xl lg:text-3xl font-bold text-${stat.color}-900`}>{stat.value}</p>
+                    </div>
+                    <div className={`w-10 h-10 sm:w-12 sm:h-12 bg-${stat.color}-500 rounded-lg flex items-center justify-center flex-shrink-0`}>
+                      <Users className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
           </div>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="w-full sm:w-auto">
-                <Filter className="h-4 w-4 mr-2" />
-                Filter {statusFilter !== "all" && `(${statusFilter})`}
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuLabel>Filter by Status</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => setStatusFilter("all")}>
-                All Members
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setStatusFilter("active")}>
-                Active Only
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setStatusFilter("inactive")}>
-                Inactive Only
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setStatusFilter("my-students")}>
-                My Students Only
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={handleClearFilters}>
-                Clear All Filters
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
 
-        <div className="text-sm text-gray-600 mb-4">
-          <span className="text-blue-600 font-medium">{myStudents.length} students</span> enrolled in your batches
-          {(searchQuery || statusFilter !== "all") && (
-            <span className="ml-1">
-              • Showing {filteredMembers.length} results
-              {searchQuery && ` for "${searchQuery}"`}
-              {statusFilter !== "all" && ` (${statusFilter})`}
-            </span>
+          {/* Search and Filter */}
+          <div className="flex flex-col sm:flex-row gap-4 mb-6">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              <Input 
+                placeholder="Search by name, email, batch, or teacher..." 
+                className="pl-10" 
+                value={searchQuery}
+                onChange={(e) => {
+                  console.log("Search query changed:", e.target.value);
+                  setSearchQuery(e.target.value);
+                }}
+              />
+            </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="w-full sm:w-auto">
+                  <Filter className="h-4 w-4 mr-2" />
+                  Filter {statusFilter !== "all" && `(${statusFilter})`}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuLabel>Filter by Status</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => setStatusFilter("all")}>
+                  All Members
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setStatusFilter("active")}>
+                  Active Only
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setStatusFilter("inactive")}>
+                  Inactive Only
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setStatusFilter("my-students")}>
+                  My Students Only
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleClearFilters}>
+                  Clear All Filters
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+
+          <div className="text-sm text-gray-600 mb-4">
+            <span className="text-blue-600 font-medium">{myStudents.length} students</span> enrolled in your batches
+            {(searchQuery || statusFilter !== "all") && (
+              <span className="ml-1">
+                • Showing {filteredMembers.length} results
+                {searchQuery && ` for "${searchQuery}"`}
+                {statusFilter !== "all" && ` (${statusFilter})`}
+              </span>
+            )}
+          </div>
+
+          {/* Member Listing Table */}
+          <Card className="border shadow-sm">
+            <CardHeader>
+              <CardTitle className="text-base font-semibold text-gray-900">Member Listing</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Student</TableHead>
+                      <TableHead>Subject/Batch</TableHead>
+                      <TableHead>Contact Info</TableHead>
+                      <TableHead>Performance</TableHead>
+                      <TableHead>Next Session</TableHead>
+                      <TableHead>Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredMembers.map((member) => {
+                      const nextSessionInfo = getNextSessionDate(member.nextSession);
+                      const batchCount = Array.isArray(member.batchesEnrolled) ? member.batchesEnrolled.length : 1;
+                      const batchNames = Array.isArray(member.batchesEnrolled) 
+                        ? member.batchesEnrolled.map(batch => batch.name).join(', ')
+                        : member.batch;
+                      
+                      return (
+                        <TableRow key={member.id} className="hover:bg-gray-50 bg-blue-25">
+                          <TableCell>
+                            <div className="flex items-center gap-3">
+                              <Avatar className="h-10 w-10 flex-shrink-0">
+                                <AvatarImage src={member.avatar} alt={member.name} />
+                                <AvatarFallback className="bg-blue-100 text-blue-600">
+                                  {member.name.split(' ').map(n => n[0]).join('')}
+                                </AvatarFallback>
+                              </Avatar>
+                              <div className="min-w-0">
+                                <div className="flex items-center gap-2 mb-1">
+                                  <h3 className="text-sm font-semibold text-gray-900 truncate">{member.name}</h3>
+                                  <Badge 
+                                    variant={member.status === "Active" ? "default" : "secondary"}
+                                    className={`${member.status === "Active" ? "bg-green-100 text-green-800" : ""} text-xs`}
+                                  >
+                                    {member.status}
+                                  </Badge>
+                                </div>
+                                <p className="text-xs text-gray-600">Age {member.age}</p>
+                                <Badge variant="outline" className="mt-1 text-xs bg-blue-50 text-blue-700">
+                                  My Student
+                                </Badge>
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="space-y-1">
+                              <div className="flex items-center gap-2">
+                                <div className="w-5 h-5 bg-green-100 rounded flex items-center justify-center flex-shrink-0">
+                                  <span className="text-green-600 text-xs font-bold">Y</span>
+                                </div>
+                                <span className="text-sm font-medium text-gray-700">{partnerSubject}</span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <span className="text-sm text-gray-600">Batches: {batchCount}</span>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      className="h-6 w-6 p-0 text-gray-400 hover:text-gray-600"
+                                    >
+                                      <Info className="h-3 w-3" />
+                                    </Button>
+                                  </TooltipTrigger>
+                                  <TooltipContent side="top" className="max-w-xs">
+                                    <p className="text-sm">{batchNames}</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="space-y-1">
+                              <div className="text-xs text-gray-600">
+                                <strong>Student:</strong>
+                              </div>
+                              <div className="flex items-center gap-1 text-xs text-gray-600">
+                                <Phone className="h-3 w-3" />
+                                <span>{member.phone}</span>
+                              </div>
+                              <div className="text-xs text-gray-600 mt-2">
+                                <strong>Parent:</strong>
+                              </div>
+                              <div className="flex items-center gap-1 text-xs text-gray-600">
+                                <Phone className="h-3 w-3" />
+                                <span>{member.parentPhone}</span>
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="space-y-2">
+                              <div className="flex items-center gap-2">
+                                <Star className="w-4 h-4 text-yellow-500 fill-current" />
+                                <span className="text-sm font-medium">{member.rating}</span>
+                              </div>
+                              <div className="space-y-1">
+                                <div className="flex items-center justify-between">
+                                  <span className="text-xs text-gray-600">Attendance</span>
+                                  <span className="text-xs font-medium">{member.attendance}%</span>
+                                </div>
+                                <Progress value={member.attendance} className="h-1.5 w-16" />
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="space-y-1">
+                              <p className="text-sm font-medium text-gray-900">{nextSessionInfo.date}</p>
+                              <p className="text-xs text-gray-600">{nextSessionInfo.day}</p>
+                              <p className="text-xs text-gray-500">{nextSessionInfo.time}</p>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex flex-col gap-1">
+                              <Button 
+                                size="sm" 
+                                variant="outline" 
+                                className="text-xs h-7"
+                                onClick={() => handleViewProfile(member)}
+                              >
+                                <Eye className="h-3 w-3 mr-1" />
+                                View
+                              </Button>
+                              
+                              <Button 
+                                size="sm" 
+                                className="bg-blue-600 hover:bg-blue-700 text-white text-xs h-7"
+                                onClick={() => handleRateStudent(member.id)}
+                              >
+                                <Star className="h-3 w-3 mr-1" />
+                                Rate
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* No Results Message */}
+          {filteredMembers.length === 0 && (searchQuery || statusFilter !== "all") && (
+            <div className="text-center py-12">
+              <div className="text-gray-400 mb-4">
+                <Search className="w-12 h-12 mx-auto" />
+              </div>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">No results found</h3>
+              <p className="text-gray-600">
+                No members found matching your search criteria.
+              </p>
+              <Button variant="outline" className="mt-4" onClick={handleClearFilters}>
+                Clear Filters
+              </Button>
+            </div>
           )}
         </div>
 
-        {/* Member Listing Table */}
-        <Card className="border shadow-sm">
-          <CardHeader>
-            <CardTitle className="text-base font-semibold text-gray-900">Member Listing</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Student</TableHead>
-                    <TableHead>Subject/Batch</TableHead>
-                    <TableHead>Contact Info</TableHead>
-                    <TableHead>Performance</TableHead>
-                    <TableHead>Next Session</TableHead>
-                    <TableHead>Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredMembers.map((member) => {
-                    const nextSessionInfo = getNextSessionDate(member.nextSession);
-                    return (
-                      <TableRow key={member.id} className="hover:bg-gray-50 bg-blue-25">
-                        <TableCell>
-                          <div className="flex items-center gap-3">
-                            <Avatar className="h-10 w-10 flex-shrink-0">
-                              <AvatarImage src={member.avatar} alt={member.name} />
-                              <AvatarFallback className="bg-blue-100 text-blue-600">
-                                {member.name.split(' ').map(n => n[0]).join('')}
-                              </AvatarFallback>
-                            </Avatar>
-                            <div className="min-w-0">
-                              <div className="flex items-center gap-2 mb-1">
-                                <h3 className="text-sm font-semibold text-gray-900 truncate">{member.name}</h3>
-                                <Badge 
-                                  variant={member.status === "Active" ? "default" : "secondary"}
-                                  className={`${member.status === "Active" ? "bg-green-100 text-green-800" : ""} text-xs`}
-                                >
-                                  {member.status}
-                                </Badge>
-                              </div>
-                              <p className="text-xs text-gray-600">Age {member.age}</p>
-                              <Badge variant="outline" className="mt-1 text-xs bg-blue-50 text-blue-700">
-                                My Student
-                              </Badge>
-                            </div>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <div className="space-y-1">
-                            <div className="flex items-center gap-2">
-                              <div className="w-5 h-5 bg-green-100 rounded flex items-center justify-center flex-shrink-0">
-                                <span className="text-green-600 text-xs font-bold">Y</span>
-                              </div>
-                              <span className="text-sm font-medium text-gray-700">{member.batch.split(' - ')[0]}</span>
-                            </div>
-                            <p className="text-xs text-gray-600">{member.batch}</p>
-                            <p className="text-xs text-gray-500">Batches: {Array.isArray(member.batchesEnrolled) ? member.batchesEnrolled.length : 1}</p>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <div className="space-y-1">
-                            <div className="text-xs text-gray-600">
-                              <strong>Student:</strong>
-                            </div>
-                            <div className="flex items-center gap-1 text-xs text-gray-600">
-                              <Phone className="h-3 w-3" />
-                              <span>{member.phone}</span>
-                            </div>
-                            <div className="text-xs text-gray-600 mt-2">
-                              <strong>Parent:</strong>
-                            </div>
-                            <div className="flex items-center gap-1 text-xs text-gray-600">
-                              <Phone className="h-3 w-3" />
-                              <span>{member.parentPhone}</span>
-                            </div>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <div className="space-y-2">
-                            <div className="flex items-center gap-2">
-                              <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                              <span className="text-sm font-medium">{member.rating}</span>
-                            </div>
-                            <div className="space-y-1">
-                              <div className="flex items-center justify-between">
-                                <span className="text-xs text-gray-600">Attendance</span>
-                                <span className="text-xs font-medium">{member.attendance}%</span>
-                              </div>
-                              <Progress value={member.attendance} className="h-1.5 w-16" />
-                            </div>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <div className="space-y-1">
-                            <p className="text-sm font-medium text-gray-900">{nextSessionInfo.date}</p>
-                            <p className="text-xs text-gray-600">{nextSessionInfo.day}</p>
-                            <p className="text-xs text-gray-500">{nextSessionInfo.time}</p>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex flex-col gap-1">
-                            <Button 
-                              size="sm" 
-                              variant="outline" 
-                              className="text-xs h-7"
-                              onClick={() => handleViewProfile(member)}
-                            >
-                              <Eye className="h-3 w-3 mr-1" />
-                              View
-                            </Button>
-                            
-                            <Button 
-                              size="sm" 
-                              className="bg-blue-600 hover:bg-blue-700 text-white text-xs h-7"
-                              onClick={() => handleRateStudent(member.id)}
-                            >
-                              <Star className="h-3 w-3 mr-1" />
-                              Rate
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* No Results Message */}
-        {filteredMembers.length === 0 && (searchQuery || statusFilter !== "all") && (
-          <div className="text-center py-12">
-            <div className="text-gray-400 mb-4">
-              <Search className="w-12 h-12 mx-auto" />
-            </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No results found</h3>
-            <p className="text-gray-600">
-              No members found matching your search criteria.
-            </p>
-            <Button variant="outline" className="mt-4" onClick={handleClearFilters}>
-              Clear Filters
-            </Button>
-          </div>
-        )}
+        {/* Rating Modal */}
+        <RatingModal
+          isOpen={showRatingModal}
+          onClose={closeRatingModal}
+          student={studentToRate}
+        />
       </div>
-
-      {/* Rating Modal */}
-      <RatingModal
-        isOpen={showRatingModal}
-        onClose={closeRatingModal}
-        student={studentToRate}
-      />
-    </div>
+    </TooltipProvider>
   );
 }
