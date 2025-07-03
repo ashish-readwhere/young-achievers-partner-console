@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -28,10 +29,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { StudentProfileModal } from "./StudentProfileModal";
 import { RatingModal } from "./RatingModal";
-import { EditMemberModal } from "./EditMemberModal";
-import { ManageBatchesModal } from "./ManageBatchesModal";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -46,14 +44,8 @@ interface MemberManagementProps {
 }
 
 export function MemberManagement({ onNavigate }: MemberManagementProps) {
-  const [selectedStudent, setSelectedStudent] = useState<any>(null);
-  const [showProfileModal, setShowProfileModal] = useState(false);
   const [showRatingModal, setShowRatingModal] = useState(false);
   const [studentToRate, setStudentToRate] = useState<any>(null);
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [memberToEdit, setMemberToEdit] = useState<any>(null);
-  const [showBatchesModal, setShowBatchesModal] = useState(false);
-  const [memberToManageBatches, setMemberToManageBatches] = useState<any>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
 
@@ -160,9 +152,11 @@ export function MemberManagement({ onNavigate }: MemberManagementProps) {
   ];
 
   const handleViewProfile = (member: any) => {
-    console.log("Navigate to student profile for:", member.name);
+    console.log("Navigate to student profile for:", member.name, "ID:", member.id);
     if (onNavigate) {
       onNavigate('student-profile', member.id);
+    } else {
+      console.error("onNavigate function not provided");
     }
   };
 
@@ -179,40 +173,10 @@ export function MemberManagement({ onNavigate }: MemberManagementProps) {
     }
   };
 
-  const handleEditMember = (member: any) => {
-    console.log("Edit Member clicked for:", member.name);
-    setMemberToEdit(member);
-    setShowEditModal(true);
-  };
-
-  const handleManageBatches = (member: any) => {
-    console.log("Manage Batches clicked for:", member.name);
-    setMemberToManageBatches(member);
-    setShowBatchesModal(true);
-  };
-
-  const closeProfileModal = () => {
-    console.log("Closing profile modal");
-    setShowProfileModal(false);
-    setSelectedStudent(null);
-  };
-
   const closeRatingModal = () => {
     console.log("Closing rating modal");
     setShowRatingModal(false);
     setStudentToRate(null);
-  };
-
-  const closeEditModal = () => {
-    console.log("Closing edit modal");
-    setShowEditModal(false);
-    setMemberToEdit(null);
-  };
-
-  const closeBatchesModal = () => {
-    console.log("Closing batches modal");
-    setShowBatchesModal(false);
-    setMemberToManageBatches(null);
   };
 
   const handleClearFilters = () => {
@@ -225,7 +189,7 @@ export function MemberManagement({ onNavigate }: MemberManagementProps) {
       {/* Header */}
       <div className="bg-white border-b px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
         <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Member Management</h1>
-        <p className="text-gray-600 mt-1 text-sm sm:text-base">Manage your {partnerSubject} students</p>
+        <p className="text-gray-600 mt-1 text-sm sm:text-base">Manage students enrolled in your {partnerSubject} batches</p>
       </div>
 
       {/* Main Content */}
@@ -449,30 +413,11 @@ export function MemberManagement({ onNavigate }: MemberManagementProps) {
         )}
       </div>
 
-      {/* Modals */}
-      <StudentProfileModal
-        isOpen={showProfileModal}
-        onClose={closeProfileModal}
-        onRateStudent={handleRateStudent}
-        student={selectedStudent}
-      />
-
+      {/* Rating Modal */}
       <RatingModal
         isOpen={showRatingModal}
         onClose={closeRatingModal}
         student={studentToRate}
-      />
-
-      <EditMemberModal
-        isOpen={showEditModal}
-        onClose={closeEditModal}
-        member={memberToEdit}
-      />
-
-      <ManageBatchesModal
-        isOpen={showBatchesModal}
-        onClose={closeBatchesModal}
-        member={memberToManageBatches}
       />
     </div>
   );
