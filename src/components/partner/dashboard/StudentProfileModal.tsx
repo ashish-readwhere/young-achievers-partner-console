@@ -20,7 +20,6 @@ interface StudentBatch {
   venue: string;
   spot: string;
   schedule: string;
-  teacher: string;
   status: "Active" | "Completed" | "Paused";
   enrolledDate: string;
   sessionsAttended: number;
@@ -45,7 +44,6 @@ interface StudentProfileModalProps {
     attendance: number;
     rating: number;
     batchesEnrolled: number;
-    achievements: string[];
     avatar: string;
   } | null;
 }
@@ -53,16 +51,16 @@ interface StudentProfileModalProps {
 export function StudentProfileModal({ isOpen, onClose, onRateStudent, student }: StudentProfileModalProps) {
   if (!student) return null;
 
-  // Mock batch enrollment data for the student
+  // Mock batch enrollment data - Fixed to follow enrollment rules
+  // Student can only be in one level per program at a time
   const studentBatches: StudentBatch[] = [
     {
       id: 1,
-      name: "Yoga Advanced",
-      level: "Advanced",
+      name: "Yoga Intermediate",
+      level: "Intermediate",
       venue: "Noida Stadium",
       spot: "Yoga Area",
       schedule: "Mon, Wed, Fri - 4:00 PM",
-      teacher: "Instructor Sarah Wilson",
       status: "Active",
       enrolledDate: "Dec 1, 2024",
       sessionsAttended: 18,
@@ -76,7 +74,6 @@ export function StudentProfileModal({ isOpen, onClose, onRateStudent, student }:
       venue: "Talkatora Stadium",
       spot: "Yoga Area",
       schedule: "Tue, Thu - 6:00 PM",
-      teacher: "Instructor Sarah Wilson",
       status: "Completed",
       enrolledDate: "Nov 1, 2024",
       sessionsAttended: 24,

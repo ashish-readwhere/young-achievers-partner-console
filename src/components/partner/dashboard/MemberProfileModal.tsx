@@ -20,7 +20,6 @@ interface MemberBatch {
   venue: string;
   spot: string;
   schedule: string;
-  teacher: string;
   status: "Active" | "Completed" | "Paused";
   enrolledDate: string;
   sessionsAttended: number;
@@ -45,7 +44,6 @@ interface MemberProfileModalProps {
     attendance: number;
     rating: number;
     batchesEnrolled: number;
-    achievements: string[];
     avatar: string;
   } | null;
 }
@@ -53,21 +51,34 @@ interface MemberProfileModalProps {
 export function MemberProfileModal({ isOpen, onClose, onRateMember, member }: MemberProfileModalProps) {
   if (!member) return null;
 
-  // Mock batch enrollment data for the member
+  // Mock batch enrollment data - Fixed to follow enrollment rules
+  // Member can only be in one level per program at a time
   const memberBatches: MemberBatch[] = [
     {
       id: 1,
-      name: "Yoga Advanced",
-      level: "Advanced",
+      name: "Yoga Intermediate",
+      level: "Intermediate",
       venue: "Noida Stadium",
       spot: "Yoga Area",
       schedule: "Mon, Wed, Fri - 4:00 PM",
-      teacher: "Instructor Sarah Wilson",
       status: "Active",
       enrolledDate: "Dec 1, 2024",
       sessionsAttended: 18,
       totalSessions: 20,
       attendance: 90
+    },
+    {
+      id: 6,
+      name: "Chess Basics",
+      level: "Beginner",
+      venue: "Talkatora Stadium",
+      spot: "Chess Area",
+      schedule: "Tue, Thu - 6:00 PM",
+      status: "Active",
+      enrolledDate: "Nov 15, 2024",
+      sessionsAttended: 14,
+      totalSessions: 16,
+      attendance: 87
     },
     {
       id: 2,
@@ -76,9 +87,8 @@ export function MemberProfileModal({ isOpen, onClose, onRateMember, member }: Me
       venue: "Talkatora Stadium",
       spot: "Yoga Area",
       schedule: "Tue, Thu - 6:00 PM",
-      teacher: "Instructor Sarah Wilson",
       status: "Completed",
-      enrolledDate: "Nov 1, 2024",
+      enrolledDate: "Oct 1, 2024",
       sessionsAttended: 24,
       totalSessions: 24,
       attendance: 100
@@ -117,6 +127,33 @@ export function MemberProfileModal({ isOpen, onClose, onRateMember, member }: Me
         </DialogHeader>
 
         <div className="space-y-6">
+          {/* Contact Information */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">Contact Information</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm font-medium text-gray-700">Email</p>
+                  <p className="text-sm text-gray-600">{member.email}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-700">Phone</p>
+                  <p className="text-sm text-gray-600">{member.phone}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-700">Parent Email</p>
+                  <p className="text-sm text-gray-600">{member.parentEmail}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-700">Parent Phone</p>
+                  <p className="text-sm text-gray-600">{member.parentPhone}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
           {/* Batch Enrollments */}
           <Card>
             <CardHeader>
