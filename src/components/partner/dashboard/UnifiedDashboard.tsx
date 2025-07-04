@@ -26,7 +26,7 @@ export function UnifiedDashboard({ onNavigate }: UnifiedDashboardProps) {
   
   const stats = [
     { label: "Active Batches", value: "2", icon: Users, color: "blue" },
-    { label: "Total Students", value: "33", icon: Users, color: "green" },
+    { label: "Total Members", value: "33", icon: Users, color: "green" },
     { label: "This Week Sessions", value: "8", icon: Calendar, color: "purple" },
     { label: "Average Rating", value: "4.8", icon: Star, color: "yellow" }
   ];
@@ -37,7 +37,7 @@ export function UnifiedDashboard({ onNavigate }: UnifiedDashboardProps) {
       name: "Yoga Fundamentals - Batch B",
       time: "6:00 PM - 7:00 PM",
       day: "Monday, Wednesday, Friday",
-      students: 15,
+      members: 15,
       capacity: 20,
       status: "Active",
       progress: 65,
@@ -51,7 +51,7 @@ export function UnifiedDashboard({ onNavigate }: UnifiedDashboardProps) {
       name: "Yoga Advanced - Batch A",
       time: "4:00 PM - 5:00 PM",
       day: "Tuesday, Thursday",
-      students: 10,
+      members: 10,
       capacity: 12,
       status: "Active",
       progress: 80,
@@ -69,7 +69,7 @@ export function UnifiedDashboard({ onNavigate }: UnifiedDashboardProps) {
       date: "Monday, January 15, 2024",
       time: "10:00 AM",
       venue: "Talkatora Stadium",
-      students: 15
+      members: 15
     },
     {
       id: 2,
@@ -77,7 +77,7 @@ export function UnifiedDashboard({ onNavigate }: UnifiedDashboardProps) {
       date: "Tuesday, January 16, 2024",
       time: "2:00 PM",
       venue: "Noida Stadium",
-      students: 18
+      members: 18
     }
   ];
 
@@ -162,9 +162,9 @@ export function UnifiedDashboard({ onNavigate }: UnifiedDashboardProps) {
                       <div className="bg-white rounded p-2">
                         <div className="flex items-center gap-1 mb-1">
                           <Users className="w-3 h-3 text-gray-600" />
-                          <span className="text-xs text-gray-600">Students</span>
+                          <span className="text-xs text-gray-600">Members</span>
                         </div>
-                        <p className="text-sm font-semibold text-gray-900">{batch.students}/{batch.capacity}</p>
+                        <p className="text-sm font-semibold text-gray-900">{batch.members}/{batch.capacity}</p>
                       </div>
                       <div className="bg-white rounded p-2">
                         <div className="flex items-center gap-1 mb-1">
@@ -228,7 +228,7 @@ export function UnifiedDashboard({ onNavigate }: UnifiedDashboardProps) {
                           </div>
                           <div className="flex items-center gap-2 text-xs text-gray-600">
                             <Users className="w-3 h-3 flex-shrink-0" />
-                            <span>{session.students} students</span>
+                            <span>{session.members} members</span>
                           </div>
                         </div>
                       </div>
