@@ -56,8 +56,8 @@ export function MemberManagement({ onNavigate }: MemberManagementProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
 
-  // Partner can see all members but can only edit those in their batches
-  const partnerSubject = "Yoga";
+  // Partner can teach multiple programs
+  const partnerPrograms = ["Yoga", "Chess"];
   
   // Helper function to get actual dates
   const getNextSessionDate = (sessionInfo: string) => {
@@ -85,7 +85,7 @@ export function MemberManagement({ onNavigate }: MemberManagementProps) {
     };
   };
   
-  // Only show members enrolled in partner's batches (Yoga batches)
+  // Only show members enrolled in partner's batches
   const members = [
     {
       id: 1,
@@ -100,8 +100,13 @@ export function MemberManagement({ onNavigate }: MemberManagementProps) {
       status: "Active",
       attendance: 95,
       rating: 4.5,
-      batchesEnrolled: [
-        { id: 2, name: "Yoga Advanced - Batch A", level: "Advanced", status: "Active" }
+      programs: [
+        {
+          name: "Yoga",
+          batches: [
+            { id: 2, name: "Yoga Advanced - Batch A", level: "Advanced", status: "Active" }
+          ]
+        }
       ],
       canEdit: true,
       teacher: "Instructor Sarah Wilson",
@@ -123,8 +128,19 @@ export function MemberManagement({ onNavigate }: MemberManagementProps) {
       status: "Active",
       attendance: 89,
       rating: 4.2,
-      batchesEnrolled: [
-        { id: 1, name: "Yoga Fundamentals - Batch B", level: "Beginner", status: "Active" }
+      programs: [
+        {
+          name: "Yoga",
+          batches: [
+            { id: 1, name: "Yoga Fundamentals - Batch B", level: "Beginner", status: "Active" }
+          ]
+        },
+        {
+          name: "Chess",
+          batches: [
+            { id: 3, name: "Chess Beginner - Batch A", level: "Beginner", status: "Active" }
+          ]
+        }
       ],
       canEdit: true,
       teacher: "Instructor Sarah Wilson",
@@ -215,13 +231,35 @@ export function MemberManagement({ onNavigate }: MemberManagementProps) {
     setStatusFilter("all");
   };
 
+  const getProgramIcon = (programName: string) => {
+    switch (programName.toLowerCase()) {
+      case 'yoga':
+        return 'Y';
+      case 'chess':
+        return 'C';
+      default:
+        return programName.charAt(0).toUpperCase();
+    }
+  };
+
+  const getProgramColor = (programName: string) => {
+    switch (programName.toLowerCase()) {
+      case 'yoga':
+        return 'bg-green-100 text-green-600';
+      case 'chess':
+        return 'bg-purple-100 text-purple-600';
+      default:
+        return 'bg-blue-100 text-blue-600';
+    }
+  };
+
   return (
     <TooltipProvider>
       <div className="w-full bg-white min-h-screen">
         {/* Header */}
         <div className="bg-white border-b px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
           <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Member Management</h1>
-          <p className="text-gray-600 mt-1 text-sm sm:text-base">Manage members enrolled in your {partnerSubject} batches</p>
+          <p className="text-gray-600 mt-1 text-sm sm:text-base">Manage members enrolled in your programs</p>
         </div>
 
         {/* Main Content */}
@@ -311,7 +349,7 @@ export function MemberManagement({ onNavigate }: MemberManagementProps) {
                   <TableHeader>
                     <TableRow>
                       <TableHead>Member</TableHead>
-                      <TableHead>Subject/Batch</TableHead>
+                      <TableHead>Program/Batch</TableHead>
                       <TableHead>Contact Info</TableHead>
                       <TableHead>Performance</TableHead>
                       <TableHead>Next Session</TableHead>
@@ -321,10 +359,7 @@ export function MemberManagement({ onNavigate }: MemberManagementProps) {
                   <TableBody>
                     {filteredMembers.map((member) => {
                       const nextSessionInfo = getNextSessionDate(member.nextSession);
-                      const batchCount = Array.isArray(member.batchesEnrolled) ? member.batchesEnrolled.length : 1;
-                      const batchNames = Array.isArray(member.batchesEnrolled) 
-                        ? member.batchesEnrolled.map(batch => batch.name).join(', ')
-                        : member.batch;
+                      const totalBatches = member.programs.reduce((sum, program) => sum + program.batches.length, 0);
                       
                       return (
                         <TableRow key={member.id} className="hover:bg-gray-50 bg-blue-25">
@@ -354,30 +389,38 @@ export function MemberManagement({ onNavigate }: MemberManagementProps) {
                             </div>
                           </TableCell>
                           <TableCell>
-                            <div className="space-y-1">
-                              <div className="flex items-center gap-2">
-                                <div className="w-5 h-5 bg-green-100 rounded flex items-center justify-center flex-shrink-0">
-                                  <span className="text-green-600 text-xs font-bold">Y</span>
+                            <div className="space-y-2">
+                              {member.programs.map((program, index) => (
+                                <div key={index} className="space-y-1">
+                                  <div className="flex items-center gap-2">
+                                    <div className={`w-5 h-5 rounded flex items-center justify-center flex-shrink-0 ${getProgramColor(program.name)}`}>
+                                      <span className="text-xs font-bold">{getProgramIcon(program.name)}</span>
+                                    </div>
+                                    <span className="text-sm font-medium text-gray-700">{program.name}</span>
+                                  </div>
+                                  <div className="flex items-center gap-2 ml-7">
+                                    <span className="text-sm text-gray-600">Batches: {program.batches.length}</span>
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <Button
+                                          variant="ghost"
+                                          size="sm"
+                                          className="h-6 w-6 p-0 text-gray-400 hover:text-gray-600"
+                                        >
+                                          <Info className="h-3 w-3" />
+                                        </Button>
+                                      </TooltipTrigger>
+                                      <TooltipContent side="top" className="max-w-xs">
+                                        <div className="space-y-1">
+                                          {program.batches.map((batch, batchIndex) => (
+                                            <p key={batchIndex} className="text-sm">{batch.name}</p>
+                                          ))}
+                                        </div>
+                                      </TooltipContent>
+                                    </Tooltip>
+                                  </div>
                                 </div>
-                                <span className="text-sm font-medium text-gray-700">{partnerSubject}</span>
-                              </div>
-                              <div className="flex items-center gap-2">
-                                <span className="text-sm text-gray-600">Batches: {batchCount}</span>
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <Button
-                                      variant="ghost"
-                                      size="sm"
-                                      className="h-6 w-6 p-0 text-gray-400 hover:text-gray-600"
-                                    >
-                                      <Info className="h-3 w-3" />
-                                    </Button>
-                                  </TooltipTrigger>
-                                  <TooltipContent side="top" className="max-w-xs">
-                                    <p className="text-sm">{batchNames}</p>
-                                  </TooltipContent>
-                                </Tooltip>
-                              </div>
+                              ))}
                             </div>
                           </TableCell>
                           <TableCell>
