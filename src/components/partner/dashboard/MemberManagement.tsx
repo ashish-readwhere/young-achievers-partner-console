@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -91,10 +90,6 @@ export function MemberManagement({ onNavigate }: MemberManagementProps) {
       id: 1,
       name: "Sarah Williams",
       age: 16,
-      email: "sarah.williams@email.com",
-      phone: "+1 (555) 123-4567",
-      parentPhone: "+1 (555) 123-4500",
-      parentEmail: "parent.sarah@email.com",
       batch: "Yoga Advanced - Batch A",
       joinDate: "Dec 1, 2024",
       status: "Active",
@@ -119,10 +114,6 @@ export function MemberManagement({ onNavigate }: MemberManagementProps) {
       id: 2,
       name: "Lisa Garcia",
       age: 14,
-      email: "lisa.garcia@email.com",
-      phone: "+1 (555) 567-8901",
-      parentPhone: "+1 (555) 567-8900",
-      parentEmail: "parent.lisa@email.com",
       batch: "Yoga Fundamentals - Batch B",
       joinDate: "Dec 5, 2024",
       status: "Active",
@@ -151,11 +142,9 @@ export function MemberManagement({ onNavigate }: MemberManagementProps) {
     }
   ];
 
-  // Filter members based on search query and status filter
   const filteredMembers = members.filter(member => {
     const matchesSearch = searchQuery === "" || 
       member.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      member.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
       member.batch.toLowerCase().includes(searchQuery.toLowerCase()) ||
       member.teacher.toLowerCase().includes(searchQuery.toLowerCase());
     
@@ -288,7 +277,7 @@ export function MemberManagement({ onNavigate }: MemberManagementProps) {
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               <Input 
-                placeholder="Search by name, email, batch, or teacher..." 
+                placeholder="Search by name, batch, or teacher..." 
                 className="pl-10" 
                 value={searchQuery}
                 onChange={(e) => {
@@ -350,7 +339,6 @@ export function MemberManagement({ onNavigate }: MemberManagementProps) {
                     <TableRow>
                       <TableHead>Member</TableHead>
                       <TableHead>Program/Batch</TableHead>
-                      <TableHead>Contact Info</TableHead>
                       <TableHead>Performance</TableHead>
                       <TableHead>Next Session</TableHead>
                       <TableHead>Actions</TableHead>
@@ -421,24 +409,6 @@ export function MemberManagement({ onNavigate }: MemberManagementProps) {
                                   </div>
                                 </div>
                               ))}
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            <div className="space-y-1">
-                              <div className="text-xs text-gray-600">
-                                <strong>Member:</strong>
-                              </div>
-                              <div className="flex items-center gap-1 text-xs text-gray-600">
-                                <Phone className="h-3 w-3" />
-                                <span>{member.phone}</span>
-                              </div>
-                              <div className="text-xs text-gray-600 mt-2">
-                                <strong>Parent:</strong>
-                              </div>
-                              <div className="flex items-center gap-1 text-xs text-gray-600">
-                                <Phone className="h-3 w-3" />
-                                <span>{member.parentPhone}</span>
-                              </div>
                             </div>
                           </TableCell>
                           <TableCell>
