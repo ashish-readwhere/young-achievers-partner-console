@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { StudentProfileModal } from "./StudentProfileModal";
+import { MemberProfileModal } from "./MemberProfileModal";
 import { RatingModal } from "./RatingModal";
 import { 
   Users, 
@@ -20,7 +20,7 @@ import {
   Star
 } from "lucide-react";
 
-interface Student {
+interface Member {
   id: number;
   name: string;
   email: string;
@@ -37,17 +37,17 @@ interface Session {
   time: string;
   duration: string;
   venue: string;
-  studentsEnrolled: number;
+  membersEnrolled: number;
   completionPercentage: number;
   status: "Completed" | "Upcoming" | "In Progress";
   description: string;
-  enrolledStudents: Student[];
+  enrolledMembers: Member[];
 }
 
 interface BatchDetailsModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onNavigateToMemberManagement?: (studentId?: number) => void;
+  onNavigateToMemberManagement?: (memberId?: number) => void;
   batch: {
     id: number;
     name: string;
@@ -66,19 +66,19 @@ interface BatchDetailsModalProps {
 }
 
 export function BatchDetailsModal({ isOpen, onClose, onNavigateToMemberManagement, batch }: BatchDetailsModalProps) {
-  const [activeTab, setActiveTab] = useState<"sessions" | "students">("sessions");
+  const [activeTab, setActiveTab] = useState<"sessions" | "members">("sessions");
   const [selectedSession, setSelectedSession] = useState<Session | null>(null);
-  const [selectedStudent, setSelectedStudent] = useState<any>(null);
+  const [selectedMember, setSelectedMember] = useState<any>(null);
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [showRatingModal, setShowRatingModal] = useState(false);
-  const [studentToRate, setStudentToRate] = useState<any>(null);
+  const [memberToRate, setMemberToRate] = useState<any>(null);
 
   if (!batch) return null;
 
   console.log("BatchDetailsModal rendered with batch:", batch?.name);
 
-  // Mock students data with full profile information
-  const allStudents: Student[] = [
+  // Mock members data with full profile information
+  const allMembers: Member[] = [
     {
       id: 1,
       name: "Emma Johnson",
@@ -108,25 +108,25 @@ export function BatchDetailsModal({ isOpen, onClose, onNavigateToMemberManagemen
     }
   ];
 
-  // Convert students to full profile format for the modal
-  const getFullStudentProfile = (student: Student) => ({
-    id: student.id,
-    name: student.name,
+  // Convert members to full profile format for the modal
+  const getFullMemberProfile = (member: Member) => ({
+    id: member.id,
+    name: member.name,
     age: 16, // Mock age
-    email: student.email,
-    phone: student.phone,
+    email: member.email,
+    phone: member.phone,
     parentPhone: "+1 234-567-8900", // Mock parent phone
-    parentEmail: `parent.${student.email}`, // Mock parent email
+    parentEmail: `parent.${member.email}`, // Mock parent email
     joinDate: "Dec 1, 2024", // Mock join date
-    status: student.status,
-    attendance: student.attendance,
+    status: member.status,
+    attendance: member.attendance,
     rating: 4.8, // Mock rating
     batchesEnrolled: 2, // Mock batches enrolled
     achievements: ["Quick Learner", "Team Player"], // Mock achievements
-    avatar: student.avatar
+    avatar: member.avatar
   });
 
-  // Mock sessions data with enrolled students
+  // Mock sessions data with enrolled members
   const sessions: Session[] = [
     {
       id: 1,
@@ -135,11 +135,11 @@ export function BatchDetailsModal({ isOpen, onClose, onNavigateToMemberManagemen
       time: "2:00 PM",
       duration: "1.5 hours",
       venue: `${batch.venue} - ${batch.spot}`,
-      studentsEnrolled: 18,
+      membersEnrolled: 18,
       completionPercentage: 100,
       status: "Completed",
       description: "Basic poses and breathing techniques",
-      enrolledStudents: allStudents
+      enrolledMembers: allMembers
     },
     {
       id: 2,
@@ -148,11 +148,11 @@ export function BatchDetailsModal({ isOpen, onClose, onNavigateToMemberManagemen
       time: "2:00 PM",
       duration: "1.5 hours",
       venue: `${batch.venue} - ${batch.spot}`,
-      studentsEnrolled: 15,
+      membersEnrolled: 15,
       completionPercentage: 100,
       status: "Completed",
       description: "Building strength and flexibility",
-      enrolledStudents: allStudents.slice(0, 2)
+      enrolledMembers: allMembers.slice(0, 2)
     },
     {
       id: 3,
@@ -161,11 +161,11 @@ export function BatchDetailsModal({ isOpen, onClose, onNavigateToMemberManagemen
       time: "2:00 PM",
       duration: "1.5 hours",
       venue: `${batch.venue} - ${batch.spot}`,
-      studentsEnrolled: 12,
+      membersEnrolled: 12,
       completionPercentage: 0,
       status: "Upcoming",
       description: "Focus on mental wellness and relaxation",
-      enrolledStudents: allStudents.slice(0, 1)
+      enrolledMembers: allMembers.slice(0, 1)
     }
   ];
 
@@ -178,21 +178,21 @@ export function BatchDetailsModal({ isOpen, onClose, onNavigateToMemberManagemen
     setSelectedSession(null);
   };
 
-  const handleViewProfile = (student: Student) => {
-    console.log("View Profile clicked for:", student.name);
-    const fullProfile = getFullStudentProfile(student);
-    setSelectedStudent(fullProfile);
+  const handleViewProfile = (member: Member) => {
+    console.log("View Profile clicked for:", member.name);
+    const fullProfile = getFullMemberProfile(member);
+    setSelectedMember(fullProfile);
     setShowProfileModal(true);
   };
 
-  const handleRateStudent = (studentId: number) => {
-    console.log("Rate Student clicked for ID:", studentId);
-    const student = allStudents.find(s => s.id === studentId);
-    if (student) {
-      setStudentToRate({
-        id: student.id,
-        name: student.name,
-        avatar: student.avatar
+  const handleRateMember = (memberId: number) => {
+    console.log("Rate Member clicked for ID:", memberId);
+    const member = allMembers.find(s => s.id === memberId);
+    if (member) {
+      setMemberToRate({
+        id: member.id,
+        name: member.name,
+        avatar: member.avatar
       });
       setShowRatingModal(true);
     }
@@ -201,20 +201,20 @@ export function BatchDetailsModal({ isOpen, onClose, onNavigateToMemberManagemen
   const closeProfileModal = () => {
     console.log("Closing profile modal");
     setShowProfileModal(false);
-    setSelectedStudent(null);
+    setSelectedMember(null);
   };
 
   const closeRatingModal = () => {
     console.log("Closing rating modal");
     setShowRatingModal(false);
-    setStudentToRate(null);
+    setMemberToRate(null);
   };
 
   // Get current display data based on selected session
   const getCurrentStats = () => {
     if (selectedSession) {
       return {
-        students: selectedSession.studentsEnrolled,
+        students: selectedSession.membersEnrolled,
         maxStudents: batch.maxStudents,
         sessions: `Session ${selectedSession.id}`,
         progress: selectedSession.completionPercentage,
@@ -233,7 +233,7 @@ export function BatchDetailsModal({ isOpen, onClose, onNavigateToMemberManagemen
   };
 
   const currentStats = getCurrentStats();
-  const displayStudents = selectedSession ? selectedSession.enrolledStudents : allStudents;
+  const displayMembers = selectedSession ? selectedSession.enrolledMembers : allMembers;
 
   return (
     <>
@@ -277,7 +277,7 @@ export function BatchDetailsModal({ isOpen, onClose, onNavigateToMemberManagemen
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm text-blue-600">
-                      {selectedSession ? "Session Students" : "Total Students"}
+                      {selectedSession ? "Session Members" : "Total Members"}
                     </p>
                     <p className="text-2xl font-bold text-blue-900">
                       {currentStats.students}/{currentStats.maxStudents}
@@ -388,14 +388,14 @@ export function BatchDetailsModal({ isOpen, onClose, onNavigateToMemberManagemen
                 Sessions ({sessions.length})
               </button>
               <button
-                onClick={() => setActiveTab("students")}
+                onClick={() => setActiveTab("members")}
                 className={`pb-2 px-4 font-medium ${
-                  activeTab === "students"
+                  activeTab === "members"
                     ? "border-b-2 border-blue-500 text-blue-600"
                     : "text-gray-600 hover:text-gray-900"
                 }`}
               >
-                Students ({displayStudents.length})
+                Members ({displayMembers.length})
               </button>
             </div>
           )}
@@ -442,7 +442,7 @@ export function BatchDetailsModal({ isOpen, onClose, onNavigateToMemberManagemen
                       <div className="flex items-center gap-4">
                         <div className="flex items-center gap-1">
                           <Users className="w-4 h-4 text-blue-500" />
-                          <span className="text-sm font-medium">{session.studentsEnrolled} students</span>
+                          <span className="text-sm font-medium">{session.membersEnrolled} members</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <span className="text-sm text-gray-600">Completion:</span>
@@ -467,26 +467,26 @@ export function BatchDetailsModal({ isOpen, onClose, onNavigateToMemberManagemen
             </div>
           )}
 
-          {((!selectedSession && activeTab === "students") || selectedSession) && (
+          {((!selectedSession && activeTab === "members") || selectedSession) && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {displayStudents.map((student) => (
-                <Card key={student.id} className="border hover:shadow-md transition-shadow">
+              {displayMembers.map((member) => (
+                <Card key={member.id} className="border hover:shadow-md transition-shadow">
                   <CardContent className="p-6">
                     <div className="flex items-start gap-4">
                       <img
-                        src={student.avatar}
-                        alt={student.name}
+                        src={member.avatar}
+                        alt={member.name}
                         className="w-12 h-12 rounded-full object-cover"
                       />
                       <div className="flex-1">
                         <div className="flex items-start justify-between mb-2">
                           <div>
-                            <h3 className="font-semibold text-gray-900">{student.name}</h3>
+                            <h3 className="font-semibold text-gray-900">{member.name}</h3>
                             <Badge 
-                              variant={student.status === "Active" ? "default" : "secondary"}
-                              className={student.status === "Active" ? "bg-green-100 text-green-800" : ""}
+                              variant={member.status === "Active" ? "default" : "secondary"}
+                              className={member.status === "Active" ? "bg-green-100 text-green-800" : ""}
                             >
-                              {student.status}
+                              {member.status}
                             </Badge>
                           </div>
                         </div>
@@ -494,24 +494,24 @@ export function BatchDetailsModal({ isOpen, onClose, onNavigateToMemberManagemen
                         <div className="space-y-2 mb-4">
                           <div className="flex items-center gap-2">
                             <Mail className="w-4 h-4 text-gray-400" />
-                            <span className="text-sm text-gray-600">{student.email}</span>
+                            <span className="text-sm text-gray-600">{member.email}</span>
                           </div>
                           <div className="flex items-center gap-2">
                             <Phone className="w-4 h-4 text-gray-400" />
-                            <span className="text-sm text-gray-600">{student.phone}</span>
+                            <span className="text-sm text-gray-600">{member.phone}</span>
                           </div>
                         </div>
 
                         <div className="mb-4">
                           <div className="flex justify-between items-center mb-1">
                             <span className="text-sm text-gray-600">Attendance</span>
-                            <span className="text-sm font-medium">{student.attendance}%</span>
+                            <span className="text-sm font-medium">{member.attendance}%</span>
                           </div>
                           <Progress 
-                            value={student.attendance} 
+                            value={member.attendance} 
                             className={`h-2 ${
-                              student.attendance >= 90 ? '[&>div]:bg-green-500' : 
-                              student.attendance >= 75 ? '[&>div]:bg-yellow-500' : 
+                              member.attendance >= 90 ? '[&>div]:bg-green-500' : 
+                              member.attendance >= 75 ? '[&>div]:bg-yellow-500' : 
                               '[&>div]:bg-red-500'
                             }`}
                           />
@@ -520,7 +520,7 @@ export function BatchDetailsModal({ isOpen, onClose, onNavigateToMemberManagemen
                         <Button 
                           size="sm" 
                           className="w-full"
-                          onClick={() => handleViewProfile(student)}
+                          onClick={() => handleViewProfile(member)}
                         >
                           <User className="w-4 h-4 mr-1" />
                           View Profile
@@ -535,19 +535,19 @@ export function BatchDetailsModal({ isOpen, onClose, onNavigateToMemberManagemen
         </DialogContent>
       </Dialog>
 
-      {/* Student Profile Modal */}
-      <StudentProfileModal
+      {/* Member Profile Modal */}
+      <MemberProfileModal
         isOpen={showProfileModal}
         onClose={closeProfileModal}
-        onRateStudent={handleRateStudent}
-        student={selectedStudent}
+        onRateMember={handleRateMember}
+        member={selectedMember}
       />
 
       {/* Rating Modal */}
       <RatingModal
         isOpen={showRatingModal}
         onClose={closeRatingModal}
-        student={studentToRate}
+        member={memberToRate}
       />
     </>
   );
