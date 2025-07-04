@@ -28,6 +28,8 @@ interface Member {
   attendance: number;
   status: "Active" | "Inactive";
   avatar: string;
+  existingRating?: number;
+  existingFeedback?: string;
 }
 
 interface Session {
@@ -77,7 +79,7 @@ export function BatchDetailsModal({ isOpen, onClose, onNavigateToMemberManagemen
 
   console.log("BatchDetailsModal rendered with batch:", batch?.name);
 
-  // Mock members data with full profile information
+  // Mock members data with existing ratings
   const allMembers: Member[] = [
     {
       id: 1,
@@ -86,7 +88,9 @@ export function BatchDetailsModal({ isOpen, onClose, onNavigateToMemberManagemen
       phone: "+1 234-567-8901",
       attendance: 95,
       status: "Active",
-      avatar: "/lovable-uploads/1ba055c7-e9a3-4a04-b0e8-31a2367343ed.png"
+      avatar: "/lovable-uploads/1ba055c7-e9a3-4a04-b0e8-31a2367343ed.png",
+      existingRating: 4,
+      existingFeedback: "Great participation and attitude in class."
     },
     {
       id: 2,
@@ -95,7 +99,9 @@ export function BatchDetailsModal({ isOpen, onClose, onNavigateToMemberManagemen
       phone: "+1 234-567-8902",
       attendance: 88,
       status: "Active",
-      avatar: "/lovable-uploads/1ba055c7-e9a3-4a04-b0e8-31a2367343ed.png"
+      avatar: "/lovable-uploads/1ba055c7-e9a3-4a04-b0e8-31a2367343ed.png",
+      existingRating: 5,
+      existingFeedback: "Excellent student, very dedicated."
     },
     {
       id: 3,
@@ -105,6 +111,7 @@ export function BatchDetailsModal({ isOpen, onClose, onNavigateToMemberManagemen
       attendance: 92,
       status: "Active",
       avatar: "/lovable-uploads/1ba055c7-e9a3-4a04-b0e8-31a2367343ed.png"
+      // No existing rating for this member
     }
   ];
 
@@ -192,7 +199,9 @@ export function BatchDetailsModal({ isOpen, onClose, onNavigateToMemberManagemen
       setMemberToRate({
         id: member.id,
         name: member.name,
-        avatar: member.avatar
+        avatar: member.avatar,
+        existingRating: member.existingRating,
+        existingFeedback: member.existingFeedback
       });
       setShowRatingModal(true);
     }
