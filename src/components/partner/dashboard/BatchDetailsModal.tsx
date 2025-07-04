@@ -410,7 +410,6 @@ export function BatchDetailsModal({ isOpen, onClose, onNavigateToMemberManagemen
                     </Badge>
                     <div className="flex items-center gap-2">
                       <span className="text-sm text-gray-600">Completion:</span>
-                      <Progress value={selectedSession.completionPercentage} className="w-20 h-2" />
                       <span className="text-sm font-medium">{selectedSession.completionPercentage}%</span>
                     </div>
                   </div>
@@ -491,10 +490,7 @@ export function BatchDetailsModal({ isOpen, onClose, onNavigateToMemberManagemen
                         </div>
                         <div className="flex items-center gap-2">
                           <span className="text-sm text-gray-600">Completion:</span>
-                          <div className="flex items-center gap-2">
-                            <Progress value={session.completionPercentage} className="w-20 h-2" />
-                            <span className="text-sm font-medium">{session.completionPercentage}%</span>
-                          </div>
+                          <span className="text-sm font-medium">{session.completionPercentage}%</span>
                         </div>
                       </div>
                       <Button 
