@@ -39,6 +39,7 @@ export function BatchManagement({ onNavigate }: BatchManagementProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
   const [scheduleFilter, setScheduleFilter] = useState("All");
+  const [programFilter, setProgramFilter] = useState("All");
 
   console.log("BatchManagement component rendering with layout: Stats first, then Search");
 
@@ -46,6 +47,7 @@ export function BatchManagement({ onNavigate }: BatchManagementProps) {
     {
       id: 1,
       name: "Yoga Fundamentals - Batch B",
+      program: "Yoga",
       time: "6:00 PM - 7:00 PM",
       days: "Mon, Wed, Fri",
       members: 15,
@@ -60,6 +62,7 @@ export function BatchManagement({ onNavigate }: BatchManagementProps) {
     {
       id: 2,
       name: "Yoga Advanced - Batch A",
+      program: "Yoga",
       time: "4:00 PM - 5:00 PM",
       days: "Tue, Thu",
       members: 10,
@@ -70,13 +73,47 @@ export function BatchManagement({ onNavigate }: BatchManagementProps) {
       previousSession: "Thursday, Jan 11 at 4:00 PM",
       completedSessions: 16,
       totalSessions: 20
+    },
+    {
+      id: 3,
+      name: "Chess Beginner - Batch A",
+      program: "Chess",
+      time: "3:00 PM - 4:00 PM",
+      days: "Mon, Wed",
+      members: 8,
+      capacity: 15,
+      status: "Active",
+      progress: 45,
+      nextSession: "Monday, Jan 15 at 3:00 PM",
+      previousSession: "Wednesday, Jan 10 at 3:00 PM",
+      completedSessions: 9,
+      totalSessions: 20
+    },
+    {
+      id: 4,
+      name: "Chess Advanced - Batch B",
+      program: "Chess",
+      time: "5:00 PM - 6:00 PM",
+      days: "Tue, Thu, Sat",
+      members: 12,
+      capacity: 15,
+      status: "Active",
+      progress: 60,
+      nextSession: "Tuesday, Jan 16 at 5:00 PM",
+      previousSession: "Saturday, Jan 13 at 5:00 PM",
+      completedSessions: 12,
+      totalSessions: 20
     }
   ];
+
+  // Get unique programs for filter options
+  const availablePrograms = [...new Set(batches.map(batch => batch.program))];
 
   // Filter batches based on search and filters
   const filteredBatches = batches.filter(batch => {
     const matchesSearch = batch.name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === "All" || batch.status === statusFilter;
+    const matchesProgram = programFilter === "All" || batch.program === programFilter;
     const matchesSchedule = scheduleFilter === "All" || 
       (scheduleFilter === "Weekdays" && !batch.days.includes("Sat") && !batch.days.includes("Sun")) ||
       (scheduleFilter === "Weekends" && (batch.days.includes("Sat") || batch.days.includes("Sun"))) ||
@@ -84,7 +121,7 @@ export function BatchManagement({ onNavigate }: BatchManagementProps) {
       (scheduleFilter === "3x Week" && batch.days.split(", ").length === 3) ||
       (scheduleFilter === "2x Week" && batch.days.split(", ").length === 2);
     
-    return matchesSearch && matchesStatus && matchesSchedule;
+    return matchesSearch && matchesStatus && matchesProgram && matchesSchedule;
   });
 
   // Calculate summary stats from filtered batches
@@ -114,6 +151,18 @@ export function BatchManagement({ onNavigate }: BatchManagementProps) {
     setSearchTerm("");
     setStatusFilter("All");
     setScheduleFilter("All");
+    setProgramFilter("All");
+  };
+
+  const getProgramColor = (program: string) => {
+    switch (program.toLowerCase()) {
+      case 'yoga':
+        return 'bg-green-100 text-green-700';
+      case 'chess':
+        return 'bg-purple-100 text-purple-700';
+      default:
+        return 'bg-blue-100 text-blue-700';
+    }
   };
 
   return (
@@ -166,6 +215,23 @@ export function BatchManagement({ onNavigate }: BatchManagementProps) {
                   <DropdownMenuTrigger asChild>
                     <Button variant="outline" size="sm" className="flex items-center gap-2">
                       <Filter className="w-4 h-4" />
+                      Program: {programFilter}
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuItem onClick={() => setProgramFilter("All")}>All</DropdownMenuItem>
+                    {availablePrograms.map((program) => (
+                      <DropdownMenuItem key={program} onClick={() => setProgramFilter(program)}>
+                        {program}
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="sm" className="flex items-center gap-2">
+                      <Filter className="w-4 h-4" />
                       Status: {statusFilter}
                     </Button>
                   </DropdownMenuTrigger>
@@ -194,7 +260,7 @@ export function BatchManagement({ onNavigate }: BatchManagementProps) {
                   </DropdownMenuContent>
                 </DropdownMenu>
 
-                {(searchTerm || statusFilter !== "All" || scheduleFilter !== "All") && (
+                {(searchTerm || statusFilter !== "All" || scheduleFilter !== "All" || programFilter !== "All") && (
                   <Button variant="ghost" size="sm" onClick={clearFilters}>
                     Clear Filters
                   </Button>
@@ -203,13 +269,18 @@ export function BatchManagement({ onNavigate }: BatchManagementProps) {
             </div>
 
             {/* Active Filters Display */}
-            {(searchTerm || statusFilter !== "All" || scheduleFilter !== "All") && (
+            {(searchTerm || statusFilter !== "All" || scheduleFilter !== "All" || programFilter !== "All") && (
               <div className="mt-3 pt-3 border-t">
                 <div className="flex flex-wrap gap-2 items-center">
                   <span className="text-sm text-gray-600">Active filters:</span>
                   {searchTerm && (
                     <Badge variant="secondary" className="text-xs">
                       Search: "{searchTerm}"
+                    </Badge>
+                  )}
+                  {programFilter !== "All" && (
+                    <Badge variant="secondary" className="text-xs">
+                      Program: {programFilter}
                     </Badge>
                   )}
                   {statusFilter !== "All" && (
@@ -241,11 +312,11 @@ export function BatchManagement({ onNavigate }: BatchManagementProps) {
                 <BookOpen className="w-12 h-12 text-gray-300 mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-gray-900 mb-2">No batches found</h3>
                 <p className="text-gray-600 mb-4">
-                  {searchTerm || statusFilter !== "All" || scheduleFilter !== "All"
+                  {searchTerm || statusFilter !== "All" || scheduleFilter !== "All" || programFilter !== "All"
                     ? "Try adjusting your search or filter criteria."
                     : "You don't have any batches yet."}
                 </p>
-                {(searchTerm || statusFilter !== "All" || scheduleFilter !== "All") && (
+                {(searchTerm || statusFilter !== "All" || scheduleFilter !== "All" || programFilter !== "All") && (
                   <Button variant="outline" onClick={clearFilters}>
                     Clear Filters
                   </Button>
@@ -257,6 +328,7 @@ export function BatchManagement({ onNavigate }: BatchManagementProps) {
                   <TableHeader>
                     <TableRow>
                       <TableHead>Batch Name</TableHead>
+                      <TableHead>Program</TableHead>
                       <TableHead>Schedule</TableHead>
                       <TableHead>Members</TableHead>
                       <TableHead>Progress</TableHead>
@@ -277,6 +349,11 @@ export function BatchManagement({ onNavigate }: BatchManagementProps) {
                               <p className="font-medium text-gray-900 text-sm">{batch.name}</p>
                             </div>
                           </div>
+                        </TableCell>
+                        <TableCell>
+                          <Badge className={`text-xs ${getProgramColor(batch.program)}`}>
+                            {batch.program}
+                          </Badge>
                         </TableCell>
                         <TableCell>
                           <div className="space-y-1">
