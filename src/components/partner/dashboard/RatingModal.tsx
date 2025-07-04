@@ -1,10 +1,10 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Star } from "lucide-react";
+import { Star, Info } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface RatingModalProps {
   isOpen: boolean;
@@ -13,6 +13,8 @@ interface RatingModalProps {
     id: number;
     name: string;
     avatar: string;
+    existingRating?: number;
+    existingFeedback?: string;
   } | null;
 }
 
@@ -22,6 +24,14 @@ export function RatingModal({ isOpen, onClose, member }: RatingModalProps) {
   const [feedback, setFeedback] = useState("");
 
   console.log("RatingModal rendered with:", { isOpen, member });
+
+  // Set existing rating and feedback when modal opens
+  useEffect(() => {
+    if (member && isOpen) {
+      setRating(member.existingRating || 0);
+      setFeedback(member.existingFeedback || "");
+    }
+  }, [member, isOpen]);
 
   if (!member) return null;
 
@@ -82,14 +92,28 @@ export function RatingModal({ isOpen, onClose, member }: RatingModalProps) {
     }
   };
 
+  const hasExistingRating = member.existingRating && member.existingRating > 0;
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle className="text-center">Rate Member</DialogTitle>
+          <DialogTitle className="text-center">
+            {hasExistingRating ? "Update Rating" : "Rate Member"}
+          </DialogTitle>
         </DialogHeader>
 
         <div className="space-y-6">
+          {/* Existing Rating Alert */}
+          {hasExistingRating && (
+            <Alert>
+              <Info className="h-4 w-4" />
+              <AlertDescription>
+                This member already has a rating of {member.existingRating} stars. You can update it below.
+              </AlertDescription>
+            </Alert>
+          )}
+
           {/* Member Info */}
           <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
             <Avatar className="h-12 w-12">
@@ -100,7 +124,9 @@ export function RatingModal({ isOpen, onClose, member }: RatingModalProps) {
             </Avatar>
             <div>
               <h3 className="font-semibold text-gray-900">{member.name}</h3>
-              <p className="text-sm text-gray-600">Rate this member's performance</p>
+              <p className="text-sm text-gray-600">
+                {hasExistingRating ? "Update this member's rating" : "Rate this member's performance"}
+              </p>
             </div>
           </div>
 
@@ -142,7 +168,7 @@ export function RatingModal({ isOpen, onClose, member }: RatingModalProps) {
               disabled={rating === 0}
               className="flex-1"
             >
-              Submit Rating
+              {hasExistingRating ? "Update Rating" : "Submit Rating"}
             </Button>
           </div>
         </div>
