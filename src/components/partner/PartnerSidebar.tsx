@@ -55,6 +55,7 @@ interface PartnerSidebarProps {
 
 export function PartnerSidebar({ onMenuSelect, activeMenu = "overview" }: PartnerSidebarProps) {
   const { open, toggleSidebar } = useSidebar();
+  const partnerName = "Sarah Wilson"; // This would typically come from auth/context
 
   const handleMenuClick = (menuId: string) => {
     onMenuSelect?.(menuId);
@@ -104,8 +105,8 @@ export function PartnerSidebar({ onMenuSelect, activeMenu = "overview" }: Partne
                 <div className="absolute -bottom-1 -right-1 w-2 h-2 bg-green-500 rounded-full border border-white"></div>
               </div>
               <div className="flex-1 min-w-0">
-                <h2 className="font-bold text-sm text-gray-900 truncate">Young Achievers</h2>
-                <p className="text-xs text-blue-600 uppercase tracking-wide font-medium">PARTNER CONSOLE</p>
+                <h2 className="font-bold text-sm text-gray-900 truncate">Young Achievers Partner</h2>
+                <p className="text-xs text-blue-600 font-medium">Welcome back, {partnerName}</p>
               </div>
             </div>
             <Button
@@ -116,12 +117,6 @@ export function PartnerSidebar({ onMenuSelect, activeMenu = "overview" }: Partne
             >
               <ChevronLeft className="h-4 w-4" />
             </Button>
-          </div>
-        )}
-        {open && (
-          <div className="mt-3 p-2 bg-blue-100 rounded-lg border border-blue-200">
-            <p className="text-xs text-blue-700 font-medium">Welcome back!</p>
-            <p className="text-xs text-blue-600">Manage your programs</p>
           </div>
         )}
       </SidebarHeader>

@@ -130,8 +130,8 @@ const PartnerConsoleContent = () => {
             <Link to="/login" className="flex-shrink-0">
               <Button variant="outline" size="sm" className="text-xs sm:text-sm">
                 <Home className="w-4 h-4 mr-1 sm:mr-2" />
-                <span className="hidden sm:inline">Back to Login</span>
-                <span className="sm:hidden">Login</span>
+                <span className="hidden sm:inline">Logout</span>
+                <span className="sm:hidden">Logout</span>
               </Button>
             </Link>
           </div>
