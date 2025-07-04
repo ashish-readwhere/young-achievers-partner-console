@@ -6,16 +6,14 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { 
-  User,
-  Mail,
-  Phone,
   Calendar,
   MapPin,
   Star,
   Trophy,
   Users,
   Clock,
-  ArrowLeft
+  ArrowLeft,
+  User
 } from "lucide-react";
 import { RatingModal } from "./RatingModal";
 
@@ -40,7 +38,7 @@ interface MemberProfileProps {
 }
 
 export function MemberProfile({ onNavigate, memberId }: MemberProfileProps) {
-  console.log("MemberProfile rendered - achievements section should be removed");
+  console.log("MemberProfile rendered - contact info section removed");
   const [showRatingModal, setShowRatingModal] = useState(false);
   const [memberToRate, setMemberToRate] = useState<any>(null);
 
@@ -153,46 +151,6 @@ export function MemberProfile({ onNavigate, memberId }: MemberProfileProps) {
 
       {/* Main Content */}
       <div className="p-6 space-y-6">
-        {/* Contact Information */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg flex items-center gap-2">
-              <User className="w-5 h-5" />
-              Contact Information
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <h4 className="font-medium text-gray-700 mb-3">Member Contact</h4>
-                <div className="space-y-3">
-                  <div className="flex items-center gap-3 text-sm">
-                    <Mail className="w-4 h-4 text-gray-400" />
-                    <span>{member.email}</span>
-                  </div>
-                  <div className="flex items-center gap-3 text-sm">
-                    <Phone className="w-4 h-4 text-gray-400" />
-                    <span>{member.phone}</span>
-                  </div>
-                </div>
-              </div>
-              <div>
-                <h4 className="font-medium text-gray-700 mb-3">Parent/Guardian Contact</h4>
-                <div className="space-y-3">
-                  <div className="flex items-center gap-3 text-sm">
-                    <Mail className="w-4 h-4 text-gray-400" />
-                    <span>{member.parentEmail}</span>
-                  </div>
-                  <div className="flex items-center gap-3 text-sm">
-                    <Phone className="w-4 h-4 text-gray-400" />
-                    <span>{member.parentPhone}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
         {/* Performance Overview */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <Card className="bg-blue-50">

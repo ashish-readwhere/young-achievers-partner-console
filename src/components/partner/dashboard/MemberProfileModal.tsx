@@ -6,15 +6,13 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { 
-  User,
-  Mail,
-  Phone,
   Calendar,
   MapPin,
   Star,
   Trophy,
   Users,
-  Clock
+  Clock,
+  User
 } from "lucide-react";
 
 interface MemberBatch {
@@ -121,46 +119,6 @@ export function MemberProfileModal({ isOpen, onClose, onRateMember, member }: Me
         </DialogHeader>
 
         <div className="space-y-6">
-          {/* Contact Information */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg flex items-center gap-2">
-                <User className="w-5 h-5" />
-                Contact Information
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <h4 className="font-medium text-gray-700 mb-2">Member Contact</h4>
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2 text-sm">
-                      <Mail className="w-4 h-4 text-gray-400" />
-                      <span>{member.email}</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm">
-                      <Phone className="w-4 h-4 text-gray-400" />
-                      <span>{member.phone}</span>
-                    </div>
-                  </div>
-                </div>
-                <div>
-                  <h4 className="font-medium text-gray-700 mb-2">Parent/Guardian Contact</h4>
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2 text-sm">
-                      <Mail className="w-4 h-4 text-gray-400" />
-                      <span>{member.parentEmail}</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm">
-                      <Phone className="w-4 h-4 text-gray-400" />
-                      <span>{member.parentPhone}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
           {/* Achievements */}
           {member.achievements.length > 0 && (
             <Card>
