@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
-import { User, Users, CheckCircle, AlertCircle, Plus, Minus } from "lucide-react";
+import { User, Users, CheckCircle, AlertCircle, Plus, Minus, X } from "lucide-react";
 
 interface ManageBatchesModalProps {
   isOpen: boolean;
@@ -23,16 +23,25 @@ export function ManageBatchesModal({ isOpen, onClose, member }: ManageBatchesMod
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedBatches, setSelectedBatches] = useState<number[]>([]);
   const [requestSent, setRequestSent] = useState(false);
+  const [conflictErrors, setConflictErrors] = useState<string[]>([]);
   const { toast } = useToast();
 
-  // Available batches (partner's yoga batches)
+  // Available batches with program and level information
   const availableBatches = [
-    { id: 1, name: "Yoga Fundamentals - Batch B", time: "6:00 PM - 7:00 PM", day: "Mon, Wed, Fri" },
-    { id: 2, name: "Yoga Advanced - Batch A", time: "4:00 PM - 5:00 PM", day: "Tue, Thu" },
-    { id: 3, name: "Yoga Intermediate - Batch C", time: "7:30 PM - 8:30 PM", day: "Mon, Wed" },
-    { id: 4, name: "Yoga Morning Flow", time: "7:00 AM - 8:00 AM", day: "Daily" },
-    { id: 5, name: "Yoga Power Session", time: "8:00 PM - 9:00 PM", day: "Wed, Fri" }
+    { id: 1, name: "Yoga Fundamentals - Batch B", time: "6:00 PM - 7:00 PM", day: "Mon, Wed, Fri", program: "Yoga", level: "Beginner" },
+    { id: 2, name: "Yoga Advanced - Batch A", time: "4:00 PM - 5:00 PM", day: "Tue, Thu", program: "Yoga", level: "Advanced" },
+    { id: 3, name: "Yoga Intermediate - Batch C", time: "7:30 PM - 8:30 PM", day: "Mon, Wed", program: "Yoga", level: "Intermediate" },
+    { id: 4, name: "Yoga Morning Flow", time: "7:00 AM - 8:00 AM", day: "Daily", program: "Yoga", level: "Beginner" },
+    { id: 5, name: "Yoga Power Session", time: "8:00 PM - 9:00 PM", day: "Wed, Fri", program: "Yoga", level: "Advanced" },
+    { id: 6, name: "Chess Basics - Batch A", time: "5:00 PM - 6:00 PM", day: "Mon, Wed", program: "Chess", level: "Beginner" },
+    { id: 7, name: "Chess Advanced - Batch B", time: "6:30 PM - 7:30 PM", day: "Tue, Thu", program: "Chess", level: "Advanced" }
   ];
+
+  // Define level hierarchy for each program
+  const levelHierarchy = {
+    "Yoga": ["Beginner", "Intermediate", "Advanced"],
+    "Chess": ["Beginner", "Intermediate", "Advanced"]
+  };
 
   // Reset form when member changes
   useEffect(() => {
@@ -40,8 +49,52 @@ export function ManageBatchesModal({ isOpen, onClose, member }: ManageBatchesMod
       const currentBatchIds = member.batchesEnrolled.map(batch => batch.id);
       setSelectedBatches(currentBatchIds);
       setRequestSent(false);
+      setConflictErrors([]);
     }
   }, [member]);
+
+  // Check for batch conflicts when selection changes
+  useEffect(() => {
+    checkBatchConflicts();
+  }, [selectedBatches]);
+
+  const checkBatchConflicts = () => {
+    const errors: string[] = [];
+    const selectedBatchData = availableBatches.filter(batch => selectedBatches.includes(batch.id));
+    
+    // Group selected batches by program
+    const batchesByProgram: { [program: string]: typeof availableBatches } = {};
+    selectedBatchData.forEach(batch => {
+      if (!batchesByProgram[batch.program]) {
+        batchesByProgram[batch.program] = [];
+      }
+      batchesByProgram[batch.program].push(batch);
+    });
+
+    // Check for level conflicts within each program
+    Object.entries(batchesByProgram).forEach(([program, batches]) => {
+      const levels = batches.map(batch => batch.level);
+      const uniqueLevels = [...new Set(levels)];
+      
+      if (uniqueLevels.length > 1) {
+        const hierarchy = levelHierarchy[program as keyof typeof levelHierarchy];
+        if (hierarchy) {
+          // Check if there's a gap in progression (e.g., Beginner + Advanced without Intermediate)
+          const levelIndices = uniqueLevels.map(level => hierarchy.indexOf(level)).sort((a, b) => a - b);
+          
+          // Check for non-consecutive levels (skipping levels)
+          for (let i = 1; i < levelIndices.length; i++) {
+            if (levelIndices[i] - levelIndices[i-1] > 1) {
+              errors.push(`Cannot enroll in ${program} ${hierarchy[levelIndices[i]]} without completing ${hierarchy[levelIndices[i]-1]} level first.`);
+              break;
+            }
+          }
+        }
+      }
+    });
+
+    setConflictErrors(errors);
+  };
 
   const handleBatchToggle = (batchId: number) => {
     setSelectedBatches(prev => {
@@ -53,8 +106,42 @@ export function ManageBatchesModal({ isOpen, onClose, member }: ManageBatchesMod
     });
   };
 
+  const isBatchDisabled = (batchId: number) => {
+    // Simulate what would happen if this batch was selected
+    const testSelection = selectedBatches.includes(batchId) 
+      ? selectedBatches 
+      : [...selectedBatches, batchId];
+    
+    const batch = availableBatches.find(b => b.id === batchId);
+    if (!batch) return false;
+
+    const selectedBatchData = availableBatches.filter(b => testSelection.includes(b.id));
+    const sameProgramBatches = selectedBatchData.filter(b => b.program === batch.program);
+    
+    if (sameProgramBatches.length <= 1) return false;
+
+    const levels = sameProgramBatches.map(b => b.level);
+    const uniqueLevels = [...new Set(levels)];
+    
+    if (uniqueLevels.length > 1) {
+      const hierarchy = levelHierarchy[batch.program as keyof typeof levelHierarchy];
+      if (hierarchy) {
+        const levelIndices = uniqueLevels.map(level => hierarchy.indexOf(level)).sort((a, b) => a - b);
+        
+        // Check for non-consecutive levels
+        for (let i = 1; i < levelIndices.length; i++) {
+          if (levelIndices[i] - levelIndices[i-1] > 1) {
+            return true;
+          }
+        }
+      }
+    }
+    
+    return false;
+  };
+
   const onSubmit = async () => {
-    if (!member) return;
+    if (!member || conflictErrors.length > 0) return;
     
     console.log("Submitting batch management request:", { memberId: member.id, selectedBatches });
     setIsSubmitting(true);
@@ -85,6 +172,7 @@ export function ManageBatchesModal({ isOpen, onClose, member }: ManageBatchesMod
 
   const handleClose = () => {
     setRequestSent(false);
+    setConflictErrors([]);
     onClose();
   };
 
@@ -92,6 +180,7 @@ export function ManageBatchesModal({ isOpen, onClose, member }: ManageBatchesMod
 
   const currentBatchIds = member.batchesEnrolled?.map(batch => batch.id) || [];
   const hasChanges = JSON.stringify(selectedBatches.sort()) !== JSON.stringify(currentBatchIds.sort());
+  const hasConflicts = conflictErrors.length > 0;
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
@@ -144,6 +233,23 @@ export function ManageBatchesModal({ isOpen, onClose, member }: ManageBatchesMod
               </p>
             </div>
 
+            {/* Conflict Errors */}
+            {hasConflicts && (
+              <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <X className="w-5 h-5 text-red-600" />
+                  <p className="text-sm font-medium text-red-800">
+                    Enrollment Conflicts Detected
+                  </p>
+                </div>
+                <div className="space-y-1">
+                  {conflictErrors.map((error, index) => (
+                    <p key={index} className="text-sm text-red-700">• {error}</p>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Current Enrollment */}
             {member.batchesEnrolled && member.batchesEnrolled.length > 0 && (
               <div className="space-y-4">
@@ -175,7 +281,7 @@ export function ManageBatchesModal({ isOpen, onClose, member }: ManageBatchesMod
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
                 <Users className="w-5 h-5" />
-                Available Yoga Batches
+                Available Batches
               </h3>
               <div className="space-y-2">
                 {availableBatches.map((batch) => {
@@ -183,23 +289,28 @@ export function ManageBatchesModal({ isOpen, onClose, member }: ManageBatchesMod
                   const isSelected = selectedBatches.includes(batch.id);
                   const isBeingAdded = !isCurrentlyEnrolled && isSelected;
                   const isBeingRemoved = isCurrentlyEnrolled && !isSelected;
+                  const isDisabled = !isSelected && isBatchDisabled(batch.id);
                   
                   return (
-                    <div key={batch.id} className="border rounded-lg p-4">
+                    <div key={batch.id} className={`border rounded-lg p-4 ${isDisabled ? 'bg-gray-50 opacity-60' : ''}`}>
                       <div className="flex items-start gap-3">
                         <Checkbox
                           id={`batch-${batch.id}`}
                           checked={isSelected}
-                          onCheckedChange={() => handleBatchToggle(batch.id)}
+                          disabled={isDisabled}
+                          onCheckedChange={() => !isDisabled && handleBatchToggle(batch.id)}
                         />
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-1">
                             <label 
                               htmlFor={`batch-${batch.id}`}
-                              className="font-medium text-gray-900 cursor-pointer"
+                              className={`font-medium cursor-pointer ${isDisabled ? 'text-gray-500' : 'text-gray-900'}`}
                             >
                               {batch.name}
                             </label>
+                            <Badge variant="outline" className="text-xs">
+                              {batch.program} - {batch.level}
+                            </Badge>
                             {isBeingAdded && (
                               <Badge className="bg-green-100 text-green-800 text-xs">
                                 <Plus className="w-3 h-3 mr-1" />
@@ -210,6 +321,11 @@ export function ManageBatchesModal({ isOpen, onClose, member }: ManageBatchesMod
                               <Badge variant="destructive" className="text-xs">
                                 <Minus className="w-3 h-3 mr-1" />
                                 Removing
+                              </Badge>
+                            )}
+                            {isDisabled && (
+                              <Badge variant="outline" className="bg-red-50 text-red-600 border-red-200 text-xs">
+                                Conflict
                               </Badge>
                             )}
                           </div>
@@ -238,16 +354,22 @@ export function ManageBatchesModal({ isOpen, onClose, member }: ManageBatchesMod
               </Button>
               <Button
                 onClick={onSubmit}
-                disabled={!hasChanges || isSubmitting}
+                disabled={!hasChanges || isSubmitting || hasConflicts}
                 className="flex-1"
               >
                 {isSubmitting ? "Submitting Request..." : "Submit for Approval"}
               </Button>
             </div>
 
-            {!hasChanges && (
+            {!hasChanges && !hasConflicts && (
               <p className="text-sm text-gray-500 text-center">
                 No changes detected. Select or deselect batches to enable submission.
+              </p>
+            )}
+
+            {hasConflicts && (
+              <p className="text-sm text-red-500 text-center">
+                Please resolve enrollment conflicts before submitting.
               </p>
             )}
           </div>
