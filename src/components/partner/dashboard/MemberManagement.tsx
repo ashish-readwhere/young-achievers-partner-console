@@ -52,7 +52,7 @@ interface MemberManagementProps {
 
 export function MemberManagement({ onNavigate }: MemberManagementProps) {
   const [showRatingModal, setShowRatingModal] = useState(false);
-  const [studentToRate, setStudentToRate] = useState<any>(null);
+  const [memberToRate, setMemberToRate] = useState<any>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
 
@@ -85,7 +85,7 @@ export function MemberManagement({ onNavigate }: MemberManagementProps) {
     };
   };
   
-  // Only show students enrolled in partner's batches (Yoga batches)
+  // Only show members enrolled in partner's batches (Yoga batches)
   const members = [
     {
       id: 1,
@@ -146,17 +146,17 @@ export function MemberManagement({ onNavigate }: MemberManagementProps) {
     const matchesStatus = statusFilter === "all" || 
       (statusFilter === "active" && member.status === "Active") ||
       (statusFilter === "inactive" && member.status === "Inactive") ||
-      (statusFilter === "my-students" && member.canEdit);
+      (statusFilter === "my-members" && member.canEdit);
     
     return matchesSearch && matchesStatus;
   });
 
-  const myStudents = filteredMembers.filter(member => member.canEdit);
-  const allStudents = filteredMembers;
+  const myMembers = filteredMembers.filter(member => member.canEdit);
+  const allMembers = filteredMembers;
 
   const stats = [
     { 
-      label: "My Students", 
+      label: "My Members", 
       value: members.filter(m => m.canEdit).length.toString(), 
       color: "blue"
     },
@@ -173,9 +173,9 @@ export function MemberManagement({ onNavigate }: MemberManagementProps) {
     { 
       label: "My Avg Attendance", 
       value: (() => {
-        const myActiveStudents = members.filter(m => m.canEdit);
-        return myActiveStudents.length > 0 ? 
-          Math.round(myActiveStudents.reduce((sum, m) => sum + m.attendance, 0) / myActiveStudents.length) + "%" : 
+        const myActiveMembers = members.filter(m => m.canEdit);
+        return myActiveMembers.length > 0 ? 
+          Math.round(myActiveMembers.reduce((sum, m) => sum + m.attendance, 0) / myActiveMembers.length) + "%" : 
           "0%";
       })(), 
       color: "orange"
@@ -183,22 +183,22 @@ export function MemberManagement({ onNavigate }: MemberManagementProps) {
   ];
 
   const handleViewProfile = (member: any) => {
-    console.log("Navigate to student profile for:", member.name, "ID:", member.id);
+    console.log("Navigate to member profile for:", member.name, "ID:", member.id);
     if (onNavigate) {
-      onNavigate('student-profile', member.id);
+      onNavigate('member-profile', member.id);
     } else {
       console.error("onNavigate function not provided");
     }
   };
 
-  const handleRateStudent = (studentId: number) => {
-    console.log("Rate Student clicked for ID:", studentId);
-    const student = members.find(m => m.id === studentId);
-    if (student) {
-      setStudentToRate({
-        id: student.id,
-        name: student.name,
-        avatar: student.avatar
+  const handleRateMember = (memberId: number) => {
+    console.log("Rate Member clicked for ID:", memberId);
+    const member = members.find(m => m.id === memberId);
+    if (member) {
+      setMemberToRate({
+        id: member.id,
+        name: member.name,
+        avatar: member.avatar
       });
       setShowRatingModal(true);
     }
@@ -207,7 +207,7 @@ export function MemberManagement({ onNavigate }: MemberManagementProps) {
   const closeRatingModal = () => {
     console.log("Closing rating modal");
     setShowRatingModal(false);
-    setStudentToRate(null);
+    setMemberToRate(null);
   };
 
   const handleClearFilters = () => {
@@ -221,7 +221,7 @@ export function MemberManagement({ onNavigate }: MemberManagementProps) {
         {/* Header */}
         <div className="bg-white border-b px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
           <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Member Management</h1>
-          <p className="text-gray-600 mt-1 text-sm sm:text-base">Manage students enrolled in your {partnerSubject} batches</p>
+          <p className="text-gray-600 mt-1 text-sm sm:text-base">Manage members enrolled in your {partnerSubject} batches</p>
         </div>
 
         {/* Main Content */}
@@ -278,8 +278,8 @@ export function MemberManagement({ onNavigate }: MemberManagementProps) {
                 <DropdownMenuItem onClick={() => setStatusFilter("inactive")}>
                   Inactive Only
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setStatusFilter("my-students")}>
-                  My Students Only
+                <DropdownMenuItem onClick={() => setStatusFilter("my-members")}>
+                  My Members Only
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleClearFilters}>
@@ -290,7 +290,7 @@ export function MemberManagement({ onNavigate }: MemberManagementProps) {
           </div>
 
           <div className="text-sm text-gray-600 mb-4">
-            <span className="text-blue-600 font-medium">{myStudents.length} students</span> enrolled in your batches
+            <span className="text-blue-600 font-medium">{myMembers.length} members</span> enrolled in your batches
             {(searchQuery || statusFilter !== "all") && (
               <span className="ml-1">
                 • Showing {filteredMembers.length} results
@@ -310,7 +310,7 @@ export function MemberManagement({ onNavigate }: MemberManagementProps) {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Student</TableHead>
+                      <TableHead>Member</TableHead>
                       <TableHead>Subject/Batch</TableHead>
                       <TableHead>Contact Info</TableHead>
                       <TableHead>Performance</TableHead>
@@ -348,7 +348,7 @@ export function MemberManagement({ onNavigate }: MemberManagementProps) {
                                 </div>
                                 <p className="text-xs text-gray-600">Age {member.age}</p>
                                 <Badge variant="outline" className="mt-1 text-xs bg-blue-50 text-blue-700">
-                                  My Student
+                                  My Member
                                 </Badge>
                               </div>
                             </div>
@@ -383,7 +383,7 @@ export function MemberManagement({ onNavigate }: MemberManagementProps) {
                           <TableCell>
                             <div className="space-y-1">
                               <div className="text-xs text-gray-600">
-                                <strong>Student:</strong>
+                                <strong>Member:</strong>
                               </div>
                               <div className="flex items-center gap-1 text-xs text-gray-600">
                                 <Phone className="h-3 w-3" />
@@ -435,7 +435,7 @@ export function MemberManagement({ onNavigate }: MemberManagementProps) {
                               <Button 
                                 size="sm" 
                                 className="bg-blue-600 hover:bg-blue-700 text-white text-xs h-7"
-                                onClick={() => handleRateStudent(member.id)}
+                                onClick={() => handleRateMember(member.id)}
                               >
                                 <Star className="h-3 w-3 mr-1" />
                                 Rate
@@ -472,7 +472,7 @@ export function MemberManagement({ onNavigate }: MemberManagementProps) {
         <RatingModal
           isOpen={showRatingModal}
           onClose={closeRatingModal}
-          student={studentToRate}
+          member={memberToRate}
         />
       </div>
     </TooltipProvider>

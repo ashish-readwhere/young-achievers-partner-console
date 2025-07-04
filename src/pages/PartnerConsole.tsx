@@ -5,7 +5,7 @@ import { UnifiedDashboard } from "@/components/partner/dashboard/UnifiedDashboar
 import { BatchManagement } from "@/components/partner/dashboard/BatchManagement";
 import { MemberManagement } from "@/components/partner/dashboard/MemberManagement";
 import { PartnerProfile } from "@/components/partner/dashboard/PartnerProfile";
-import { StudentProfile } from "@/components/partner/dashboard/StudentProfile";
+import { MemberProfile } from "@/components/partner/dashboard/MemberProfile";
 import { BatchDetails } from "@/components/partner/dashboard/BatchDetails";
 import { SessionDetails } from "@/components/partner/dashboard/SessionDetails";
 import { Button } from "@/components/ui/button";
@@ -17,7 +17,7 @@ import { SessionAttendance } from "@/components/partner/dashboard/SessionAttenda
 
 const PartnerConsoleContent = () => {
   const [activeSection, setActiveSection] = useState("overview");
-  const [selectedStudentId, setSelectedStudentId] = useState<number | undefined>();
+  const [selectedMemberId, setSelectedMemberId] = useState<number | undefined>();
   const [selectedBatchId, setSelectedBatchId] = useState<number | undefined>();
   const [selectedSessionId, setSelectedSessionId] = useState<number | undefined>();
   const isMobile = useIsMobile();
@@ -26,8 +26,8 @@ const PartnerConsoleContent = () => {
   const handleNavigation = (section: string, id?: number) => {
     console.log("Navigating to section:", section, "ID:", id);
     setActiveSection(section);
-    if (section === "student-profile" && id) {
-      setSelectedStudentId(id);
+    if (section === "member-profile" && id) {
+      setSelectedMemberId(id);
     } else if (section === "batch-details" && id) {
       setSelectedBatchId(id);
     } else if (section === "session-attendance" && id) {
@@ -48,25 +48,25 @@ const PartnerConsoleContent = () => {
         return <MemberManagement onNavigate={handleNavigation} />;
       case "profile":
         return <PartnerProfile />;
-      case "student-profile":
-        return <StudentProfile onNavigate={handleNavigation} studentId={selectedStudentId} />;
+      case "member-profile":
+        return <MemberProfile onNavigate={handleNavigation} memberId={selectedMemberId} />;
       case "batch-details":
         return <BatchDetails onNavigate={handleNavigation} batchId={selectedBatchId} />;
       case "session-attendance":
         return <SessionAttendance onNavigate={handleNavigation} sessionId={selectedSessionId} />;
       case "session-details":
         return <SessionDetails onNavigate={handleNavigation} sessionId={selectedSessionId} />;
-      case "rate-student":
+      case "rate-member":
         return (
           <div className="p-8">
-            <h1 className="text-2xl font-bold text-gray-900 mb-4">Rate Student</h1>
-            <p className="text-gray-600">Student rating interface will be displayed here.</p>
+            <h1 className="text-2xl font-bold text-gray-900 mb-4">Rate Member</h1>
+            <p className="text-gray-600">Member rating interface will be displayed here.</p>
             <Button 
               variant="outline" 
-              onClick={() => handleNavigation('student-profile', selectedStudentId)}
+              onClick={() => handleNavigation('member-profile', selectedMemberId)}
               className="mt-4"
             >
-              Back to Student Profile
+              Back to Member Profile
             </Button>
           </div>
         );
@@ -86,16 +86,16 @@ const PartnerConsoleContent = () => {
         return "Member Management";
       case "profile":
         return "Partner Profile";
-      case "student-profile":
-        return "Student Profile";
+      case "member-profile":
+        return "Member Profile";
       case "batch-details":
         return "Batch Details";
       case "session-attendance":
         return "Session Attendance";
       case "session-details":
         return "Session Details";
-      case "rate-student":
-        return "Rate Student";
+      case "rate-member":
+        return "Rate Member";
       default:
         return "Dashboard";
     }

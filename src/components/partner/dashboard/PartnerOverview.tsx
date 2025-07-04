@@ -16,7 +16,7 @@ import {
   Mail,
   Phone
 } from "lucide-react";
-import { StudentProfileModal } from "./StudentProfileModal";
+import { MemberProfileModal } from "./MemberProfileModal";
 import { RatingModal } from "./RatingModal";
 
 interface PartnerOverviewProps {
@@ -24,10 +24,10 @@ interface PartnerOverviewProps {
 }
 
 export function PartnerOverview({ onNavigate }: PartnerOverviewProps) {
-  const [selectedStudent, setSelectedStudent] = useState<any>(null);
+  const [selectedMember, setSelectedMember] = useState<any>(null);
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [showRatingModal, setShowRatingModal] = useState(false);
-  const [studentToRate, setStudentToRate] = useState<any>(null);
+  const [memberToRate, setMemberToRate] = useState<any>(null);
 
   // Partner data and stats
   const partnerName = "Instructor Sarah Wilson";
@@ -35,12 +35,12 @@ export function PartnerOverview({ onNavigate }: PartnerOverviewProps) {
   
   const stats = [
     { label: "Active Batches", value: "2", icon: Users, color: "blue" },
-    { label: "Total Students", value: "33", icon: Users, color: "green" },
+    { label: "Total Members", value: "33", icon: Users, color: "green" },
     { label: "This Week Sessions", value: "8", icon: Calendar, color: "purple" },
     { label: "Average Rating", value: "4.8", icon: Star, color: "yellow" }
   ];
 
-  const recentStudents = [
+  const recentMembers = [
     {
       id: 1,
       name: "Emma Johnson",
@@ -113,20 +113,20 @@ export function PartnerOverview({ onNavigate }: PartnerOverviewProps) {
     }
   ];
 
-  const handleViewProfile = (student: any) => {
-    console.log("View Profile clicked for:", student.name);
-    setSelectedStudent(student);
+  const handleViewProfile = (member: any) => {
+    console.log("View Profile clicked for:", member.name);
+    setSelectedMember(member);
     setShowProfileModal(true);
   };
 
-  const handleRateStudent = (studentId: number) => {
-    console.log("Rate Student clicked for ID:", studentId);
-    const student = recentStudents.find(s => s.id === studentId);
-    if (student) {
-      setStudentToRate({
-        id: student.id,
-        name: student.name,
-        avatar: student.avatar
+  const handleRateMember = (memberId: number) => {
+    console.log("Rate Member clicked for ID:", memberId);
+    const member = recentMembers.find(s => s.id === memberId);
+    if (member) {
+      setMemberToRate({
+        id: member.id,
+        name: member.name,
+        avatar: member.avatar
       });
       setShowRatingModal(true);
     }
@@ -135,13 +135,13 @@ export function PartnerOverview({ onNavigate }: PartnerOverviewProps) {
   const closeProfileModal = () => {
     console.log("Closing profile modal");
     setShowProfileModal(false);
-    setSelectedStudent(null);
+    setSelectedMember(null);
   };
 
   const closeRatingModal = () => {
     console.log("Closing rating modal");
     setShowRatingModal(false);
-    setStudentToRate(null);
+    setMemberToRate(null);
   };
 
   return (
@@ -174,10 +174,10 @@ export function PartnerOverview({ onNavigate }: PartnerOverviewProps) {
         </div>
 
         <div className="space-y-6">
-          {/* Recent Students */}
+          {/* Recent Members */}
           <Card className="border-0 shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between px-4 py-4">
-              <CardTitle className="text-base font-semibold text-gray-900">Recent Students</CardTitle>
+              <CardTitle className="text-base font-semibold text-gray-900">Recent Members</CardTitle>
               <Button 
                 variant="outline" 
                 size="sm"
@@ -189,35 +189,35 @@ export function PartnerOverview({ onNavigate }: PartnerOverviewProps) {
             </CardHeader>
             <CardContent className="px-4 pb-4">
               <div className="space-y-3">
-                {recentStudents.map((student) => (
-                  <div key={student.id} className="p-3 bg-gray-50 rounded-lg">
+                {recentMembers.map((member) => (
+                  <div key={member.id} className="p-3 bg-gray-50 rounded-lg">
                     {/* Desktop Layout */}
                     <div className="hidden md:block">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4 flex-1 min-w-0">
                           <Avatar className="h-12 w-12 flex-shrink-0">
-                            <AvatarImage src={student.avatar} alt={student.name} />
+                            <AvatarImage src={member.avatar} alt={member.name} />
                             <AvatarFallback className="bg-blue-100 text-blue-600 text-sm">
-                              {student.name.split(' ').map(n => n[0]).join('')}
+                              {member.name.split(' ').map(n => n[0]).join('')}
                             </AvatarFallback>
                           </Avatar>
                           
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-3 mb-2">
-                              <h4 className="font-medium text-gray-900 text-sm">{student.name}</h4>
+                              <h4 className="font-medium text-gray-900 text-sm">{member.name}</h4>
                               <Badge variant="outline" className="bg-green-50 text-green-700 text-xs">
-                                {student.status}
+                                {member.status}
                               </Badge>
                             </div>
                             
                             <div className="grid grid-cols-2 gap-4 text-xs text-gray-600">
                               <div className="flex items-center gap-2">
                                 <Mail className="w-3 h-3 flex-shrink-0" />
-                                <span className="truncate">{student.email}</span>
+                                <span className="truncate">{member.email}</span>
                               </div>
                               <div className="flex items-center gap-2">
                                 <Phone className="w-3 h-3 flex-shrink-0" />
-                                <span className="truncate">{student.phone}</span>
+                                <span className="truncate">{member.phone}</span>
                               </div>
                             </div>
                           </div>
@@ -226,15 +226,15 @@ export function PartnerOverview({ onNavigate }: PartnerOverviewProps) {
                             <div className="text-right">
                               <div className="text-xs text-gray-600 mb-1">Attendance</div>
                               <div className="flex items-center gap-2">
-                                <Progress value={student.attendance} className="h-2 w-20" />
-                                <span className="text-sm font-medium text-gray-900 w-10">{student.attendance}%</span>
+                                <Progress value={member.attendance} className="h-2 w-20" />
+                                <span className="text-sm font-medium text-gray-900 w-10">{member.attendance}%</span>
                               </div>
                             </div>
                             
                             <Button 
                               size="sm" 
                               className="bg-gray-800 hover:bg-gray-900 text-white text-xs"
-                              onClick={() => handleViewProfile(student)}
+                              onClick={() => handleViewProfile(member)}
                             >
                               <User className="w-3 h-3 mr-1" />
                               View Profile
@@ -248,16 +248,16 @@ export function PartnerOverview({ onNavigate }: PartnerOverviewProps) {
                     <div className="md:hidden space-y-3">
                       <div className="flex items-center gap-3">
                         <Avatar className="h-10 w-10 flex-shrink-0">
-                          <AvatarImage src={student.avatar} alt={student.name} />
+                          <AvatarImage src={member.avatar} alt={member.name} />
                           <AvatarFallback className="bg-blue-100 text-blue-600 text-xs">
-                            {student.name.split(' ').map(n => n[0]).join('')}
+                            {member.name.split(' ').map(n => n[0]).join('')}
                           </AvatarFallback>
                         </Avatar>
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-2 mb-1">
-                            <h4 className="font-medium text-gray-900 text-sm truncate">{student.name}</h4>
+                            <h4 className="font-medium text-gray-900 text-sm truncate">{member.name}</h4>
                             <Badge variant="outline" className="bg-green-50 text-green-700 text-xs flex-shrink-0">
-                              {student.status}
+                              {member.status}
                             </Badge>
                           </div>
                         </div>
@@ -267,27 +267,27 @@ export function PartnerOverview({ onNavigate }: PartnerOverviewProps) {
                         <div className="grid grid-cols-1 gap-2 text-xs text-gray-600">
                           <div className="flex items-center gap-1 min-w-0">
                             <Mail className="w-3 h-3 flex-shrink-0" />
-                            <span className="truncate">{student.email}</span>
+                            <span className="truncate">{member.email}</span>
                           </div>
                           <div className="flex items-center gap-1 min-w-0">
                             <Phone className="w-3 h-3 flex-shrink-0" />
-                            <span className="truncate">{student.phone}</span>
+                            <span className="truncate">{member.phone}</span>
                           </div>
                         </div>
                         
                         <div>
                           <div className="flex items-center justify-between text-xs mb-1">
                             <span className="text-gray-600">Attendance</span>
-                            <span className="font-medium text-gray-900">{student.attendance}%</span>
+                            <span className="font-medium text-gray-900">{member.attendance}%</span>
                           </div>
-                          <Progress value={student.attendance} className="h-2" />
+                          <Progress value={member.attendance} className="h-2" />
                         </div>
                       </div>
                       
                       <Button 
                         size="sm" 
                         className="bg-gray-800 hover:bg-gray-900 text-white text-xs w-full"
-                        onClick={() => handleViewProfile(student)}
+                        onClick={() => handleViewProfile(member)}
                       >
                         <User className="w-3 h-3 mr-2" />
                         View Profile
@@ -353,17 +353,17 @@ export function PartnerOverview({ onNavigate }: PartnerOverviewProps) {
       </div>
 
       {/* Modals */}
-      <StudentProfileModal
+      <MemberProfileModal
         isOpen={showProfileModal}
         onClose={closeProfileModal}
-        onRateStudent={handleRateStudent}
-        student={selectedStudent}
+        onRateMember={handleRateMember}
+        member={selectedMember}
       />
 
       <RatingModal
         isOpen={showRatingModal}
         onClose={closeRatingModal}
-        student={studentToRate}
+        member={memberToRate}
       />
     </div>
   );

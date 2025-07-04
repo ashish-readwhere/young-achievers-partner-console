@@ -9,25 +9,25 @@ import { Star } from "lucide-react";
 interface RatingModalProps {
   isOpen: boolean;
   onClose: () => void;
-  student: {
+  member: {
     id: number;
     name: string;
     avatar: string;
   } | null;
 }
 
-export function RatingModal({ isOpen, onClose, student }: RatingModalProps) {
+export function RatingModal({ isOpen, onClose, member }: RatingModalProps) {
   const [rating, setRating] = useState(0);
   const [hoveredRating, setHoveredRating] = useState(0);
   const [feedback, setFeedback] = useState("");
 
-  console.log("RatingModal rendered with:", { isOpen, student });
+  console.log("RatingModal rendered with:", { isOpen, member });
 
-  if (!student) return null;
+  if (!member) return null;
 
   const handleSubmitRating = () => {
     console.log("Submitting rating:", {
-      studentId: student.id,
+      memberId: member.id,
       rating,
       feedback
     });
@@ -86,21 +86,21 @@ export function RatingModal({ isOpen, onClose, student }: RatingModalProps) {
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle className="text-center">Rate Student</DialogTitle>
+          <DialogTitle className="text-center">Rate Member</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-6">
-          {/* Student Info */}
+          {/* Member Info */}
           <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
             <Avatar className="h-12 w-12">
-              <AvatarImage src={student.avatar} alt={student.name} />
+              <AvatarImage src={member.avatar} alt={member.name} />
               <AvatarFallback className="bg-blue-100 text-blue-600">
-                {student.name.split(' ').map(n => n[0]).join('')}
+                {member.name.split(' ').map(n => n[0]).join('')}
               </AvatarFallback>
             </Avatar>
             <div>
-              <h3 className="font-semibold text-gray-900">{student.name}</h3>
-              <p className="text-sm text-gray-600">Rate this student's performance</p>
+              <h3 className="font-semibold text-gray-900">{member.name}</h3>
+              <p className="text-sm text-gray-600">Rate this member's performance</p>
             </div>
           </div>
 
@@ -120,7 +120,7 @@ export function RatingModal({ isOpen, onClose, student }: RatingModalProps) {
               Feedback (Optional)
             </label>
             <Textarea
-              placeholder="Share your thoughts about the student's performance, behavior, or areas for improvement..."
+              placeholder="Share your thoughts about the member's performance, behavior, or areas for improvement..."
               value={feedback}
               onChange={(e) => setFeedback(e.target.value)}
               rows={4}
