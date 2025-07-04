@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -253,25 +254,27 @@ export function BatchDetailsModal({ isOpen, onClose, onNavigateToMemberManagemen
 
     return (
       <TooltipProvider>
-        <div className="flex items-center gap-1">
-          <span className="text-sm font-medium text-gray-700 mr-2">Recent Sessions:</span>
-          {recentAttendance.map((record, index) => (
-            <Tooltip key={index}>
-              <TooltipTrigger>
-                <div
-                  className={`w-3 h-3 rounded-full ${
-                    record.status === "present" 
-                      ? "bg-green-500" 
-                      : "bg-red-500"
-                  } hover:scale-110 transition-transform cursor-pointer`}
-                />
-              </TooltipTrigger>
-              <TooltipContent>
-                <p className="font-medium capitalize">{record.status}</p>
-                <p className="text-xs">{record.date}</p>
-              </TooltipContent>
-            </Tooltip>
-          ))}
+        <div className="flex items-center gap-1 mt-2">
+          <span className="text-sm font-medium text-gray-700 mr-3">Recent Sessions:</span>
+          <div className="flex items-center gap-2">
+            {recentAttendance.map((record, index) => (
+              <Tooltip key={index}>
+                <TooltipTrigger>
+                  <div
+                    className={`w-4 h-4 rounded-full border-2 ${
+                      record.status === "present" 
+                        ? "bg-green-500 border-green-600" 
+                        : "bg-red-500 border-red-600"
+                    } hover:scale-125 transition-transform cursor-pointer shadow-sm`}
+                  />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p className="font-medium capitalize">{record.status}</p>
+                  <p className="text-xs">{record.date}</p>
+                </TooltipContent>
+              </Tooltip>
+            ))}
+          </div>
         </div>
       </TooltipProvider>
     );
