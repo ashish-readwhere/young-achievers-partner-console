@@ -38,7 +38,7 @@ interface MemberProfileProps {
 }
 
 export function MemberProfile({ onNavigate, memberId }: MemberProfileProps) {
-  console.log("MemberProfile rendered - contact info section removed");
+  console.log("MemberProfile rendered - all contact info sections removed");
   const [showRatingModal, setShowRatingModal] = useState(false);
   const [memberToRate, setMemberToRate] = useState<any>(null);
 
@@ -47,10 +47,6 @@ export function MemberProfile({ onNavigate, memberId }: MemberProfileProps) {
     id: memberId || 1,
     name: "Sarah Williams",
     age: 16,
-    email: "sarah.williams@email.com",
-    phone: "+1 (555) 123-4567",
-    parentPhone: "+1 (555) 123-4500",
-    parentEmail: "parent.sarah@email.com",
     joinDate: "Monday, Dec 1, 2024",
     status: "Active",
     attendance: 95,
@@ -151,6 +147,28 @@ export function MemberProfile({ onNavigate, memberId }: MemberProfileProps) {
 
       {/* Main Content */}
       <div className="p-6 space-y-6">
+        {/* Achievements */}
+        {member.achievements.length > 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Trophy className="w-5 h-5" />
+                Achievements
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-wrap gap-2">
+                {member.achievements.map((achievement, index) => (
+                  <Badge key={index} variant="outline" className="bg-yellow-50 text-yellow-800 border-yellow-200">
+                    <Trophy className="w-3 h-3 mr-1" />
+                    {achievement}
+                  </Badge>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Performance Overview */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <Card className="bg-blue-50">
