@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -41,7 +40,7 @@ export function BatchManagement({ onNavigate }: BatchManagementProps) {
   const [scheduleFilter, setScheduleFilter] = useState("All");
   const [programFilter, setProgramFilter] = useState("All");
 
-  console.log("BatchManagement component rendering with layout: Stats first, then Search");
+  console.log("BatchManagement component rendering with program filter:", programFilter);
 
   const batches = [
     {
@@ -175,7 +174,7 @@ export function BatchManagement({ onNavigate }: BatchManagementProps) {
 
       {/* Main Content */}
       <div className="p-4 space-y-6">
-        {/* Summary Stats - This should appear FIRST */}
+        {/* Summary Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {stats.map((stat, index) => (
             <Card key={index} className={`border-0 shadow-sm bg-${stat.color}-50`}>
@@ -194,7 +193,7 @@ export function BatchManagement({ onNavigate }: BatchManagementProps) {
           ))}
         </div>
 
-        {/* Search and Filter Section - This should appear SECOND */}
+        {/* Search and Filter Section */}
         <Card className="border shadow-sm">
           <CardContent className="p-4">
             <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
@@ -211,17 +210,20 @@ export function BatchManagement({ onNavigate }: BatchManagementProps) {
 
               {/* Filter Dropdowns */}
               <div className="flex gap-2 flex-wrap">
+                {/* Program Filter - Make sure it's first and visible */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="sm" className="flex items-center gap-2">
+                    <Button variant="outline" size="sm" className="flex items-center gap-2 bg-white border-gray-300">
                       <Filter className="w-4 h-4" />
                       Program: {programFilter}
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent>
-                    <DropdownMenuItem onClick={() => setProgramFilter("All")}>All</DropdownMenuItem>
+                  <DropdownMenuContent className="bg-white border shadow-lg z-50">
+                    <DropdownMenuItem onClick={() => setProgramFilter("All")} className="hover:bg-gray-100">
+                      All Programs
+                    </DropdownMenuItem>
                     {availablePrograms.map((program) => (
-                      <DropdownMenuItem key={program} onClick={() => setProgramFilter(program)}>
+                      <DropdownMenuItem key={program} onClick={() => setProgramFilter(program)} className="hover:bg-gray-100">
                         {program}
                       </DropdownMenuItem>
                     ))}
@@ -230,33 +232,33 @@ export function BatchManagement({ onNavigate }: BatchManagementProps) {
 
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="sm" className="flex items-center gap-2">
+                    <Button variant="outline" size="sm" className="flex items-center gap-2 bg-white border-gray-300">
                       <Filter className="w-4 h-4" />
                       Status: {statusFilter}
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent>
-                    <DropdownMenuItem onClick={() => setStatusFilter("All")}>All</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setStatusFilter("Active")}>Active</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setStatusFilter("Completed")}>Completed</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setStatusFilter("Paused")}>Paused</DropdownMenuItem>
+                  <DropdownMenuContent className="bg-white border shadow-lg z-50">
+                    <DropdownMenuItem onClick={() => setStatusFilter("All")} className="hover:bg-gray-100">All</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setStatusFilter("Active")} className="hover:bg-gray-100">Active</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setStatusFilter("Completed")} className="hover:bg-gray-100">Completed</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setStatusFilter("Paused")} className="hover:bg-gray-100">Paused</DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
 
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="sm" className="flex items-center gap-2">
+                    <Button variant="outline" size="sm" className="flex items-center gap-2 bg-white border-gray-300">
                       <Calendar className="w-4 h-4" />
                       Schedule: {scheduleFilter}
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent>
-                    <DropdownMenuItem onClick={() => setScheduleFilter("All")}>All</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setScheduleFilter("Weekdays")}>Weekdays</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setScheduleFilter("Weekends")}>Weekends</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setScheduleFilter("Daily")}>Daily</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setScheduleFilter("3x Week")}>3x Week</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setScheduleFilter("2x Week")}>2x Week</DropdownMenuItem>
+                  <DropdownMenuContent className="bg-white border shadow-lg z-50">
+                    <DropdownMenuItem onClick={() => setScheduleFilter("All")} className="hover:bg-gray-100">All</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setScheduleFilter("Weekdays")} className="hover:bg-gray-100">Weekdays</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setScheduleFilter("Weekends")} className="hover:bg-gray-100">Weekends</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setScheduleFilter("Daily")} className="hover:bg-gray-100">Daily</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setScheduleFilter("3x Week")} className="hover:bg-gray-100">3x Week</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setScheduleFilter("2x Week")} className="hover:bg-gray-100">2x Week</DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
 
@@ -299,7 +301,7 @@ export function BatchManagement({ onNavigate }: BatchManagementProps) {
           </CardContent>
         </Card>
 
-        {/* Batch Listing Table - This should appear THIRD */}
+        {/* Batch Listing Table */}
         <Card className="border shadow-sm">
           <CardHeader>
             <CardTitle className="text-base font-semibold text-gray-900">
