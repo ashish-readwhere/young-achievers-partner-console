@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -47,7 +48,7 @@ export function BatchManagement({ onNavigate }: BatchManagementProps) {
       name: "Yoga Fundamentals - Batch B",
       time: "6:00 PM - 7:00 PM",
       days: "Mon, Wed, Fri",
-      students: 15,
+      members: 15,
       capacity: 20,
       status: "Active",
       progress: 65,
@@ -61,7 +62,7 @@ export function BatchManagement({ onNavigate }: BatchManagementProps) {
       name: "Yoga Advanced - Batch A",
       time: "4:00 PM - 5:00 PM",
       days: "Tue, Thu",
-      students: 10,
+      members: 10,
       capacity: 12,
       status: "Active",
       progress: 80,
@@ -88,7 +89,7 @@ export function BatchManagement({ onNavigate }: BatchManagementProps) {
 
   // Calculate summary stats from filtered batches
   const totalBatches = filteredBatches.length;
-  const totalStudents = filteredBatches.reduce((sum, batch) => sum + batch.students, 0);
+  const totalMembers = filteredBatches.reduce((sum, batch) => sum + batch.members, 0);
   const totalCapacity = filteredBatches.reduce((sum, batch) => sum + batch.capacity, 0);
   const averageProgress = filteredBatches.length > 0 
     ? Math.round(filteredBatches.reduce((sum, batch) => sum + batch.progress, 0) / filteredBatches.length)
@@ -104,7 +105,7 @@ export function BatchManagement({ onNavigate }: BatchManagementProps) {
 
   const stats = [
     { label: "Total Batches", value: totalBatches.toString(), icon: BookOpen, color: "blue" },
-    { label: "Total Students", value: `${totalStudents}/${totalCapacity}`, icon: Users, color: "green" },
+    { label: "Total Members", value: `${totalMembers}/${totalCapacity}`, icon: Users, color: "green" },
     { label: "Average Progress", value: `${averageProgress}%`, icon: TrendingUp, color: "purple" },
     { label: "Sessions Completed", value: completedSessions.toString(), icon: Award, color: "orange" }
   ];
@@ -257,7 +258,7 @@ export function BatchManagement({ onNavigate }: BatchManagementProps) {
                     <TableRow>
                       <TableHead>Batch Name</TableHead>
                       <TableHead>Schedule</TableHead>
-                      <TableHead>Students</TableHead>
+                      <TableHead>Members</TableHead>
                       <TableHead>Progress</TableHead>
                       <TableHead>Status</TableHead>
                       <TableHead>Next Session</TableHead>
@@ -293,7 +294,7 @@ export function BatchManagement({ onNavigate }: BatchManagementProps) {
                           <div className="flex items-center gap-2">
                             <Users className="w-4 h-4 text-orange-600" />
                             <span className="text-sm font-medium text-gray-900">
-                              {batch.students}/{batch.capacity}
+                              {batch.members}/{batch.capacity}
                             </span>
                           </div>
                         </TableCell>
