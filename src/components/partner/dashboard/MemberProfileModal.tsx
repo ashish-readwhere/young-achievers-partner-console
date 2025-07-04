@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { 
   Calendar,
   MapPin,
@@ -12,6 +13,11 @@ import {
   Users,
   Clock
 } from "lucide-react";
+
+interface AttendanceRecord {
+  date: string;
+  status: "present" | "absent";
+}
 
 interface MemberBatch {
   id: number;
@@ -25,6 +31,7 @@ interface MemberBatch {
   sessionsAttended: number;
   totalSessions: number;
   attendance: number;
+  recentAttendance: AttendanceRecord[];
 }
 
 interface MemberProfileModalProps {
@@ -65,7 +72,14 @@ export function MemberProfileModal({ isOpen, onClose, onRateMember, member }: Me
       enrolledDate: "Dec 1, 2024",
       sessionsAttended: 18,
       totalSessions: 20,
-      attendance: 90
+      attendance: 90,
+      recentAttendance: [
+        { date: "Jan 13, 2025", status: "present" },
+        { date: "Jan 11, 2025", status: "present" },
+        { date: "Jan 8, 2025", status: "absent" },
+        { date: "Jan 6, 2025", status: "present" },
+        { date: "Jan 3, 2025", status: "present" }
+      ]
     },
     {
       id: 6,
@@ -78,7 +92,14 @@ export function MemberProfileModal({ isOpen, onClose, onRateMember, member }: Me
       enrolledDate: "Nov 15, 2024",
       sessionsAttended: 14,
       totalSessions: 16,
-      attendance: 87
+      attendance: 87,
+      recentAttendance: [
+        { date: "Jan 14, 2025", status: "present" },
+        { date: "Jan 12, 2025", status: "absent" },
+        { date: "Jan 9, 2025", status: "present" },
+        { date: "Jan 7, 2025", status: "present" },
+        { date: "Jan 5, 2025", status: "present" }
+      ]
     },
     {
       id: 2,
@@ -91,13 +112,45 @@ export function MemberProfileModal({ isOpen, onClose, onRateMember, member }: Me
       enrolledDate: "Oct 1, 2024",
       sessionsAttended: 24,
       totalSessions: 24,
-      attendance: 100
+      attendance: 100,
+      recentAttendance: [
+        { date: "Dec 28, 2024", status: "present" },
+        { date: "Dec 26, 2024", status: "present" },
+        { date: "Dec 24, 2024", status: "present" },
+        { date: "Dec 21, 2024", status: "present" },
+        { date: "Dec 19, 2024", status: "present" }
+      ]
     }
   ];
 
   const handleRateMember = () => {
     onRateMember(member.id);
   };
+
+  const AttendanceDots = ({ attendanceRecords }: { attendanceRecords: AttendanceRecord[] }) => (
+    <TooltipProvider>
+      <div className="flex items-center gap-1">
+        <span className="text-sm font-medium text-gray-700 mr-2">Recent Sessions:</span>
+        {attendanceRecords.map((record, index) => (
+          <Tooltip key={index}>
+            <TooltipTrigger>
+              <div
+                className={`w-3 h-3 rounded-full ${
+                  record.status === "present" 
+                    ? "bg-green-500" 
+                    : "bg-red-500"
+                } hover:scale-110 transition-transform cursor-pointer`}
+              />
+            </TooltipTrigger>
+            <TooltipContent>
+              <p className="font-medium capitalize">{record.status}</p>
+              <p className="text-xs">{record.date}</p>
+            </TooltipContent>
+          </Tooltip>
+        ))}
+      </div>
+    </TooltipProvider>
+  );
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -207,19 +260,12 @@ export function MemberProfileModal({ isOpen, onClose, onRateMember, member }: Me
                         </div>
                       </div>
 
-                      <div className="space-y-2">
+                      <div className="space-y-3">
                         <div className="flex justify-between items-center">
-                          <span className="text-sm font-medium text-gray-700">Attendance</span>
+                          <span className="text-sm font-medium text-gray-700">Overall Attendance</span>
                           <span className="text-sm font-bold text-gray-900">{batch.attendance}%</span>
                         </div>
-                        <Progress 
-                          value={batch.attendance} 
-                          className={`h-2 ${
-                            batch.attendance >= 90 ? '[&>div]:bg-green-500' : 
-                            batch.attendance >= 75 ? '[&>div]:bg-yellow-500' : 
-                            '[&>div]:bg-red-500'
-                          }`}
-                        />
+                        <AttendanceDots attendanceRecords={batch.recentAttendance} />
                       </div>
                     </CardContent>
                   </Card>
