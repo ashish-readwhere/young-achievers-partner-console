@@ -3,9 +3,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
 import { MemberProfileModal } from "./MemberProfileModal";
 import { RatingModal } from "./RatingModal";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { 
   Users, 
   Calendar, 
@@ -239,6 +239,42 @@ export function BatchDetailsModal({ isOpen, onClose, onNavigateToMemberManagemen
       schedule: batch.schedule,
       context: `Batch: ${batch.name}`
     };
+  };
+
+  const AttendanceDots = ({ attendance }: { attendance: number }) => {
+    // Mock recent attendance data based on percentage
+    const recentAttendance = [
+      { date: "Jan 13, 2025", status: attendance >= 80 ? "present" : "absent" },
+      { date: "Jan 11, 2025", status: attendance >= 60 ? "present" : "absent" },
+      { date: "Jan 8, 2025", status: attendance >= 40 ? "present" : "absent" },
+      { date: "Jan 6, 2025", status: attendance >= 20 ? "present" : "absent" },
+      { date: "Jan 3, 2025", status: "present" }
+    ] as const;
+
+    return (
+      <TooltipProvider>
+        <div className="flex items-center gap-1">
+          <span className="text-sm font-medium text-gray-700 mr-2">Recent Sessions:</span>
+          {recentAttendance.map((record, index) => (
+            <Tooltip key={index}>
+              <TooltipTrigger>
+                <div
+                  className={`w-3 h-3 rounded-full ${
+                    record.status === "present" 
+                      ? "bg-green-500" 
+                      : "bg-red-500"
+                  } hover:scale-110 transition-transform cursor-pointer`}
+                />
+              </TooltipTrigger>
+              <TooltipContent>
+                <p className="font-medium capitalize">{record.status}</p>
+                <p className="text-xs">{record.date}</p>
+              </TooltipContent>
+            </Tooltip>
+          ))}
+        </div>
+      </TooltipProvider>
+    );
   };
 
   const currentStats = getCurrentStats();
@@ -512,18 +548,11 @@ export function BatchDetailsModal({ isOpen, onClose, onNavigateToMemberManagemen
                         </div>
 
                         <div className="mb-4">
-                          <div className="flex justify-between items-center mb-1">
+                          <div className="flex justify-between items-center mb-2">
                             <span className="text-sm text-gray-600">Attendance</span>
                             <span className="text-sm font-medium">{member.attendance}%</span>
                           </div>
-                          <Progress 
-                            value={member.attendance} 
-                            className={`h-2 ${
-                              member.attendance >= 90 ? '[&>div]:bg-green-500' : 
-                              member.attendance >= 75 ? '[&>div]:bg-yellow-500' : 
-                              '[&>div]:bg-red-500'
-                            }`}
-                          />
+                          <AttendanceDots attendance={member.attendance} />
                         </div>
 
                         <Button 
