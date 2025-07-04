@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -32,6 +33,8 @@ interface SessionAttendanceProps {
 
 export function SessionAttendance({ onNavigate, sessionId }: SessionAttendanceProps) {
   const { toast } = useToast();
+  
+  console.log("Toast function available:", typeof toast);
   
   // Mock session data
   const sessionData = {
@@ -90,6 +93,8 @@ export function SessionAttendance({ onNavigate, sessionId }: SessionAttendancePr
     const student = students.find(s => s.id === studentId);
     const studentName = student?.name || "Student";
     
+    console.log("Marking attendance for:", studentName, "as", status);
+    
     setStudents(prev => prev.map(student => 
       student.id === studentId 
         ? { ...student, attendance: status }
@@ -97,14 +102,17 @@ export function SessionAttendance({ onNavigate, sessionId }: SessionAttendancePr
     ));
 
     // Show confirmation toast
+    console.log("Calling toast function...");
     toast({
       title: "Attendance Marked",
       description: `${studentName} has been marked as ${status}`,
       duration: 3000,
     });
+    console.log("Toast called successfully");
   };
 
   const handleMarkAllPresent = () => {
+    console.log("Marking all students as present");
     setStudents(prev => prev.map(student => ({ ...student, attendance: "present" as const })));
     
     toast({
@@ -115,6 +123,7 @@ export function SessionAttendance({ onNavigate, sessionId }: SessionAttendancePr
   };
 
   const handleMarkAllAbsent = () => {
+    console.log("Marking all students as absent");
     setStudents(prev => prev.map(student => ({ ...student, attendance: "absent" as const })));
     
     toast({
