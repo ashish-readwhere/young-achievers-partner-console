@@ -79,15 +79,21 @@ export function ManageBatchesModal({ isOpen, onClose, member }: ManageBatchesMod
       if (uniqueLevels.length > 1) {
         const hierarchy = levelHierarchy[program as keyof typeof levelHierarchy];
         if (hierarchy) {
-          // Check if there's a gap in progression (e.g., Beginner + Advanced without Intermediate)
-          const levelIndices = uniqueLevels.map(level => hierarchy.indexOf(level)).sort((a, b) => a - b);
+          // Sort levels by hierarchy position
+          const sortedLevels = uniqueLevels.sort((a, b) => hierarchy.indexOf(a) - hierarchy.indexOf(b));
           
-          // Check for non-consecutive levels (skipping levels)
+          // Check for any non-consecutive levels
+          const levelIndices = sortedLevels.map(level => hierarchy.indexOf(level));
           for (let i = 1; i < levelIndices.length; i++) {
             if (levelIndices[i] - levelIndices[i-1] > 1) {
-              errors.push(`Cannot enroll in ${program} ${hierarchy[levelIndices[i]]} without completing ${hierarchy[levelIndices[i]-1]} level first.`);
+              errors.push(`Cannot enroll in multiple ${program} levels simultaneously. A member can only be enrolled in one level at a time within the same program.`);
               break;
             }
+          }
+          
+          // Also prevent enrollment in multiple levels of the same program regardless of progression
+          if (uniqueLevels.length > 1) {
+            errors.push(`Cannot enroll in multiple ${program} batches of different levels simultaneously. Please complete current level before enrolling in the next level.`);
           }
         }
       }
@@ -107,33 +113,31 @@ export function ManageBatchesModal({ isOpen, onClose, member }: ManageBatchesMod
   };
 
   const isBatchDisabled = (batchId: number) => {
-    // Simulate what would happen if this batch was selected
-    const testSelection = selectedBatches.includes(batchId) 
-      ? selectedBatches 
-      : [...selectedBatches, batchId];
-    
     const batch = availableBatches.find(b => b.id === batchId);
-    if (!batch) return false;
+    if (!batch || selectedBatches.includes(batchId)) return false;
 
-    const selectedBatchData = availableBatches.filter(b => testSelection.includes(b.id));
-    const sameProgramBatches = selectedBatchData.filter(b => b.program === batch.program);
+    // Check if selecting this batch would create a conflict
+    const testSelection = [...selectedBatches, batchId];
+    const testSelectedBatchData = availableBatches.filter(b => testSelection.includes(b.id));
     
-    if (sameProgramBatches.length <= 1) return false;
+    // Group by program
+    const batchesByProgram: { [program: string]: typeof availableBatches } = {};
+    testSelectedBatchData.forEach(b => {
+      if (!batchesByProgram[b.program]) {
+        batchesByProgram[b.program] = [];
+      }
+      batchesByProgram[b.program].push(b);
+    });
 
-    const levels = sameProgramBatches.map(b => b.level);
-    const uniqueLevels = [...new Set(levels)];
-    
-    if (uniqueLevels.length > 1) {
-      const hierarchy = levelHierarchy[batch.program as keyof typeof levelHierarchy];
-      if (hierarchy) {
-        const levelIndices = uniqueLevels.map(level => hierarchy.indexOf(level)).sort((a, b) => a - b);
-        
-        // Check for non-consecutive levels
-        for (let i = 1; i < levelIndices.length; i++) {
-          if (levelIndices[i] - levelIndices[i-1] > 1) {
-            return true;
-          }
-        }
+    // Check if this batch's program would have multiple levels
+    const sameProgramBatches = batchesByProgram[batch.program] || [];
+    if (sameProgramBatches.length > 1) {
+      const levels = sameProgramBatches.map(b => b.level);
+      const uniqueLevels = [...new Set(levels)];
+      
+      // If there would be multiple levels in the same program, disable this batch
+      if (uniqueLevels.length > 1) {
+        return true;
       }
     }
     
@@ -233,6 +237,19 @@ export function ManageBatchesModal({ isOpen, onClose, member }: ManageBatchesMod
               </p>
             </div>
 
+            {/* Enrollment Rules Notice */}
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+              <div className="flex items-center gap-2 mb-2">
+                <AlertCircle className="w-5 h-5 text-amber-600" />
+                <p className="text-sm font-medium text-amber-800">
+                  Enrollment Rules
+                </p>
+              </div>
+              <p className="text-sm text-amber-700">
+                Members can only be enrolled in one level per program at a time. Please complete the current level before enrolling in the next level within the same program.
+              </p>
+            </div>
+
             {/* Conflict Errors */}
             {hasConflicts && (
               <div className="bg-red-50 border border-red-200 rounded-lg p-4">
@@ -325,7 +342,7 @@ export function ManageBatchesModal({ isOpen, onClose, member }: ManageBatchesMod
                             )}
                             {isDisabled && (
                               <Badge variant="outline" className="bg-red-50 text-red-600 border-red-200 text-xs">
-                                Conflict
+                                Level Conflict
                               </Badge>
                             )}
                           </div>
