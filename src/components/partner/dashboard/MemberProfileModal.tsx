@@ -9,10 +9,8 @@ import {
   Calendar,
   MapPin,
   Star,
-  Trophy,
   Users,
-  Clock,
-  User
+  Clock
 } from "lucide-react";
 
 interface MemberBatch {
@@ -119,28 +117,6 @@ export function MemberProfileModal({ isOpen, onClose, onRateMember, member }: Me
         </DialogHeader>
 
         <div className="space-y-6">
-          {/* Achievements */}
-          {member.achievements.length > 0 && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <Trophy className="w-5 h-5" />
-                  Achievements
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex flex-wrap gap-2">
-                  {member.achievements.map((achievement, index) => (
-                    <Badge key={index} variant="outline" className="bg-yellow-50 text-yellow-800 border-yellow-200">
-                      <Trophy className="w-3 h-3 mr-1" />
-                      {achievement}
-                    </Badge>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          )}
-
           {/* Batch Enrollments */}
           <Card>
             <CardHeader>
@@ -180,10 +156,6 @@ export function MemberProfileModal({ isOpen, onClose, onRateMember, member }: Me
                           <div className="flex items-center gap-2 text-sm">
                             <Clock className="w-4 h-4 text-gray-400" />
                             <span>{batch.schedule}</span>
-                          </div>
-                          <div className="flex items-center gap-2 text-sm">
-                            <User className="w-4 h-4 text-gray-400" />
-                            <span>{batch.teacher}</span>
                           </div>
                         </div>
                         <div className="space-y-2">
